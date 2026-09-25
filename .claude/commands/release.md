@@ -38,7 +38,7 @@ Tham số: `$ARGUMENTS`
 
 ## 2. Phân tích thay đổi
 
-- Working tree sạch **và** không có commit nào sau tag gần nhất (`git log <tag>..HEAD`) → dừng: không có gì để release.
+- Working tree sạch **và** không có commit nào sau tag gần nhất (`git log <tag>..HEAD`) → dừng: không có gì để release. Chưa có tag nào thì luôn có thứ để release.
 - Đọc nội dung thay đổi của từng file: `git diff HEAD -- <path>` với file tracked, Read với file untracked.
 - Không bao giờ stage: `.DS_Store`, `.env*`, file chứa secret/token/private key, `.claude/worktrees/`, `.claude/settings.local.json`, build artifact, binary lớn. Gặp file đáng ngờ → liệt kê và hỏi anh.
 
@@ -54,7 +54,7 @@ Tham số: `$ARGUMENTS`
 | CI | `.github/**` | `ci` |
 | Docs | `README.md`, `AGENTS.md`, docs khác | `docs` |
 
-- Chọn `type` theo bản chất thay đổi: `feat` (plugin/skill/tính năng mới), `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`, `chore`, `style`. Breaking change → thêm `!`: `feat(<scope>)!: ...`.
+- Chọn `type` theo bản chất thay đổi: `feat` (plugin/skill/tính năng mới), `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`, `chore`, `style`. Breaking change → commit dạng `feat(<scope>)!: ...`.
 - Plugin mới đi **cùng commit** với entry của nó trong hai `marketplace.json` — plugin chưa đăng ký đủ hai marketplace coi như chưa xong. Nếu một `marketplace.json` chứa entry của nhiều plugin thì gộp các plugin đó vào một commit (scope `plugins`), vì không tách hunk được.
 - Một nhóm lẫn nhiều mục đích → tách thành nhiều commit theo file. Không tách hunk trong cùng một file.
 - Thứ tự: nền tảng trước (scripts, template, config), rồi plugin, rồi docs.
@@ -68,7 +68,7 @@ Tham số: `$ARGUMENTS`
 **Version repo** (tag `vX.Y.Z`):
 
 - `$ARGUMENTS` có `X.Y.Z` hoặc `vX.Y.Z` → dùng đúng giá trị đó. Có `patch|minor|major` → bump theo đó.
-- Không có → suy từ commit `BASE..HEAD`: có `!` hoặc `BREAKING CHANGE` → major, có `feat` → minor, còn lại → patch. Khi đang ở `0.x`, breaking chỉ bump minor.
+- Không có → suy từ commit `BASE..HEAD` (với `--dry-run` thì suy từ các commit dự kiến ở bước 3): có commit dạng `type(scope)!:` hoặc `BREAKING CHANGE` → major, có `feat` → minor, còn lại → patch. Khi đang ở `0.x`, breaking chỉ bump minor.
 - Version mới phải lớn hơn tag cũ. Tag chưa được tồn tại cả ở local (`git tag -l vX.Y.Z`) lẫn remote (`git ls-remote --tags origin vX.Y.Z`).
 
 **Version plugin** — với mỗi plugin thật trong `plugins/` (bỏ qua thư mục bắt đầu bằng `_`):
@@ -131,7 +131,7 @@ Anh từ chối → dừng. Commit local giữ nguyên. Báo lệnh hoàn tác: 
 
 1. `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
 2. `git push --atomic origin main vX.Y.Z`: branch và tag cùng lên hoặc cùng không. Bị reject → dừng, không force. Tag local giữ nguyên để retry sau khi anh pull.
-3. Lấy nội dung section `[X.Y.Z]` trong `CHANGELOG.md` (bỏ dòng heading) và Write vào file tạm tạo bằng `mktemp`, rồi chạy `gh release create vX.Y.Z --verify-tag --title "vX.Y.Z" --notes-file <file>`. Version có suffix pre-release (`-rc.1`, `-beta.2`, ...) thì thêm `--prerelease`. Bước này fail thì tag đã lên remote, chỉ cần chạy lại đúng lệnh `gh release create`.
+3. Lấy nội dung section `[X.Y.Z]` trong `CHANGELOG.md` (bỏ dòng heading) và Write vào file mới `<dir>/release-notes.md`, với `<dir>` tạo bằng `mktemp -d` (Write không ghi đè được file có sẵn mà chưa Read). Sau đó chạy `gh release create vX.Y.Z --verify-tag --title "vX.Y.Z" --notes-file <file>`. Version có suffix pre-release (`-rc.1`, `-beta.2`, ...) thì thêm `--prerelease`. Bước này fail thì tag đã lên remote, chỉ cần chạy lại đúng lệnh `gh release create`.
 
 ## 9. Báo cáo
 
