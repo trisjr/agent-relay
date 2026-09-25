@@ -1,0 +1,35 @@
+{
+  "skill_name": "research-swarm",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "research giúp anh cách Prisma, Drizzle và TypeORM xử lý connection pooling, so sánh ưu nhược từng cái",
+      "expected_output": "Scales to a 2-4 worker comparison wave (roughly one worker per ORM or angle), each spec self-contained with non-overlapping scope, read-only constraints, and a required findings file; coordinator waits with check --wait and synthesizes a single comparison from the report files with attribution.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "điều tra toàn bộ luồng xác thực trong repo này: entry points, middleware, session storage, token refresh — phân tích điểm yếu từng tầng",
+      "expected_output": "Scales to a 5-8 worker wave decomposed by subsystem with explicit boundaries between workers; run-create first, all workers started before the first wait; per-worker report files in a run-scoped `.orca-reports/<run_id>/` directory excluded from Git; final synthesis dedupes and reconciles findings per layer. No worker edits code.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "JSON.stringify có xử lý circular reference không?",
+      "expected_output": "Declines the swarm per the scale rules and answers directly from knowledge (TypeError: Converting circular structure to JSON); no Run or workers are created.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "research các option để làm full-text search cho app (Postgres FTS, Meilisearch, Elasticsearch) rồi implement luôn cái tốt nhất giúp anh",
+      "expected_output": "Runs the research wave read-only (workers write findings files, no code edits), synthesizes a recommendation, then routes the implementation to dag-build or a plain implementation task instead of letting research workers edit code.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "investigate tại sao process crawler bị OOM sau khoảng 2 tiếng chạy",
+      "expected_output": "Recognizes a single-failure root-cause investigation per the scale table and chases it sequentially (reproduce, profile memory, narrow hypotheses) instead of fanning out a swarm; creates no Run or workers.",
+      "files": []
+    }
+  ]
+}

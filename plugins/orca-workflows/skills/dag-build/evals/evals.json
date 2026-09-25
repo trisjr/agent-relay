@@ -1,0 +1,41 @@
+{
+  "skill_name": "dag-build",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "xây tính năng notification: API endpoint, background worker gửi mail, và settings page. Anh muốn duyệt spec trước, sau đó các phần chạy song song",
+      "expected_output": "Creates a spec task plus gate-create with approve/revise/abort options and waits for gate-resolve before implementation; on approve, closes the spec task with task-update --status completed before creating component tasks and never starts a worker on it; creates one task per component with real dependencies only and component-scoped acceptance commands, starts each ready wave in the current workspace before waiting, and ends with an integration task running the full verification suite.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "migrate 12 module từ require/CommonJS sang ESM import, các module độc lập với nhau",
+      "expected_output": "Decomposes into independent per-module tasks (no dependency chains), fanned out in parallel waves in the current workspace with acceptance scoped to each module (its own tests or typecheck), and the full build/test suite only in a final integration task; no gates needed since no cross-cutting decision exists; reports per-module outcomes with evidence.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "sửa bug login fail do token hết hạn không refresh, fix xong test lại giúp anh",
+      "expected_output": "Recognizes a sequential dependency chain (edit -> build -> test) and declines the DAG workflow per the gating guidance, doing it as a single agent or short chain instead of creating a Run, tasks, and gates.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "task payment-webhook fail 3 lần rồi, thử cách khác đi — tạo run mới cho nhanh",
+      "expected_output": "Recognizes the tripped circuit breaker: stops, escalates to the user with the failure evidence, and refuses to route around it with a new Run or an unrelated dispatch.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "(đang chạy wave 2) worker của task settings-page hỏi: 'nên lưu preference ở localStorage hay gọi API?'",
+      "expected_output": "Answers the worker's blocking question with `reply` on that message and acks the delivery; does not create a gate for a worker's question.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "(sau khi coordinator trình spec và gate approve/revise/abort) anh thấy hướng này không ổn, abort đi",
+      "expected_output": "Resolves the gate with abort, marks the spec task failed with task-update --status failed, creates no component tasks and starts no workers, then reports the aborted plan and stops.",
+      "files": []
+    }
+  ]
+}

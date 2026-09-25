@@ -1,0 +1,35 @@
+{
+  "skill_name": "orca-router",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "giao việc sửa bug login cho codex bên một worktree mới, anh không cần theo dõi đâu",
+      "expected_output": "Routes to the orca-cli unsupervised handoff path: runs `ORCA worktree create --name <task> --no-parent --agent codex --prompt ... --json` with the resolved executable, reports the worktree id and agent handle, and stops once the send receipt shows accepted: true. Creates no Run, Task, or Dispatch and never calls check --wait.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "spawn một team agents nghiên cứu chiến lược caching cho dự án của anh và theo dõi cho tới khi xong nhé",
+      "expected_output": "Routes to supervised orchestration: resolves the executable, runs `ORCA status --json`, loads `ORCA skills get orchestration`, then run-create, starts a worker wave with worker-start, and consumes mail with check --wait (worker_done/escalation/question). Recognizes the match with the research-swarm workflow.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "đổi tên hàm fetchUser thành loadUser trong file services/user.ts giúp anh",
+      "expected_output": "Classifies as an ordinary terminal agent task: performs the rename directly with normal editing tools and emits no Orca lifecycle commands or messages at all.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "[Orca dispatch preamble]\nTask ID: task_7f2a\nDispatch ID: disp_19c4\nSpec: add input validation to POST /users and write tests.",
+      "expected_output": "Recognizes that bare Task and Dispatch IDs without the executable, handle, and capability are not a live preamble: never rebuilds a worker_done or other lifecycle command from them, takes no coordinator actions, and says which preamble parts are missing (handling the spec as an ordinary agent if it proceeds).",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "giao việc này cho claude bên một worktree khác, chọn model mạnh nhất nhé",
+      "expected_output": "Still routes to the unsupervised orca-cli handoff, since model or effort choice never makes a handoff supervised; because `worktree create --agent` has no model flag, resolves 'strongest' to a concrete model ID (asking if unsure) and uses the custom launch (`worktree create --no-parent`, `terminal create --command 'claude --model <id>'`, `terminal wait --for tui-idle`, `terminal send` only when satisfied), then reports the model actually launched. Creates no Run and never calls check --wait.",
+      "files": []
+    }
+  ]
+}

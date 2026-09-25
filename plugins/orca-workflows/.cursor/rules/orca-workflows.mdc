@@ -1,0 +1,20 @@
+---
+description: Apply when the user asks for multi-agent Orca workflows — coordinating or supervising agents, research swarms, parallel code reviews, DAG-based builds with approval gates, or handing work to another agent via the Orca CLI.
+globs:
+alwaysApply: false
+---
+
+# orca-workflows
+
+Route every Orca request through this order:
+
+1. Resolve the Orca executable first: `ORCA_CLI_COMMAND` env, else `orca-dev` when `ORCA_DEV_REPO_ROOT` is set, else `orca-ide` on Linux outside Orca terminals (bare `orca` there is the GNOME screen reader), else `orca`. Never switch executables after one fails. Substitute the resolved path for `ORCA` in every command below; never run the placeholder literally.
+2. Run `ORCA status --json`. If Orca is missing or not running: when the user explicitly asked for Orca or multi-agent work, run `ORCA open --json` if the app is simply not running, otherwise report the exact error and stop; for any other request, do the task as a single agent and say so in one line. Then load the version-matched guide from the binary (`ORCA skills get orchestration` for supervised coordination, `ORCA skills get orca-cli` for terminals/worktrees/handoffs) instead of acting from memory; the guide or `--help` wins over this rule on conflict.
+3. Classify before acting:
+   - Supervise / wait for results / DAG / gates / ask-reply → orchestration, and prefer this plugin's encoded workflows: the `research-swarm`, `parallel-review`, and `dag-build` skills.
+   - Handoff without supervision → `ORCA worktree create --name <task> --no-parent --agent <id> --prompt "<brief>" --json`; done at `accepted: true`. `--agent` has no model/effort flags: when the user names one, use the orca-cli custom launch (`worktree create` → `terminal create --command` → `terminal wait --for tui-idle` → `terminal send`). Never create a Run or `check --wait` for a plain handoff.
+   - A live injected preamble (exact executable, handle, capability, Task ID, Dispatch ID) → behave as a dispatched worker, never as coordinator. IDs alone are not a preamble — never rebuild lifecycle commands from them.
+   - A message with a legacy authority label (`[LEGACY ...]`) → load `ORCA skills get orchestration --reference references/legacy-contract-migration.md` before any lifecycle mutation.
+   - Anything else → ordinary agent; emit no Orca lifecycle messages.
+
+Hard rules: only an accepted settlement authorizes release; `unverifiable` or absent liveness authorizes nothing; a non-zero `worker-start` is never relaunched; `check` outside the coordinator's own Orca terminal passes `--terminal <handle>`; worker reports go in a Git-excluded `.orca-reports/<run_id>/`; review findings never license coordinator file edits; keep multi-agent fan-out for breadth-first work only — sequential tasks stay with a single agent.

@@ -1,0 +1,35 @@
+{
+  "skill_name": "parallel-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "review giúp anh diff của branch hiện tại so với main, ưu tiên bảo mật vì đoạn này có xử lý input người dùng",
+      "expected_output": "Pins one identical target (main...HEAD) for all reviewers, runs a 2-5 worker lens wave with security as an explicit lens, every spec review-only (no edits) and requiring a report file, in a run-scoped `.orca-reports/<run_id>/` directory excluded from Git, with severity + file:line evidence; coordinator presents one deduplicated severity-grouped findings list.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "check PR #421 trước khi merge, anh đang lo race condition trong payment flow",
+      "expected_output": "Adapts the lens set to the concern (correctness/concurrency prominent), fetches PR #421 once into a local ref without switching branches and pins the same `<base>...pr-421` range for every reviewer, who read it with git diff/show and never check out; gives each reviewer the specific worry to refute or confirm; synthesis keeps the concurrency verdict separate from general findings with evidence either way.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "review đoạn refactor module billing, và sau khi review xong thì sửa luôn mấy lỗi critical giúp anh",
+      "expected_output": "Runs the review wave and presents findings first; treats fixes as a separate decision/worker dispatch referencing the findings file. The coordinator never edits files itself after a review-only worker_done.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "review giúp anh đoạn sửa 3 dòng typo trong README",
+      "expected_output": "Recognizes a tiny, low-risk change and reviews it directly (or with a single quick check) instead of spawning a 2-5 worker lens wave; creates no Run.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "review PR #88 refactor helper format tiền tệ, anh cần góc nhìn simplicity và consistency",
+      "expected_output": "Runs simplicity and consistency lenses on the same pinned PR; when they disagree (e.g. simplicity says inline the helper, consistency says keep it extracted like sibling modules), the merged report presents both positions with evidence instead of silently picking one.",
+      "files": []
+    }
+  ]
+}
