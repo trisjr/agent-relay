@@ -76,6 +76,17 @@ This plugin ships three recipes on top of orchestration; when the request matche
 
 All three assume steps 1–2 here and follow the coordinator rules below.
 
+### Chaining recipes
+
+A request spanning plan → code → docs chains the recipes; each stage is its own Run, linked by report paths in specs, never pasted content:
+
+1. **research-swarm** — only when the ground is broad; its reports feed the plan.
+2. **dag-build** — the spec cites those report paths; the gate is where the user approves the plan (planning-only requests stop after the gate). Docs are ordinary DAG tasks with file ownership: a docs task depends on the code tasks it describes, and drift-fixing over independent doc files skips the gate.
+3. **parallel-review** — on the resulting diff; for docs, swap lenses to accuracy (docs vs. code), completeness, and consistency with repo conventions.
+4. **Fixes** — a fresh fix worker or another dag-build wave, never the coordinator.
+
+Reports are Git-excluded and deleted afterward; a plan or doc the user keeps must be written into the repo by a task. Any stage that is small or sequential runs as a single agent instead.
+
 ## Coordinator rules shared by the recipes
 
 - **`check` names its caller.** Omit `--terminal` inside the coordinator's own Orca terminal, where Orca resolves the caller; from anywhere else pass `--terminal <handle>` explicitly (`references/messaging-and-gates.md`).
