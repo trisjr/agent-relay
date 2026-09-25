@@ -1,0 +1,9 @@
+---
+description: Mô tả ngắn quy tắc này áp dụng khi nào.
+globs:
+alwaysApply: false
+---
+
+# __PLUGIN_NAME__
+
+Viết quy tắc bằng tiếng Việt hoặc tiếng Anh, nêu rõ khi nào agent phải áp dụng và những điều bắt buộc/cấm làm.

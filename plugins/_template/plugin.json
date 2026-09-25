@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "__PLUGIN_NAME__",
+  "version": "0.1.0",
+  "description": "TODO: Describe this plugin",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  }
+}

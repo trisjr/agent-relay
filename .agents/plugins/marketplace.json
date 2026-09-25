@@ -1,0 +1,7 @@
+{
+  "name": "agent-relay",
+  "interface": {
+    "displayName": "AgentRelay"
+  },
+  "plugins": []
+}
