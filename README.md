@@ -21,6 +21,8 @@ Marketplace cá nhân chứa các plugin tái sử dụng cho AI coding agents: 
 │       └── README.md                       # Mô tả plugin
 ├── scripts/new-plugin.sh                   # Tạo plugin từ template + đăng ký vào 2 marketplace.json
 ├── scripts/validate.sh                     # Kiểm tra toàn bộ manifest + cấu trúc
+├── CHANGELOG.md
+├── LICENSE
 ├── README.md
 └── AGENTS.md
 ```
