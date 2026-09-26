@@ -1,0 +1,5 @@
+{
+  "name": "clarify-requirements",
+  "version": "0.1.0",
+  "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief."
+}

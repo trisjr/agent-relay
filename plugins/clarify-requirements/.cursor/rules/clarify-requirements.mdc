@@ -1,0 +1,19 @@
+---
+description: Apply before implementing or planning a vague, underspecified, or high-stakes request — "build X", "add a feature", "làm tính năng", "làm rõ yêu cầu", a new project, PRD, or spec — or whenever two plausible readings would lead to materially different work, data loss, or a changed public contract. Skip for well-specified tasks and one-sentence diffs.
+globs:
+alwaysApply: false
+---
+
+# clarify-requirements
+
+Pin down what the user wants before building, without interrogating them.
+
+1. Right-size: skip when the request is fully specified, the diff fits in one sentence, or every open point is answerable from the repo, docs, `AGENTS.md`, or the conversation. If only reversible, low-impact choices are open, pick defaults, log them as assumptions, and proceed.
+2. Explore first. Facts (which module, what existing format) are yours to find — if still ambiguous, show the candidates and recommend one. Only preferences and trade-offs (scope, priority, UX, data policy, access) go to the user. Expert parameters (retries, page size, TTL) follow convention and get logged.
+3. Rank open decisions by impact-if-wrong × uncertainty × irreversibility. Safety, privacy, money, permissions, destructive actions, and public API changes are always top impact. Ask the top ones, assume-and-log the reversible ones, and block (never invent a default for) irreversible actions you cannot get a decision on.
+4. At most 3 questions per round, usually one round; a second only when an answer opens a new blocking choice. Each question is self-contained (context above the options), covers one decision, has 2–3 concrete options with a one-line consequence, the recommended option first with `(Recommended)` as the default, and is written in the user's language. No filler and no "Other" option. If the user asks for context, explain and re-ask the same question; "whatever you think" means adopt the recommendations; "done"/"proceed" means stop and default the rest.
+5. Use Cursor's ask tool when available; it does not block, so end the turn after asking. Otherwise print a numbered plain-text block (`1. [Header] question` / `a) option (Recommended) — consequence` / `default: a`, reply like "1a 2b") and end the turn. In headless runs never wait: default the reversible gaps and list them as assumptions; for blocking or irreversible gaps stop before acting and make the question block the final output.
+6. Stop when the user/outcome and scope fit in two sentences, every material behavior has an observable acceptance check, and no open choice touches safety, data loss, permissions, the public contract, or the main deliverable.
+7. Hand off a requirements brief of 120–250 words: Goal / user, Scope, Decisions (cite user or repo), Assumptions (source or "agent default"), Acceptance (2–5 observable checks incl. the key failure path, as checklist, Given/When/Then, or EARS), Constraints, Open (none | item | BLOCKED: decision + action). Keep it in chat unless a file is needed; update files in place. Get a yes before large or irreversible work.
+
+Never ask what the repo already answers, never walk the gap list as a questionnaire, and never present a default as if the user approved it.
