@@ -8,6 +8,7 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 ### Added
 
 - **kimi-code**: hỗ trợ Kimi Code CLI plugin và marketplace — thêm `.kimi-plugin/marketplace.json`, manifest `.kimi-plugin/plugin.json` cho template và plugin `orca-workflows`, cập nhật `scripts/validate.sh` và `scripts/new-plugin.sh` để kiểm tra và đăng ký đồng bộ 3 marketplace và 5 manifest.
+- **jev-dispatch**: plugin mới gợi ý harness, model và mức effort cho task của agent. MCP server (tool `ask`, battery `task_dispatch`) gửi mô tả task tới TypeSafe Jev để chấm độ phức tạp/rủi ro, rồi áp policy định tuyến viết bằng code; task rủi ro cao hoặc chấm không chắc chắn trả `ESCALATE` (không tự dispatch); riêng task rủi ro cao còn yêu cầu người dùng duyệt. Chạy bằng `uv run --script`, cần `uv` và biến môi trường `TYPESAFE_API_KEY`; nên chạy shadow mode trước khi bật auto-route.
 
 ### Fixed
 

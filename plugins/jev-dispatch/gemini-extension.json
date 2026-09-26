@@ -1,0 +1,19 @@
+{
+  "name": "jev-dispatch",
+  "version": "0.1.0",
+  "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill).",
+  "mcpServers": {
+    "jev-dispatch": {
+      "command": "uv",
+      "args": ["run", "--script", "${extensionPath}/mcp/server.py"]
+    }
+  },
+  "settings": [
+    {
+      "name": "TypeSafe API Key",
+      "description": "API key for the TypeSafe Jev model used by the jev-dispatch MCP server.",
+      "envVar": "TYPESAFE_API_KEY",
+      "sensitive": true
+    }
+  ]
+}

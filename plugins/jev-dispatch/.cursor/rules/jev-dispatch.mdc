@@ -1,0 +1,26 @@
+---
+description: Apply when choosing a harness, model, or effort level for a task before dispatching it to an agent worker.
+globs:
+alwaysApply: false
+---
+
+# jev-dispatch
+
+When coordinating agents and choosing the harness/model/effort for a task:
+
+1. Call the MCP tool `ask(battery="task_dispatch", task=..., context={"repo": ..., "budget": ...})` BEFORE dispatching.
+   - Cursor needs manual MCP config. See the `dispatch-routing` skill's SKILL.md and the plugin README for setup.
+   - If the tool is unavailable, route with your own judgment and say so.
+2. `task` and `context` go to the TypeSafe API on every call.
+   - `task`: a short description only.
+   - `context`: only `repo` and `budget`.
+   - Never include secrets, credentials, PII, source dumps, orchestration preambles, or capability tokens.
+3. Shadow mode first. Until the golden set has been re-run against the current policy, log the routing but decide yourself. Auto-route only after calibration, as described in SKILL.md.
+4. Read the response in this order:
+   1. A top-level `error` field means `act=false`.
+   2. `routing.requires_approval=true` means ask the user before dispatching; you may show `routing.suggested`.
+   3. `routing.act=false` (ESCALATE) means never dispatch per the routing; decide with your own reasoning or ask the user.
+   4. `routing.act=true` means dispatch exactly `routing.harness / model / effort`, but only when auto-routing is enabled.
+5. Log `model`, `judgments`, `confidence`, `risk_tail`, and `routing` (or `error`/`kind`) with every dispatch. Store the log outside the repo; it is the golden dataset.
+6. Never change the battery question wording, or bump `TYPESAFE_JEV_MODEL`, without re-running the golden set.
+7. Scores are 0-based (complexity 0..4, risk 0..2). A Noul near 0.5 means "unsure", not medium.

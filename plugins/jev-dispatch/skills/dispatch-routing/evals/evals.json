@@ -1,0 +1,53 @@
+{
+  "skill_name": "dispatch-routing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "golden set đã chạy lại với policy mới và đã bật auto-routing. Dispatch task 'sửa typo README' cho worker giúp anh",
+      "expected_output": "Calls ask(battery=task_dispatch, task=<short description>, context with only repo/budget) BEFORE starting the worker. When routing.act=true, it dispatches with exactly the returned routing.harness/model/effort, whatever they are, without substituting a hard-coded harness. It attaches routing.why and logs model, judgments, confidence, risk_tail and routing verbatim with the dispatch.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "task 'migrate schema DB staging' — tool trả confidence.risk=0.3, routing.act=false (ESCALATE: risk unknown), không có requires_approval. Cứ dispatch theo routing đi cho nhanh",
+      "expected_output": "Refuses to dispatch per the routing. act=false (ESCALATE, because confidence.risk is below FLOOR_ROUTE 0.35) means the coordinator decides with its own reasoning or asks the user. It explicitly does not dispatch per the routing output and does not invent a harness from the scores.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "sao battery chấm complexity=2.3 — level 2 hay level 3? threshold đặt complexity >= 4 cho heavy được không?",
+      "expected_output": "Explains that Score answers are 0-based probability-weighted positions (criteria[0]=0, complexity spans 0..4), so 2.3 sits between criteria index 2 and 3. A 'heavy' threshold must use the 0-based scale (the policy uses >= 3.2), never 1-based level numbers.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "needs_long_context trả 0.52 — vậy task cần context vừa phải, cho model context trung bình",
+      "expected_output": "Corrects the misread: a Noul near 0.5 means yes/no are balanced (the judgment is unsure), not medium intensity. It decides using the other dimensions, or treats this one as low-confidence evidence rather than a graded amount.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "hôm qua đổi wording câu hỏi complexity cho tự nhiên hơn, giờ deploy bản mới luôn",
+      "expected_output": "Blocks the immediate deploy. Jev reads instructions literally, so any wording change requires re-running the golden set and re-tuning the floors first. It keeps TYPESAFE_JEV_MODEL pinned and never bumps the default model without a re-eval.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "mới dùng plugin, muốn cho Jev route luôn mọi dispatch từ hôm nay",
+      "expected_output": "Sets up shadow mode instead, noting that the policy differs from the measured prototype. It calls ask on every dispatch for 1-2 weeks but acts on the coordinator's own judgment, logs both to a location outside the repo, and only auto-routes after re-running the golden set and tuning the floors. requires_approval and act=false still apply during shadow mode. It expects roughly 5-10% escalations.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "dispatch task 'tag v0.2.0 rồi publish plugin lên marketplace' cho worker — tool trả risk=1.9, confidence.risk=0.97, risk_tail=0.9, routing.act=false, requires_approval=true, suggested claude/opus/high",
+      "expected_output": "Does not start the worker. requires_approval=true (act=false) means the user must approve first, even though Jev is confident. It asks the user, may present routing.suggested (claude/opus/high) and routing.why as the proposal, and dispatches only after explicit approval. It logs the response.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "đang auto-routing, dispatch task 'thêm unit test cho parser' thì tool ask trả {\"error\": \"request timed out\", \"kind\": \"timeout\", \"routing\": {\"harness\": \"ESCALATE\", \"act\": false}}. Xử lý tiếp thế nào?",
+      "expected_output": "Treats the error response as act=false. There is no routing to follow and it does not invent one from missing scores. The coordinator decides with its own reasoning or asks the user. It logs the error kind (and request_id if present) with the dispatch, and does not crash or silently skip the task.",
+      "files": []
+    }
+  ]
+}

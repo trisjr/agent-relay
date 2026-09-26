@@ -9,6 +9,11 @@
       "name": "orca-workflows",
       "source": "./plugins/orca-workflows",
       "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates."
+    },
+    {
+      "name": "jev-dispatch",
+      "source": "./plugins/jev-dispatch",
+      "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill)."
     }
   ]
 }
