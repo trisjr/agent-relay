@@ -28,11 +28,17 @@ Prerequisites: orca-router steps 1–2 (executable resolved, runtime ready, `ORC
    ORCA orchestration run-create --objective "<the research question>" --json
    ```
    Then create the run-scoped report directory, excluded from Git (router coordinator rules).
-3. **Start the whole wave before waiting.** One call per sub-question:
+3. **Start the whole wave before waiting.** One call per sub-question, tiered by what that angle returns:
+
+   | Angle returns | Tier | Launch — alternate the two across the tier's angles |
+   |---|---|---|
+   | Facts — how X works, inventories, docs, citations (most angles) | default | `--agent codex --model gpt-6-luna --effort high` · `--agent antigravity --model gemini-3.8-flash-high --effort high` |
+   | Judgment — weaknesses or risks, trade-offs, a recommendation | deep | `--agent claude --model opus --effort high` · `--agent codex --model gpt-6-sol --effort high` |
+
    ```sh
-   ORCA orchestration worker-start --spec "<self-contained spec>" --worktree current --agent codex --json
+   ORCA orchestration worker-start --spec "<self-contained spec>" --worktree current --agent codex --model gpt-6-luna --effort high --json
    ```
-   A non-zero exit is never relaunched — follow the receipt (router coordinator rules). Vary agents across the wave (codex, claude, …) when perspective diversity helps. Each spec must contain:
+   Tier per angle, not per wave: one judgment angle lifts only its own worker. Confirm each receipt's `launch.effective` matches the requested model and effort. A non-zero exit is never relaunched — follow the receipt (router coordinator rules). Each spec must contain:
    - **Target** — the exact code, docs, or resources to investigate.
    - **Change** — the findings expected, written to `<report_dir>/findings-<angle>.md` (absolute path).
    - **Constraints** — no edits to repository files; the report is the only file it writes; stay inside the assigned angle.
@@ -44,7 +50,7 @@ Prerequisites: orca-router steps 1–2 (executable resolved, runtime ready, `ORC
    ORCA orchestration check --wait --types "worker_done,escalation,question" --timeout-ms 900000 [--terminal <handle>] --json
    ```
    Per batch: `reply` to questions, handle escalations per the router's coordinator rules, note each `worker_done`'s outcome and `--report-path`, decide each settled terminal's next owner (usually `worker-release`), then `check --ack <delivery_id>` and roll the wait again. A timeout or empty wait is a checkpoint, not a failure — after three consecutive empties, run `worker-list --run <run_id> --json` (add `--include-remote` if any remote workers) and follow each row's `projection.nextAction` (a `none` nextAction has no argv — read `liveness.reason` and keep waiting).
-5. **Synthesize.** Read the report files (or `worker-read --dispatch <id>` for archived output). Merge into one answer: dedupe overlaps, reconcile contradictions explicitly, and attribute key findings to the worker/angle that produced them.
+5. **Synthesize.** Read the report files (or `worker-read --dispatch <id>` for archived output). Before merging, verify the claims the answer rests on — CLI flags, model ids, `file:line` citations — against the source; default-tier workers can invent plausible ones. Mark what cannot be verified `UNVERIFIED`. Merge into one answer: dedupe overlaps, reconcile contradictions explicitly, and attribute key findings to the worker/angle that produced them.
 
 ## Guarantees to keep
 
