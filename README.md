@@ -18,8 +18,11 @@ Marketplace cá nhân chứa các plugin tái sử dụng cho AI coding agents: 
 │       ├── .qoder-plugin/plugin.json       # Qoder manifest
 │       ├── gemini-extension.json           # Gemini CLI extension manifest
 │       ├── .kimi-plugin/plugin.json        # Kimi Code manifest
+│       ├── .mcp.json                       # MCP server cho Claude Code (optional)
 │       ├── .cursor/rules/<plugin-name>.mdc # Cursor rule
+│       ├── mcp/                            # MCP server (optional)
 │       ├── skills/<skill-name>/SKILL.md    # Skill, frontmatter gồm name + description
+│       ├── skills/<skill-name>/evals/evals.json # Eval của skill
 │       └── README.md                       # Mô tả plugin
 ├── scripts/new-plugin.sh                   # Tạo plugin từ template + đăng ký vào 3 marketplace.json
 ├── scripts/validate.sh                     # Kiểm tra toàn bộ manifest + cấu trúc
@@ -121,4 +124,4 @@ hoặc cài thẳng zip release:
 /plugins install https://github.com/<owner>/<repo>/releases/download/vX.Y.Z/<plugin-name>-X.Y.Z.zip
 ```
 
-Khi release bản mới: đóng gói lại zip plugin (manifest ở gốc zip), upload asset lên GitHub Release và cập nhật `source` trong `.kimi-plugin/marketplace.json`. Với Codex và Claude Code, sau khi đẩy repo lên GitHub chỉ cần thay `.` ở lệnh thêm marketplace bằng `owner/repo`.
+Khi release bản mới, `/release` tự trỏ `source` trong `.kimi-plugin/marketplace.json` sang zip của tag mới, đóng zip bằng `git archive` (manifest ở gốc zip) và upload asset lên GitHub Release. Plugin mới tạo giữ `source` là path local cho tới lần release đầu. Với Codex và Claude Code, sau khi đẩy repo lên GitHub chỉ cần thay `.` ở lệnh thêm marketplace bằng `owner/repo`.
