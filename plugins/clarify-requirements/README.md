@@ -42,6 +42,8 @@ Skill chọn kênh đầu tiên khớp:
 
 Cursor không đọc `SKILL.md` của plugin này mà dùng rule `.cursor/rules/clarify-requirements.mdc` — bản tóm tắt cùng quy trình.
 
+Gemini CLI ở chế độ headless (`-p`, CI, không có TTY) gỡ `ask_user` và chặn `activate_skill`, nên `SKILL.md` thường không được load. Vì vậy extension khai báo `contextFileName: "gemini-context.md"` — file này luôn được load, chỉ giữ phạm vi áp dụng, cách chọn kênh hỏi và luật headless. Tên file cố ý khác `GEMINI.md` để Gemini không tự nhặt nó khi ai đó chạy Gemini ngay trong repo này.
+
 ## Cài đặt
 
 Xem mục "Cài từ bản local" trong README gốc của repo — plugin đã đăng ký vào các marketplace (`agent-relay`).
