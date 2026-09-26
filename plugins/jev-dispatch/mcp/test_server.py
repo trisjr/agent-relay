@@ -76,7 +76,7 @@ assert srv.MODEL == "jev-1.13.0" and srv.CONFIG_ERROR is None
 
 # (c, r, conf_c, conf_r, tail, web, long) -> (harness, model, effort, act)
 ROWS = {
-    "a": ((0.3, 0.2, 0.9, 0.9, 0.02, 0.1, 0.1), ("gemini", "flash", "low", True)),
+    "a": ((0.3, 0.2, 0.9, 0.9, 0.02, 0.1, 0.1), ("gemini", "flash", "high", True)),
     "b": ((0.3, 0.2, 0.9, 0.6, 0.02, 0.1, 0.1), ("codex", "luna", "max", True)),
     "c": ((0.2, 1.9, 0.10, 0.99, 0.9, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "d": ((1.0, 0.9, 0.9, 0.9, 0.45, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),

@@ -113,7 +113,7 @@ def route(j: dict, conf: dict, tail: float) -> dict[str, Any]:
         return {"harness": "codex", "model": "sol", "effort": "medium",
                 "why": f"web ({p_web:.2f}) / long-context ({p_long:.2f}) fits codex sol", "act": True}
     if c < 1.2 and r < 0.6 and conf["risk"] >= FLOOR_RISK:
-        return {"harness": "gemini", "model": "flash", "effort": "low",
+        return {"harness": "gemini", "model": "flash", "effort": "high",
                 "why": f"trivial ({c:.1f}) + confidently low risk ({r:.2f}) -> cheap path", "act": True}
     return {"harness": "codex", "model": "luna", "effort": "max",
             "why": "standard engineering work", "act": True}

@@ -57,7 +57,7 @@ Symbols: `c` = `judgments.complexity`, `r` = `judgments.risk`, `tail` = `risk_ta
 | 3 | `confidence.complexity < FLOOR_ROUTE` | `ESCALATE`, `act=false` (complexity unknown) |
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
 | 5 | `needs_web > 0.7` or `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
-| 6 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `low` |
+| 6 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
 | 7 | otherwise | `codex` / `luna` / `max` |
 
 - ESCALATE is always `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`.
