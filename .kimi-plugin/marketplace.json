@@ -10,9 +10,9 @@
       "id": "orca-workflows",
       "name": "orca-workflows",
       "displayName": "Orca Workflows",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.5.1/orca-workflows-0.5.1.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.6.0/orca-workflows-0.6.0.zip"
     },
     {
       "id": "jev-dispatch",
@@ -28,7 +28,7 @@
       "displayName": "Clarify Requirements",
       "version": "0.1.0",
       "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief.",
-      "source": "./plugins/clarify-requirements"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.6.0/clarify-requirements-0.6.0.zip"
     }
   ]
 }

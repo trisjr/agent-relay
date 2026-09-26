@@ -5,6 +5,26 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-26
+
+### Plugins
+
+- `clarify-requirements`: 0.1.0 (mới)
+- `orca-workflows`: 0.3.1 → 0.4.0
+
+### Added
+
+- **clarify-requirements**: plugin mới có skill `clarify-requirements`, làm rõ yêu cầu mơ hồ hoặc rủi ro cao trước khi implement hay lên plan.
+  - Agent tự tìm hiểu repo trước, chỉ hỏi những câu thực sự thay đổi cách làm: tối đa 3 câu mỗi vòng, 2 vòng, mỗi câu có option `(Recommended)`. Gap rủi ro thấp thì dùng default và ghi thành assumption; hành động không đảo ngược mà còn thiếu quyết định thì dừng lại.
+  - Kết quả là một requirements brief 120–250 từ để bàn giao cho người implement: chính agent, một session mới hoặc worker trong DAG.
+  - Mỗi harness có kênh hỏi riêng: Orca worker dùng `orca orchestration ask`, Claude Code/Kimi/Qoder dùng `AskUserQuestion`, Codex dùng `request_user_input` (Plan mode), Gemini dùng `ask_user`, còn lại là block plain-text. Ở chế độ headless agent không chờ trả lời mà liệt kê assumption, hoặc in block câu hỏi để chạy lại kèm câu trả lời.
+  - Gemini CLI headless luôn load `gemini-context.md` (khai báo qua `contextFileName`), vì ở chế độ này `activate_skill` bị chặn. Cursor dùng rule `.cursor/rules/clarify-requirements.mdc`.
+- **orca-workflows**: skill `dag-build` làm rõ yêu cầu trước khi viết spec. Nếu yêu cầu còn để ngỏ quyết định ảnh hưởng tới cách chia component, acceptance hoặc contract dùng chung, coordinator chạy `clarify-requirements` trong conversation của chính mình (không giao cho worker) rồi viết spec từ brief. Gate duyệt spec kiêm luôn bước xác nhận brief, nên người dùng chỉ duyệt một lần.
+- **orca-workflows**: skill `research-swarm` chọn model cho worker theo loại góc nghiên cứu.
+  - Góc thu thập fact chạy codex `gpt-6-luna` hoặc antigravity `gemini-3.8-flash-high`.
+  - Góc cần phán đoán (rủi ro, trade-off, đề xuất) chạy `claude --model opus` hoặc codex `gpt-6-sol`. Mọi worker đều chạy effort `high`.
+  - Coordinator kiểm tra `launch.effective` trên receipt, và kiểm lại CLI flag, model id, citation trước khi tổng hợp; điều gì không kiểm được thì đánh dấu `UNVERIFIED`.
+
 ## [0.5.1] - 2026-09-26
 
 ### Plugins
@@ -94,7 +114,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/trisjr/agent-relay/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/trisjr/agent-relay/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/trisjr/agent-relay/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/trisjr/agent-relay/compare/v0.3.0...v0.4.0
