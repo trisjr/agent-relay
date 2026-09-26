@@ -36,6 +36,12 @@
       "prompt": "(sau khi coordinator trình spec và gate approve/revise/abort) anh thấy hướng này không ổn, abort đi",
       "expected_output": "Resolves the gate with abort, marks the spec task failed with task-update --status failed, creates no component tasks and starts no workers, then reports the aborted plan and stops.",
       "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "xây giúp anh hệ thống phân quyền cho app, chia cho mấy agent làm song song cho nhanh",
+      "expected_output": "Sees that the role model, permission granularity, and API contract are open decisions that change the component split, so it runs clarify-requirements in the coordinator's own conversation before any spec — at most 3 questions with a recommended option each, never delegated to a worker. Writes the spec from the resulting brief and cites it, then creates exactly one spec gate (approve/revise/abort) that also confirms the brief; no separate approval round, and no component tasks before the gate resolves.",
+      "files": []
     }
   ]
 }

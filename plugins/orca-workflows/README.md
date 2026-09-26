@@ -20,7 +20,7 @@ Skill gốc của Orca chỉ là discovery stub; tài liệu thật nằm trong 
 | `orca-router` | Mọi request chạm vào multi-agent Orca (điều phối, handoff, theo dõi worker, DAG) | Phân loại request, chọn đúng hệ thống (orchestration / orca-cli / worker / agent thường), load guide phù hợp, rẽ vào workflow có sẵn; giữ các quy tắc coordinator dùng chung |
 | `research-swarm` | Câu hỏi nghiên cứu/phân tích rộng, so sánh nhiều phương án, khảo sát codebase theo nhiều hướng | Fan-out worker theo góc độc lập; mỗi worker ghi findings ra file trong `.orca-reports/<run_id>/` (đã exclude khỏi Git); coordinator tổng hợp từ file, có ghi nguồn theo worker |
 | `parallel-review` | Review diff/branch/PR lớn hoặc rủi ro trước merge, review bảo mật, cần nhiều góc nhìn | Fan-out reviewer theo "lens" (security, correctness, consistency, simplicity); mỗi reviewer một context sạch, review-only; coordinator dedupe findings theo severity. Change nhỏ thì review trực tiếp, không tạo Run |
-| `dag-build` | Build tính năng nhiều module, migration xuyên dịch vụ, cần duyệt spec trước | Plan → gate duyệt spec → task DAG với deps thật → wave song song → integrate + verify bằng test/build |
+| `dag-build` | Build tính năng nhiều module, migration xuyên dịch vụ, cần duyệt spec trước | Yêu cầu còn mơ hồ ở mức ảnh hưởng cách chia component/acceptance/contract thì làm rõ bằng skill `clarify-requirements` (nếu có) ngay trong conversation của coordinator → plan dựa trên brief → gate duyệt spec (kiêm xác nhận brief) → task DAG với deps thật → wave song song → integrate + verify bằng test/build |
 
 Mỗi skill kèm `evals/evals.json` — bộ test prompt mẫu kèm kỳ vọng hành vi, dùng cho vòng đánh giá/iterate của skill-creator.
 
