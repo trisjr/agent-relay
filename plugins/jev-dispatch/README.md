@@ -77,7 +77,7 @@ Server chỉ đọc 4 biến sau:
 
 | Biến | Mặc định | Ý nghĩa |
 | --- | --- | --- |
-| `TYPESAFE_API_KEY` | — | Bắt buộc. Truyền từ env của host, không bao giờ ghi literal vào file. Server vẫn khởi động khi thiếu key, nhưng mọi `ask` đều trả `kind: "config"` cho tới khi host khởi động lại server với key trong env |
+| `TYPESAFE_API_KEY` | — | Bắt buộc. Claude Code lấy từ `userConfig` sensitive của plugin (lưu trong keychain), Gemini CLI lấy từ extension setting (lưu dạng sensitive); harness khác truyền từ env của host. Không bao giờ ghi literal vào file. Server vẫn khởi động khi thiếu key, nhưng mọi `ask` đều trả `kind: "config"` cho tới khi host khởi động lại server với key trong env |
 | `TYPESAFE_JEV_MODEL` | `jev-1.13.0` | Model đã pin. Chỉ bump sau khi re-eval golden set; để rỗng thì dùng mặc định |
 | `JEV_DISPATCH_FLOOR_ROUTE` | `0.35` | Confidence tối thiểu của `risk` và `complexity` để route |
 | `JEV_DISPATCH_FLOOR_RISK` | `0.85` | Confidence tối thiểu của `risk` cho nhánh rẻ `gemini/flash` |
@@ -116,17 +116,21 @@ Server chỉ đọc 4 biến sau:
 1. Cài plugin qua marketplace `agent-relay`: xem mục "Cài từ bản local" (và đoạn "Cài từ GitHub") trong README gốc của repo.
 2. Chuẩn bị:
    - `uv` có trên `PATH`.
-   - `TYPESAFE_API_KEY` có trong môi trường khởi chạy harness. Không commit key, không ghi key vào file config.
+   - API key TypeSafe:
+     - Claude Code: nhập vào dialog `TypeSafe API Key` khi cài/enable plugin qua `/plugin`. Đổi key bằng `/plugin configure jev-dispatch@agent-relay`. Cài bằng CLI `claude plugin install` thì không có dialog, nên phải truyền `--config typesafe_api_key=...` hoặc chạy `/plugin configure` sau đó.
+     - Gemini CLI: nhập khi cài extension.
+     - Harness khác: `TYPESAFE_API_KEY` phải có trong môi trường khởi chạy harness.
+     - Không commit key, không ghi key vào file config.
    - Chạy `uv run --script <PLUGIN_ROOT>/mcp/server.py` một lần trước khi mở harness, thấy server chờ stdin thì Ctrl+C. Lần launch đầu trên máy mới phải tải dependency và có thể vượt timeout khởi động MCP của harness; sau đó uv dùng cache.
 3. Kiểm tra MCP server theo từng harness:
 
 | Harness | Wiring | Ghi chú |
 | --- | --- | --- |
-| Claude Code | Tự động (`.mcp.json`, `${CLAUDE_PLUGIN_ROOT}`) | Kế thừa env của shell, kể cả các biến tùy chọn |
+| Claude Code | Tự động (`.mcp.json`, `${CLAUDE_PLUGIN_ROOT}`) | Key lấy từ `userConfig.typesafe_api_key` (sensitive, lưu trong keychain) nên không phụ thuộc vào cách mở Claude Code. Đặt key qua `/plugin configure`, đừng dựa vào `export TYPESAFE_API_KEY` trong shell. Các biến tùy chọn vẫn kế thừa env của process Claude Code |
 | Gemini CLI | Tự động (`mcpServers` trong `gemini-extension.json`, `${extensionPath}`) | Extension không kế thừa env của shell. Lúc cài sẽ hỏi `TypeSafe API Key` (lưu dạng sensitive). Các biến tùy chọn không tới được server nên dùng mặc định |
 | Codex | Tự động (`mcp.json`) nhưng **fail-closed** | Key không tới được server, nên mọi `ask` trả `kind: "config"`. Cần cấu hình tay như bên dưới |
 | Kimi Code | Tự động (`mcpServers` trong `.kimi-plugin/plugin.json`, `cwd: "./mcp"`) | **Unverified** ở runtime; docs không nói có kế thừa env hay không |
-| Qoder | Tự load `.mcp.json` của plugin | **Unverified**: chưa rõ Qoder có expand `${CLAUDE_PLUGIN_ROOT}` không. Nếu server không start, cấu hình tay |
+| Qoder | Tự load `.mcp.json` của plugin | **Unverified**: chưa rõ Qoder có expand `${CLAUDE_PLUGIN_ROOT}` và `${user_config.*}` không. Nếu server không start hoặc `ask` báo lỗi key, cấu hình tay |
 | Cursor | **Chỉ cấu hình tay** | Plugin chỉ ship rule `.cursor/rules/jev-dispatch.mdc` |
 
 Trong các snippet cấu hình tay, thay `/ABS/PATH/jev-dispatch` bằng đường dẫn tuyệt đối tới bản plugin đã cài (hoặc bản clone).

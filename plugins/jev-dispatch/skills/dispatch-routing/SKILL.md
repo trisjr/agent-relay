@@ -17,7 +17,12 @@ Jev scores the task on five independent questions in ONE request (~740 input tok
   - Qoder (unverified) and Cursor may need manual config.
 
   The plugin README's install section has the manual snippets. The launch command is `uv run --script <PLUGIN_ROOT>/mcp/server.py` and needs `uv` on PATH.
-- **API key.** `TYPESAFE_API_KEY` must be in the host environment. Never read it, print it, or write it into a file. The server starts without it, but every `ask` returns `kind: "config"` until the host restarts the server with the key in its environment. A well-formed but wrong key returns `kind: "api"` with `status` 401.
+- **API key.** The server reads `TYPESAFE_API_KEY` from its environment:
+  - Claude Code fills it from the plugin's sensitive `typesafe_api_key` option, which is stored in the keychain. The user sets it via `/plugin configure`.
+  - Gemini CLI fills it from the extension setting.
+  - Other harnesses need it in the host environment.
+
+  Never read it, print it, or write it into a file. The server starts without it, but every `ask` returns `kind: "config"` until the host restarts the server with the key in its environment. A well-formed but wrong key returns `kind: "api"` with `status` 401.
 - **Optional env:**
   - `TYPESAFE_JEV_MODEL`: pinned default `jev-1.13.0`.
   - `JEV_DISPATCH_FLOOR_ROUTE`: default 0.35.

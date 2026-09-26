@@ -2,7 +2,8 @@
   "mcpServers": {
     "jev-dispatch": {
       "command": "uv",
-      "args": ["run", "--script", "${CLAUDE_PLUGIN_ROOT}/mcp/server.py"]
+      "args": ["run", "--script", "${CLAUDE_PLUGIN_ROOT}/mcp/server.py"],
+      "env": { "TYPESAFE_API_KEY": "${user_config.typesafe_api_key}" }
     }
   }
 }
