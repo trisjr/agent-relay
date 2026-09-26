@@ -98,6 +98,29 @@ Server chỉ đọc 4 biến sau:
 - `TYPESAFE_LOG_LEVEL=debug` (biến của SDK) ghi **toàn bộ** request/response body (gồm task và context) ra stderr của server; host thường lưu stderr vào log MCP. SDK chỉ redact header, không redact body. Chỉ bật khi debug, xong thì tắt.
 - `TYPESAFE_BASE_URL` (biến của SDK) đổi host nhận request **kèm API key**. Chỉ đặt khi tin endpoint đó, và kiểm tra env của host không có biến này ngoài ý muốn.
 
+## Dispatch log
+
+Golden dataset là một file JSONL duy nhất: `~/.local/state/jev-dispatch/dispatch-log.jsonl`.
+
+- Server không ghi file này. Coordinator ghi theo hướng dẫn của skill `dispatch-routing` (Cursor thì theo rule).
+- File chỉ append:
+  - Mỗi dòng là một JSON object, append qua `jq -c . <<'EOF' >> <log>` chứ không dùng `echo`. JSON sai thì `jq` không ghi gì.
+  - Không sửa hay xoá dòng cũ.
+- File nằm ngoài mọi repo nhưng chứa text của task, nên cũng áp quy tắc không có secret như `task`.
+
+Có hai loại record, nối với nhau bằng `id`: task id của orchestrator nếu có (vd task id của Orca), không có thì tự sinh, vd UTC timestamp kèm slug ngắn.
+
+| `event` | Ghi khi nào | Field |
+| --- | --- | --- |
+| `route` | Sau **mỗi** lần gọi `ask`, kể cả khi error, ESCALATE hay không dispatch gì | `id`, `ts` (UTC ISO 8601), `task` và `context` đúng như đã gửi, `response` là nguyên response của `ask`, `used` = `{harness, model, effort}` thực sự dispatch |
+| `outcome` | Một lần khi task kết thúc, sau mọi lần retry | `id`, `ts`, `outcome` (`ok` \| `retried` \| `failed` \| `cancelled`), `note` (tùy chọn, một dòng) |
+
+- `used.model`/`used.effort` là `null` khi để mặc định của harness.
+- `used` là `null` khi không dispatch gì; khi đó không ghi `outcome`.
+- `cancelled` là task dừng vì lý do không liên quan tới worker, không tính vào metric routing.
+
+Phải log `task` và `context` vì response của `ask` không chứa hai field này, mà chấm lại golden set sau khi đổi wording hoặc model thì cần cả hai. Thay đổi chỉ nằm ở policy thì replay qua `route()` là đủ, không tốn API call.
+
 ## Cơ sở thiết kế
 
 - **Jev chấm, code route:** Jev trả xác suất đã calibrate kèm confidence cho các phán đoán hẹp. Policy nằm trong code nên đọc được, test được, và đổi ngưỡng không cần đổi model. Structured output của LLM chỉ đảm bảo đúng shape, không có confidence đáng tin để đặt ngưỡng.
@@ -109,7 +132,7 @@ Server chỉ đọc 4 biến sau:
   - Kết quả không deterministic tuyệt đối giữa các lần chạy, nên regression test cần tolerance.
 - **Điểm yếu đã công bố của Jev:** toán/ngày tháng, suy luận nhiều bước, nội dung adversarial trong state (text trong `task` có thể lái điểm risk). Jev chạy tốt nhất với tiếng Anh; tiếng Việt cho kết quả hợp lý trên mẫu nhỏ, cần tự đo trên golden set.
 - **Pin model:** alias `jev-latest` có thể đổi version bất cứ lúc nào, nên pin `jev-1.13.0` và log field `model` mỗi lần gọi. Đổi wording câu hỏi, state builder hay model đều bắt buộc re-run golden set, vì Jev đọc instruction theo nghĩa đen.
-- **Shadow mode và golden dataset:** gọi `ask` ở mọi dispatch nhưng coordinator vẫn tự quyết. Log response cùng outcome của worker. Tune floor trên một phần log, kiểm lại trên phần còn lại (ưu tiên ca biên), rồi mới bật auto-route.
+- **Shadow mode và golden dataset:** gọi `ask` ở mọi dispatch nhưng coordinator vẫn tự quyết. Log response cùng outcome của worker theo [Dispatch log](#dispatch-log). Tune floor trên một phần log, kiểm lại trên phần còn lại (ưu tiên ca biên), rồi mới bật auto-route.
 
 ## Cài đặt
 

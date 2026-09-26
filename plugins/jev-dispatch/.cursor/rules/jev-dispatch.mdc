@@ -21,6 +21,11 @@ When coordinating agents and choosing the harness/model/effort for a task:
    2. `routing.requires_approval=true` means ask the user before dispatching; you may show `routing.suggested`.
    3. `routing.act=false` (ESCALATE) means never dispatch per the routing; decide with your own reasoning or ask the user.
    4. `routing.act=true` means dispatch exactly `routing.harness / model / effort`, but only when auto-routing is enabled.
-5. Log `model`, `judgments`, `confidence`, `risk_tail`, and `routing` (or `error`/`kind`) with every dispatch. Store the log outside the repo; it is the golden dataset.
+5. Keep the golden dataset in `~/.local/state/jev-dispatch/dispatch-log.jsonl`. It is append-only, with one JSON object per line.
+   - Append with `jq -c . <<'EOF' >> <log path>`, followed by the literal record and a closing `EOF`, never with `echo`. The quoted heredoc disables interpolation, and `jq` appends nothing when the JSON is malformed.
+   - After every `ask` call, even when nothing is dispatched, append `{"event":"route","id":<task id, or a UTC timestamp plus slug>,"ts":<UTC ISO 8601>,"task":<as sent>,"context":<as sent>,"response":<ask response verbatim>,"used":{"harness","model","effort"}}`.
+     - `used` is what was actually dispatched. `model`/`effort` are `null` when left at the harness default.
+     - `used` is `null` when nothing was dispatched.
+   - When a dispatched task settles, after any retries, append `{"event":"outcome","id":<same id>,"ts":...,"outcome":"ok|retried|failed|cancelled","note":<optional, one line>}`.
 6. Never change the battery question wording, or bump `TYPESAFE_JEV_MODEL`, without re-running the golden set.
 7. Scores are 0-based (complexity 0..4, risk 0..2). A Noul near 0.5 means "unsure", not medium.

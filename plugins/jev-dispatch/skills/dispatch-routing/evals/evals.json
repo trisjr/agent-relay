@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "golden set đã chạy lại với policy mới và đã bật auto-routing. Dispatch task 'sửa typo README' cho worker giúp anh",
-      "expected_output": "Calls ask(battery=task_dispatch, task=<short description>, context with only repo/budget) BEFORE starting the worker. When routing.act=true, it dispatches with exactly the returned routing.harness/model/effort, whatever they are, without substituting a hard-coded harness. It attaches routing.why and logs model, judgments, confidence, risk_tail and routing verbatim with the dispatch.",
+      "expected_output": "Calls ask(battery=task_dispatch, task=<short description>, context with only repo/budget) BEFORE starting the worker. When routing.act=true, it dispatches with exactly the returned routing.harness/model/effort, whatever they are, without substituting a hard-coded harness. It attaches routing.why and appends a route record to ~/.local/state/jev-dispatch/dispatch-log.jsonl holding the task and context as sent, the verbatim ask response, and used = the dispatched harness/model/effort.",
       "files": []
     },
     {
@@ -47,6 +47,12 @@
       "id": 8,
       "prompt": "đang auto-routing, dispatch task 'thêm unit test cho parser' thì tool ask trả {\"error\": \"request timed out\", \"kind\": \"timeout\", \"routing\": {\"harness\": \"ESCALATE\", \"act\": false}}. Xử lý tiếp thế nào?",
       "expected_output": "Treats the error response as act=false. There is no routing to follow and it does not invent one from missing scores. The coordinator decides with its own reasoning or asks the user. It logs the error kind (and request_id if present) with the dispatch, and does not crash or silently skip the task.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "shadow mode, task 'refactor module auth' — ask trả routing codex/luna/max act=true, nhưng em quyết định dispatch cho claude với model mặc định. Worker fail lần đầu, retry thì pass. Log thế nào?",
+      "expected_output": "Appends to ~/.local/state/jev-dispatch/dispatch-log.jsonl, one JSON object per line appended through jq (not echo), never editing earlier lines. The route record has an id (generated, e.g. UTC timestamp plus slug, since there is no orchestrator task id), a UTC ts, the task and context as sent, the verbatim ask response, and used = {harness: claude, model: null, effort: null}, not the routing's codex/luna/max. After the retry passes it appends a single outcome record with the same id and outcome 'retried', not one record per worker.",
       "files": []
     }
   ]

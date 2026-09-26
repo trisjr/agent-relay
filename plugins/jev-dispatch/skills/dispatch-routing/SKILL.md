@@ -44,7 +44,48 @@ Jev scores the task on five independent questions in ONE request (~740 input tok
    4. **`routing.act=true`**:
       - Auto-routing mode: dispatch with exactly `routing.harness / model / effort`, and attach `routing.why` to the dispatch log.
       - Shadow mode: log the routing and decide yourself (see below).
-3. Log these fields verbatim with every dispatch: `model`, `judgments`, `confidence`, `risk_tail`, and `routing` (or `error`/`kind`). Also log the harness actually used and the worker outcome.
+3. Append a `route` record to the [dispatch log](#dispatch-log) after every `ask` call, even when nothing gets dispatched. Append an `outcome` record once the task settles.
+
+## Dispatch log
+
+The golden set is one append-only JSONL file: `~/.local/state/jev-dispatch/dispatch-log.jsonl`. It sits outside every repo and holds task text, so the no-secrets rule for `task` applies to it too.
+
+- One JSON object per line. Never edit or delete earlier lines.
+- `mkdir -p` the directory on first use.
+- Append through `jq`, never with `echo`, so quotes in task text cannot break the line. The quoted `'EOF'` disables shell interpolation; `jq` compacts the record to one line and appends nothing if the JSON is malformed:
+
+  ```sh
+  jq -c . <<'EOF' >> ~/.local/state/jev-dispatch/dispatch-log.jsonl
+  { ...the record, written literally... }
+  EOF
+  ```
+
+`route`, appended right after the dispatch decision:
+
+```json
+{"event": "route", "id": "<task id>", "ts": "<UTC ISO 8601>", "task": "<task as sent>", "context": {"repo": "...", "budget": "..."}, "response": {"...": "the ask response, verbatim"}, "used": {"harness": "codex", "model": null, "effort": null}}
+```
+
+- `id`: unique per task, and reused by its `outcome`. Use the orchestrator's task id when there is one (e.g. the Orca task id). Otherwise generate one, such as a UTC timestamp plus a short slug.
+- `task`, `context`: exactly what was sent to `ask`. The response contains neither, and re-scoring after a wording or model change needs both.
+- `response`: the whole object `ask` returned, error responses included. Never trim or recompute it.
+- `used`: what was actually dispatched; in shadow mode it may differ from `routing`.
+  - `model`/`effort` are `null` when left at the harness default. Never fill them in from `routing`.
+  - `used` is `null` when nothing was dispatched: the coordinator did the task itself, or the user declined.
+
+`outcome`, appended once when the task settles, after any retries:
+
+```json
+{"event": "outcome", "id": "<same id>", "ts": "<UTC ISO 8601>", "outcome": "ok", "note": "<optional, one line>"}
+```
+
+- `outcome` is one of:
+  - `ok`: accepted on the first worker.
+  - `retried`: accepted only after a retry or a reassignment.
+  - `failed`: never accepted.
+  - `cancelled`: stopped for a reason unrelated to the worker (scope change, user abort). It is excluded from routing metrics.
+- `note`: short evidence, such as the failing acceptance command. Never a log or diff dump.
+- Skip the `outcome` record when `used` is `null`.
 
 ## Routing policy
 
@@ -81,10 +122,7 @@ This policy differs from the measured prototype. Re-run the golden set in shadow
 
 ## Operate it like a system, not a prompt
 
-- **Shadow mode first (1–2 weeks, or until the golden set covers enough cases):** call `ask` on every dispatch but act on your own judgment, and log both your choice and the routing. The safety signals still apply in shadow mode: `requires_approval` means ask the user, and `act=false` or `error` means never dispatch per routing. This log is the golden dataset; no hand labeling is needed.
-- **Keep the log out of git:**
-  - Store it outside the repo (e.g. `~/.local/state/jev-dispatch/dispatch-log.jsonl`), or in a path the repo already ignores (check with `git check-ignore` first).
-  - It contains task text, so the same no-secrets rule applies.
+- **Shadow mode first (1–2 weeks, or until the golden set covers enough cases):** call `ask` on every dispatch but act on your own judgment, and log both your choice (`used`) and the routing. The safety signals still apply in shadow mode: `requires_approval` means ask the user, and `act=false` or `error` means never dispatch per routing. The [dispatch log](#dispatch-log) is the golden dataset; no hand labeling is needed.
 - **Tune, then pin:**
   - Adjust the floors via env based on the golden set: measure escalation rate against bad-routing rate, tune on one part of the log, and verify on the rest.
   - Keep `TYPESAFE_JEV_MODEL` pinned.
