@@ -6,10 +6,10 @@
 
 1. Đổi tên thư mục plugin từ `_template` thành tên plugin mới.
 2. Thay `__PLUGIN_NAME__` trong tất cả file, gồm cả tên file `.cursor/rules/__PLUGIN_NAME__.mdc`.
-3. Thay `"TODO: Describe this plugin"` trong 4 file manifest bằng mô tả thật (tiếng Anh, 1 câu).
+3. Thay `"TODO: Describe this plugin"` trong 5 file manifest bằng mô tả thật (tiếng Anh, 1 câu).
 4. Viết skill thật trong `skills/` (có thể xoá `example-skill` hoặc sửa thành của bạn) và chỉnh `.cursor/rules/*.mdc`.
-5. Nếu plugin không có skill, gỡ bỏ field `"skills"` ở `.qoder-plugin/plugin.json` và xoá thư mục `skills/`.
-6. Giữ `version` ở cả 4 manifest luôn giống nhau (rule của repo).
+5. Nếu plugin không có skill, gỡ bỏ field `"skills"` ở `.qoder-plugin/plugin.json` và `.kimi-plugin/plugin.json` rồi xoá thư mục `skills/`.
+6. Giữ `version` ở cả 5 manifest luôn giống nhau (rule của repo).
 
 ## Các file manifest
 
@@ -17,6 +17,7 @@
 - `.claude-plugin/plugin.json` — manifest cho Claude Code.
 - `.qoder-plugin/plugin.json` — manifest cho Qoder; trỏ tới `skills/` qua field `"skills"`.
 - `gemini-extension.json` — manifest cho Gemini CLI extension.
+- `.kimi-plugin/plugin.json` — manifest cho Kimi Code CLI; trỏ tới `skills/` qua field `"skills"` và cấu hình `interface` hiển thị.
 - `.cursor/rules/__PLUGIN_NAME__.mdc` — rule cho Cursor (frontmatter + nội dung hướng dẫn).
 - `skills/` — skill dùng chung cho các agent hỗ trợ SKILL.md.
 

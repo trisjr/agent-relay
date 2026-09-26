@@ -8,9 +8,9 @@
 #   3. Replaces every "__PLUGIN_NAME__" in file contents and renames
 #      files/dirs whose names contain the placeholder (python3, so the
 #      behavior is identical on macOS and Linux).
-#   4. Appends an entry to the "plugins" array of BOTH marketplaces:
-#      .agents/plugins/marketplace.json and .claude-plugin/marketplace.json
-#      (python3, 2-space indent preserved).
+#   4. Appends an entry to the "plugins" array of ALL THREE marketplaces:
+#      .agents/plugins/marketplace.json, .claude-plugin/marketplace.json,
+#      and .kimi-plugin/marketplace.json (python3, 2-space indent preserved).
 #   5. Re-runs scripts/validate.sh and prints next steps.
 
 set -euo pipefail
@@ -43,13 +43,15 @@ TEMPLATE_DIR="$REPO_ROOT/plugins/_template"
 TARGET_DIR="$REPO_ROOT/plugins/$NAME"
 CODEX_MARKETPLACE="$REPO_ROOT/.agents/plugins/marketplace.json"
 CLAUDE_MARKETPLACE="$REPO_ROOT/.claude-plugin/marketplace.json"
+KIMI_MARKETPLACE="$REPO_ROOT/.kimi-plugin/marketplace.json"
 
 [ -d "$TEMPLATE_DIR" ] || err "template not found: plugins/_template"
 [ ! -e "$TARGET_DIR" ] || err "plugin already exists: plugins/$NAME"
 [ -f "$CODEX_MARKETPLACE" ] || err "marketplace not found: .agents/plugins/marketplace.json"
 [ -f "$CLAUDE_MARKETPLACE" ] || err "marketplace not found: .claude-plugin/marketplace.json"
+[ -f "$KIMI_MARKETPLACE" ] || err "marketplace not found: .kimi-plugin/marketplace.json"
 
-python3 - "$CODEX_MARKETPLACE" "$CLAUDE_MARKETPLACE" <<'PYEOF'
+python3 - "$CODEX_MARKETPLACE" "$CLAUDE_MARKETPLACE" "$KIMI_MARKETPLACE" <<'PYEOF'
 import json
 import sys
 
@@ -111,8 +113,8 @@ for dirpath, _dirnames, filenames in os.walk(target):
 print("Replaced %s in %d file(s); renamed %d path(s)" % (placeholder, updated, renamed))
 PYEOF
 
-# --- 4. register in both marketplaces ---------------------------------------
-python3 - "$NAME" "$ENTRY_DESCRIPTION" "$CODEX_MARKETPLACE" "$CLAUDE_MARKETPLACE" <<'PYEOF'
+# --- 4. register in all marketplaces ---------------------------------------
+python3 - "$NAME" "$ENTRY_DESCRIPTION" "$CODEX_MARKETPLACE" "$CLAUDE_MARKETPLACE" "$KIMI_MARKETPLACE" <<'PYEOF'
 import json
 import sys
 
@@ -123,17 +125,21 @@ for path in sys.argv[3:]:
         data = json.load(fh)
     plugins = data["plugins"]
     already = any(
-        isinstance(entry, dict) and entry.get("name") == name
+        isinstance(entry, dict) and (entry.get("name") == name or entry.get("id") == name)
         for entry in plugins
     )
     if already:
         print("Entry for %r already present in %s" % (name, path))
         continue
-    plugins.append({
+    entry = {
         "name": name,
         "source": "./plugins/%s" % name,
         "description": description,
-    })
+    }
+    if "kimi" in path:
+        entry["id"] = name
+        entry["displayName"] = name
+    plugins.append(entry)
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, indent=2, ensure_ascii=False)
         fh.write("\n")
@@ -150,9 +156,9 @@ fi
 printf '\n%s\n' "----------------------------------------"
 printf 'Plugin %q scaffolded. Next steps:\n' "$NAME"
 printf '  1. Edit plugins/%s/README.md and describe what the plugin does.\n' "$NAME"
-printf '  2. Replace "%s" in both marketplace.json files with a real description.\n' "$ENTRY_DESCRIPTION"
-printf '  3. Fill in the 4 manifests (plugin.json, .claude-plugin/plugin.json,\n'
-printf '     .qoder-plugin/plugin.json, gemini-extension.json) - keep name/version in sync.\n'
+printf '  2. Replace "%s" in all marketplace.json files with a real description.\n' "$ENTRY_DESCRIPTION"
+printf '  3. Fill in the 5 manifests (plugin.json, .claude-plugin/plugin.json,\n'
+printf '     .qoder-plugin/plugin.json, gemini-extension.json, .kimi-plugin/plugin.json) - keep name/version in sync.\n'
 printf '  4. Write your skills in plugins/%s/skills/<skill-name>/SKILL.md\n' "$NAME"
 printf '     (frontmatter requires name: and description:).\n'
 printf '  5. Re-run scripts/validate.sh before committing.\n'

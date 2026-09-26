@@ -1,0 +1,14 @@
+{
+  "name": "__PLUGIN_NAME__",
+  "version": "0.1.0",
+  "description": "TODO: Describe this plugin",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "__PLUGIN_NAME__",
+    "shortDescription": "TODO: Describe this plugin"
+  }
+}

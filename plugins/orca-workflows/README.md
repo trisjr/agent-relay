@@ -33,4 +33,4 @@ Mỗi skill kèm `evals/evals.json` — bộ test prompt mẫu kèm kỳ vọng 
 
 ## Cài đặt
 
-Xem mục "Cài từ bản local" trong README gốc của repo — plugin đã đăng ký vào cả hai marketplace (`agent-relay`).
+Xem mục "Cài từ bản local" trong README gốc của repo — plugin đã đăng ký vào các marketplace (`agent-relay`).

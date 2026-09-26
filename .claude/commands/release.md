@@ -46,8 +46,8 @@ Tham số: `$ARGUMENTS`
 
 | Nhóm | Path | Commit |
 | --- | --- | --- |
-| Plugin `<name>` | `plugins/<name>/**` + entry của nó trong **cả hai** `marketplace.json` | `feat\|fix\|refactor\|docs(<name>)` |
-| Marketplace | `.agents/plugins/marketplace.json`, `.claude-plugin/marketplace.json` — phần không thuộc plugin nào | `chore(marketplace)` |
+| Plugin `<name>` | `plugins/<name>/**` + entry của nó trong **cả ba** `marketplace.json` | `feat\|fix\|refactor\|docs(<name>)` |
+| Marketplace | `.agents/plugins/marketplace.json`, `.claude-plugin/marketplace.json`, `.kimi-plugin/marketplace.json` — phần không thuộc plugin nào | `chore(marketplace)` |
 | Template | `plugins/_template/**` | `chore(template)` |
 | Scripts | `scripts/**` | `build\|fix(scripts)` |
 | Claude config | `.claude/**` | `chore(claude)` |
@@ -55,7 +55,7 @@ Tham số: `$ARGUMENTS`
 | Docs | `README.md`, `AGENTS.md`, docs khác | `docs` |
 
 - Chọn `type` theo bản chất thay đổi: `feat` (plugin/skill/tính năng mới), `fix`, `refactor`, `perf`, `docs`, `test`, `build`, `ci`, `chore`, `style`. Breaking change → commit dạng `feat(<scope>)!: ...`.
-- Plugin mới đi **cùng commit** với entry của nó trong hai `marketplace.json` — plugin chưa đăng ký đủ hai marketplace coi như chưa xong. Nếu một `marketplace.json` chứa entry của nhiều plugin thì gộp các plugin đó vào một commit (scope `plugins`), vì không tách hunk được.
+- Plugin mới đi **cùng commit** với entry của nó trong ba `marketplace.json` — plugin chưa đăng ký đủ ba marketplace coi như chưa xong. Nếu một `marketplace.json` chứa entry của nhiều plugin thì gộp các plugin đó vào một commit (scope `plugins`), vì không tách hunk được.
 - Một nhóm lẫn nhiều mục đích → tách thành nhiều commit theo file. Không tách hunk trong cùng một file.
 - Thứ tự: nền tảng trước (scripts, template, config), rồi plugin, rồi docs.
 - Mỗi commit: `git add -- <paths>` → `git diff --cached --stat` để kiểm lại đúng file → `git commit -m "<message>"`.
@@ -77,7 +77,7 @@ Tham số: `$ARGUMENTS`
 - First release, hoặc plugin chưa tồn tại tại `BASE` (`git ls-tree -d BASE plugins/<name>` rỗng) → giữ version hiện tại, coi như ra mắt lần đầu.
 - Version đã được bump tay so với `BASE` (so với `git show BASE:plugins/<name>/plugin.json`) → giữ nguyên.
 - Còn lại → bump theo cùng luật trên, chỉ xét `git log BASE..HEAD -- plugins/<name>/`.
-- Sửa `version` ở **cả bốn** manifest bằng Edit: `plugin.json`, `.claude-plugin/plugin.json`, `.qoder-plugin/plugin.json`, `gemini-extension.json`. Claude Code dựa vào `version` để phát hiện update — không bump thì người dùng không nhận bản mới.
+- Sửa `version` ở **cả năm** manifest bằng Edit: `plugin.json`, `.claude-plugin/plugin.json`, `.qoder-plugin/plugin.json`, `gemini-extension.json`, `.kimi-plugin/plugin.json`. Claude Code dựa vào `version` để phát hiện update — không bump thì người dùng không nhận bản mới.
 
 ## 5. CHANGELOG & docs
 
@@ -114,7 +114,7 @@ Docs khác — chỉ sửa khi lệch với thực tế, không viết lại:
 
 - `plugins/<name>/README.md`: danh sách skill, command, hook khớp với `skills/`, `commands/`, `hooks/`.
 - `README.md` root: cây "Cấu trúc" khớp với file/thư mục top-level (vd thêm `CHANGELOG.md` ở lần release đầu). Hướng dẫn cài đặt vẫn đúng.
-- Entry `description` trong hai `marketplace.json` khớp với `description` trong manifest plugin.
+- Entry `description` trong cả ba `marketplace.json` khớp với `description` trong manifest plugin.
 
 ## 6. Validate & commit release
 

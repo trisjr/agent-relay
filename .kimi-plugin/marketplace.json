@@ -1,0 +1,18 @@
+{
+  "name": "agent-relay",
+  "version": "1",
+  "description": "Reusable workflows for coding agents",
+  "owner": {
+    "name": "AgentRelay Maintainers"
+  },
+  "plugins": [
+    {
+      "id": "orca-workflows",
+      "name": "orca-workflows",
+      "displayName": "Orca Workflows",
+      "version": "0.1.0",
+      "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates.",
+      "source": "./plugins/orca-workflows"
+    }
+  ]
+}

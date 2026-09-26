@@ -2,14 +2,14 @@
 # validate.sh — structural checks for the agent-relay plugin marketplace.
 #
 # Checks:
-#   a. Both marketplace manifests parse and have the required keys; every
+#   a. All three marketplace manifests parse and have the required keys; every
 #      plugins[].source points at an existing directory inside plugins/.
-#   b. Every real plugin dir (not "_"-prefixed) has all four manifest files,
-#      all of them parse, "name" matches across all four and equals the dir
-#      name, "version" is identical across all four.
+#   b. Every real plugin dir (not "_"-prefixed) has all five manifest files,
+#      all of them parse, "name" matches across all five and equals the dir
+#      name, "version" is identical across all five.
 #   c. Every skills/*/SKILL.md of a real plugin has frontmatter containing
 #      "name:" and "description:".
-#   d. Every real plugin is listed by name in BOTH marketplace manifests.
+#   d. Every real plugin is listed by name in ALL THREE marketplace manifests.
 #
 # JSON work is done with python3 (no jq dependency).
 # Exit 0 when everything passes, 1 otherwise.
@@ -60,6 +60,12 @@ marketplaces = [
     {
         "rel": ".claude-plugin/marketplace.json",
         "label": "claude marketplace",
+        "top_keys": ["name", "description", "owner", "plugins"],
+        "nested": [("owner", "name")],
+    },
+    {
+        "rel": ".kimi-plugin/marketplace.json",
+        "label": "kimi marketplace",
         "top_keys": ["name", "description", "owner", "plugins"],
         "nested": [("owner", "name")],
     },
@@ -170,6 +176,7 @@ MANIFESTS = [
     ".claude-plugin/plugin.json",
     ".qoder-plugin/plugin.json",
     "gemini-extension.json",
+    ".kimi-plugin/plugin.json",
 ]
 
 for plugin in real_plugins:
@@ -205,7 +212,7 @@ for plugin in real_plugins:
         out("FAIL", "plugin %r: manifest \"name\" %r does not match directory name"
             % (plugin, names[MANIFESTS[0]]))
     else:
-        out("PASS", "plugin %r: \"name\" == %r in all 4 manifests"
+        out("PASS", "plugin %r: \"name\" == %r in all 5 manifests"
             % (plugin, plugin))
 
     versions = {m: parsed[m].get("version") for m in MANIFESTS}
@@ -218,7 +225,7 @@ for plugin in real_plugins:
         out("FAIL", "plugin %r: \"version\" mismatch across manifests (%s)"
             % (plugin, detail))
     else:
-        out("PASS", "plugin %r: \"version\" == %r in all 4 manifests"
+        out("PASS", "plugin %r: \"version\" == %r in all 5 manifests"
             % (plugin, versions[MANIFESTS[0]]))
 
 # ----- check d ---------------------------------------------------------------
