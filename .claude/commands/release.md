@@ -1,7 +1,7 @@
 ---
 description: Release marketplace — tách commit theo nhóm, bump version plugin, cập nhật CHANGELOG/docs, push, tag và tạo GitHub release
 argument-hint: "[patch|minor|major|X.Y.Z] [--dry-run]"
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git fetch:*), Bash(git rev-parse:*), Bash(git rev-list:*), Bash(git for-each-ref:*), Bash(git branch:*), Bash(git remote:*), Bash(git ls-files:*), Bash(git ls-tree:*), Bash(git ls-remote:*), Bash(git add:*), Bash(git commit:*), Bash(git tag:*), Bash(gh auth status:*), Bash(gh repo view:*), Bash(gh release view:*), Bash(scripts/validate.sh:*), Bash(claude plugin validate:*), Bash(date:*), Bash(mktemp:*), Read, Edit, Write, Glob, Grep, AskUserQuestion
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git fetch:*), Bash(git rev-parse:*), Bash(git rev-list:*), Bash(git for-each-ref:*), Bash(git branch:*), Bash(git remote:*), Bash(git ls-files:*), Bash(git ls-tree:*), Bash(git ls-remote:*), Bash(git add:*), Bash(git commit:*), Bash(git tag:*), Bash(gh auth status:*), Bash(gh repo view:*), Bash(gh release view:*), Bash(scripts/validate.sh:*), Bash(claude plugin validate:*), Bash(date:*), Bash(mktemp:*), Bash(git archive:*), Bash(zipinfo:*), Read, Edit, Write, Glob, Grep, AskUserQuestion
 ---
 
 # /release
@@ -79,6 +79,11 @@ Tham số: `$ARGUMENTS`
 - Còn lại → bump theo cùng luật trên, chỉ xét `git log BASE..HEAD -- plugins/<name>/`.
 - Sửa `version` ở **cả năm** manifest bằng Edit: `plugin.json`, `.claude-plugin/plugin.json`, `.qoder-plugin/plugin.json`, `gemini-extension.json`, `.kimi-plugin/plugin.json`. Claude Code dựa vào `version` để phát hiện update — không bump thì người dùng không nhận bản mới.
 
+**Entry Kimi** — plugin được release là plugin vừa bump (kể cả bump tay) hoặc ra mắt lần đầu, cộng plugin có `source` Kimi vẫn là path `./plugins/`:
+
+- Với mỗi plugin đó, sửa entry của nó trong `.kimi-plugin/marketplace.json` bằng Edit: `version` = version plugin, `source` = `https://github.com/<owner>/<repo>/releases/download/vX.Y.Z/<name>-X.Y.Z.zip` (`X.Y.Z` là version repo, `<owner>/<repo>` lấy như ở bước 5).
+- Kimi chỉ cài plugin từ zip; zip được build và upload ở bước 8. Plugin không release giữ nguyên `source` cũ, vì zip của release trước vẫn còn.
+
 ## 5. CHANGELOG & docs
 
 `CHANGELOG.md` ở root theo [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Chưa có thì tạo mới:
@@ -119,7 +124,7 @@ Docs khác — chỉ sửa khi lệch với thực tế, không viết lại:
 ## 6. Validate & commit release
 
 1. Chạy `scripts/validate.sh`. Có lệnh `claude` thì chạy thêm `claude plugin validate .` và `claude plugin validate ./plugins/<name>` cho từng plugin đã bump. Fail → sửa bằng Edit rồi chạy lại. Không sửa được → dừng.
-2. `git add -- CHANGELOG.md <manifest đã bump> <docs đã sửa>` → `git commit -m "chore(release): vX.Y.Z"`.
+2. `git add -- CHANGELOG.md <manifest đã bump> .kimi-plugin/marketplace.json <docs đã sửa>` → `git commit -m "chore(release): vX.Y.Z"`.
 
 ## 7. Xác nhận
 
@@ -132,7 +137,9 @@ Anh từ chối → dừng. Commit local giữ nguyên. Báo lệnh hoàn tác: 
 1. `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
 2. `git push --atomic origin main vX.Y.Z`: branch và tag cùng lên hoặc cùng không. Bị reject → dừng, không force. Tag local giữ nguyên để retry sau khi anh pull.
 3. Lấy nội dung section `[X.Y.Z]` trong `CHANGELOG.md` (bỏ dòng heading) và Write vào file mới `<dir>/release-notes.md`, với `<dir>` tạo bằng `mktemp -d` (Write không ghi đè được file có sẵn mà chưa Read). Sau đó chạy `gh release create vX.Y.Z --verify-tag --title "vX.Y.Z" --notes-file <file>`. Version có suffix pre-release (`-rc.1`, `-beta.2`, ...) thì thêm `--prerelease`. Bước này fail thì tag đã lên remote, chỉ cần chạy lại đúng lệnh `gh release create`.
+4. Đóng zip cho từng plugin được release ở bước 4, ghi vào cùng `<dir>` ở trên (không bao giờ ghi trong repo): `git archive --format=zip -o <dir>/<name>-X.Y.Z.zip vX.Y.Z:plugins/<name>`. Lệnh này đặt nội dung thư mục plugin ở gốc zip và chỉ lấy file đã commit trong tag, nên tự loại `.DS_Store`, `__pycache__`, `.venv` và mọi file untracked như `.env`. Kiểm bằng `zipinfo -1 <zip>`: có `.kimi-plugin/plugin.json` ở gốc, không có `.DS_Store`, `__pycache__/`, `.venv/`.
+5. `gh release upload vX.Y.Z <dir>/<name>-X.Y.Z.zip ... --clobber`. Fail thì chạy lại đúng lệnh này; `--clobber` ghi đè asset cùng tên nên retry an toàn.
 
 ## 9. Báo cáo
 
-Version, tag, URL release (`gh release view vX.Y.Z --json url -q .url`), danh sách commit đã tạo, plugin đã bump.
+Version, tag, URL release (`gh release view vX.Y.Z --json url -q .url`), danh sách commit đã tạo, plugin đã bump, zip Kimi đã upload.
