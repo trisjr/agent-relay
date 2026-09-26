@@ -58,7 +58,7 @@ Symbols: `c` = `judgments.complexity`, `r` = `judgments.risk`, `tail` = `risk_ta
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
 | 5 | `needs_web > 0.7` or `needs_long_context > 0.7` | `gemini` / `pro` / `medium` |
 | 6 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `low` |
-| 7 | otherwise | `codex` / `gpt-default` / `medium` |
+| 7 | otherwise | `codex` / `luna` / `max` |
 
 - ESCALATE is always `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`.
 - Only rule 1 adds `requires_approval` and `suggested`.

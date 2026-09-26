@@ -77,13 +77,13 @@ assert srv.MODEL == "jev-1.13.0" and srv.CONFIG_ERROR is None
 # (c, r, conf_c, conf_r, tail, web, long) -> (harness, model, effort, act)
 ROWS = {
     "a": ((0.3, 0.2, 0.9, 0.9, 0.02, 0.1, 0.1), ("gemini", "flash", "low", True)),
-    "b": ((0.3, 0.2, 0.9, 0.6, 0.02, 0.1, 0.1), ("codex", "gpt-default", "medium", True)),
+    "b": ((0.3, 0.2, 0.9, 0.6, 0.02, 0.1, 0.1), ("codex", "luna", "max", True)),
     "c": ((0.2, 1.9, 0.10, 0.99, 0.9, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "d": ((1.0, 0.9, 0.9, 0.9, 0.45, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "e": ((2.0, 0.3, 0.9, 0.9, 0.05, 0.8, 0.1), ("gemini", "pro", "medium", True)),
     "f": ((2.0, 0.3, 0.2, 0.9, 0.05, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "g": ((3.5, 0.5, 0.9, 0.9, 0.05, 0.1, 0.1), ("claude", "opus", "high", True)),
-    "h": ((2.0, 1.2, 0.8, 0.6, 0.1, 0.2, 0.2), ("codex", "gpt-default", "medium", True)),
+    "h": ((2.0, 1.2, 0.8, 0.6, 0.1, 0.2, 0.2), ("codex", "luna", "max", True)),
     "i": ((2.0, 0.3, 0.9, 0.2, 0.05, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
 }
 for name, (row, expected) in ROWS.items():

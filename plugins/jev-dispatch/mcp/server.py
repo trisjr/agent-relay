@@ -115,7 +115,7 @@ def route(j: dict, conf: dict, tail: float) -> dict[str, Any]:
     if c < 1.2 and r < 0.6 and conf["risk"] >= FLOOR_RISK:
         return {"harness": "gemini", "model": "flash", "effort": "low",
                 "why": f"trivial ({c:.1f}) + confidently low risk ({r:.2f}) -> cheap path", "act": True}
-    return {"harness": "codex", "model": "gpt-default", "effort": "medium",
+    return {"harness": "codex", "model": "luna", "effort": "max",
             "why": "standard engineering work", "act": True}
 
 

@@ -38,7 +38,7 @@ Biến dùng trong bảng: `c` = `judgments.complexity`, `r` = `judgments.risk`,
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
 | 5 | `needs_web > 0.7` hoặc `needs_long_context > 0.7` | `gemini` / `pro` / `medium` |
 | 6 | `c < 1.2` và `r < 0.6` và `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `low` |
-| 7 | Còn lại | `codex` / `gpt-default` / `medium` |
+| 7 | Còn lại | `codex` / `luna` / `max` |
 
 `ESCALATE` luôn có dạng `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`. Chỉ rule 1 thêm `requires_approval` và `suggested`. Các rule route thật (4–7) trả `act=true`.
 
