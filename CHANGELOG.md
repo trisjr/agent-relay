@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-26
+
+### Plugins
+
+- `jev-dispatch`: 0.1.0 → 0.2.0
+
+### Added
+
+- **jev-dispatch**: Claude Code hỏi `TypeSafe API Key` khi cài hoặc enable plugin qua `/plugin`, lưu vào keychain dạng sensitive rồi tự truyền vào MCP server qua `TYPESAFE_API_KEY`. Key không còn phụ thuộc vào `export` trong shell hay cách mở Claude Code (terminal, desktop app, IDE). Đổi key bằng `/plugin configure jev-dispatch@agent-relay`; cài bằng CLI thì truyền `--config typesafe_api_key=...`. README và skill `dispatch-routing` ghi rõ cách cấp key cho từng harness.
+
 ## [0.2.0] - 2026-09-26
 
 ### Plugins
@@ -44,6 +54,7 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/trisjr/agent-relay/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/trisjr/agent-relay/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/trisjr/agent-relay/releases/tag/v0.1.0
