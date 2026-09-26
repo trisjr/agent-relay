@@ -34,8 +34,8 @@ Prerequisites: orca-router steps 1–2 (executable resolved, runtime ready, `ORC
    Then create the run-scoped report directory, excluded from Git (router coordinator rules), so no reviewer sees another's report in the diff.
 3. **Start the full wave before waiting**, one worker per lens:
    ```sh
-   ORCA orchestration worker-start --spec "<spec for lens X>" --worktree current --agent claude --json
-   ORCA orchestration worker-start --spec "<spec for lens Y>" --worktree current --agent codex --model gpt-6-sol --json
+   ORCA orchestration worker-start --spec "<spec for lens X>" --worktree current --agent claude --model opus --effort xhigh --json
+   ORCA orchestration worker-start --spec "<spec for lens Y>" --worktree current --agent codex --model gpt-6-sol --effort xhigh --json
    ```
    Split the wave across both model families — at least one reviewer on `claude`, at least one on codex Sol — so one family's blind spots don't pass unseen. A non-zero exit is never relaunched — follow the receipt (router coordinator rules). Each spec contains Target (the pinned reference), Change (a findings report written to `<report_dir>/review-<lens>.md`, absolute path), Constraints (**review-only: no edits to repository files, no commits, no checkout**), Ownership (the assigned lens; ignore off-lens observations or demote them to a "notes" section), Observable acceptance (every finding has severity, `file:line` evidence, and a one-line rationale; no issue found = a report saying so).
 4. **Wait and process.**
