@@ -10,17 +10,17 @@
       "id": "orca-workflows",
       "name": "orca-workflows",
       "displayName": "Orca Workflows",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.5.0/orca-workflows-0.5.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.5.1/orca-workflows-0.5.1.zip"
     },
     {
       "id": "jev-dispatch",
       "name": "jev-dispatch",
       "displayName": "Jev Dispatch",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.4.0/jev-dispatch-0.4.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.5.1/jev-dispatch-0.5.1.zip"
     }
   ]
 }

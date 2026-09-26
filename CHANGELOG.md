@@ -5,6 +5,25 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-09-26
+
+### Plugins
+
+- `jev-dispatch`: 0.3.0 → 0.3.1
+- `orca-workflows`: 0.3.0 → 0.3.1
+
+### Changed
+
+- **jev-dispatch**: skill `dispatch-routing` (kèm Cursor rule và README) chốt format log cho golden set.
+  - Chỉ dùng một file JSONL append-only: `~/.local/state/jev-dispatch/dispatch-log.jsonl`.
+  - Mỗi lần gọi `ask` ghi một record `route`, kể cả khi error hay không dispatch gì. Record gồm `task` và `context` đúng như đã gửi, nguyên response, và `used` là harness/model/effort thực sự đã chạy (`null` khi để mặc định).
+  - Task kết thúc thì ghi một record `outcome` (`ok`, `retried`, `failed` hoặc `cancelled`), nối với `route` bằng `id`.
+  - Mỗi dòng append qua `jq` để task có dấu nháy không làm hỏng log.
+- **orca-workflows**: skill `dag-build` ghi shadow routing theo format log mới.
+  - `id` là task id của Orca.
+  - `used` là codex với model/effort mặc định.
+  - Mỗi task chỉ có một `outcome`, ghi sau mọi lần `--retry-of`.
+
 ## [0.5.0] - 2026-09-26
 
 ### Plugins
@@ -75,7 +94,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/trisjr/agent-relay/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/trisjr/agent-relay/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/trisjr/agent-relay/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/trisjr/agent-relay/compare/v0.2.0...v0.3.0
