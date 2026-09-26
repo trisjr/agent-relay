@@ -4,13 +4,13 @@
     {
       "id": 1,
       "prompt": "research giúp anh cách Prisma, Drizzle và TypeORM xử lý connection pooling, so sánh ưu nhược từng cái",
-      "expected_output": "Scales to a 2-4 worker comparison wave (roughly one worker per ORM or angle), each spec self-contained with non-overlapping scope, read-only constraints, and a required findings file; coordinator waits with check --wait and synthesizes a single comparison from the report files with attribution.",
+      "expected_output": "Scales to a 2-4 worker comparison wave (roughly one worker per ORM or angle), each spec self-contained with non-overlapping scope, read-only constraints, and a required findings file; every angle gathers facts, so workers run the default tier (codex gpt-6-luna and antigravity gemini-3.8-flash-high, both --effort high); coordinator waits with check --wait, verifies key claims, and synthesizes a single comparison from the report files with attribution.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "điều tra toàn bộ luồng xác thực trong repo này: entry points, middleware, session storage, token refresh — phân tích điểm yếu từng tầng",
-      "expected_output": "Scales to a 5-8 worker wave decomposed by subsystem with explicit boundaries between workers; run-create first, all workers started before the first wait; per-worker report files in a run-scoped `.orca-reports/<run_id>/` directory excluded from Git; final synthesis dedupes and reconciles findings per layer. No worker edits code.",
+      "expected_output": "Scales to a 5-8 worker wave decomposed by subsystem with explicit boundaries between workers; each angle judges weaknesses, so workers run the deep tier (claude opus and codex gpt-6-sol, both --effort high); run-create first, all workers started before the first wait; per-worker report files in a run-scoped `.orca-reports/<run_id>/` directory excluded from Git; final synthesis dedupes and reconciles findings per layer. No worker edits code.",
       "files": []
     },
     {
@@ -29,6 +29,12 @@
       "id": 5,
       "prompt": "investigate tại sao process crawler bị OOM sau khoảng 2 tiếng chạy",
       "expected_output": "Recognizes a single-failure root-cause investigation per the scale table and chases it sequentially (reproduce, profile memory, narrow hypotheses) instead of fanning out a swarm; creates no Run or workers.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "khảo sát module payment trong repo: liệt kê public API, vẽ luồng dữ liệu, rồi đánh giá rủi ro bảo mật",
+      "expected_output": "Tiers per angle, not per wave: the API-inventory and data-flow angles run the default tier (codex gpt-6-luna / antigravity gemini-3.8-flash-high at --effort high), only the security-risk angle runs the deep tier (claude opus or codex gpt-6-sol at --effort high); coordinator confirms each receipt's launch.effective and verifies key claims before synthesizing.",
       "files": []
     }
   ]
