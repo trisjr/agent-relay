@@ -80,7 +80,7 @@ ROWS = {
     "b": ((0.3, 0.2, 0.9, 0.6, 0.02, 0.1, 0.1), ("codex", "luna", "max", True)),
     "c": ((0.2, 1.9, 0.10, 0.99, 0.9, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "d": ((1.0, 0.9, 0.9, 0.9, 0.45, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
-    "e": ((2.0, 0.3, 0.9, 0.9, 0.05, 0.8, 0.1), ("gemini", "pro", "medium", True)),
+    "e": ((2.0, 0.3, 0.9, 0.9, 0.05, 0.8, 0.1), ("codex", "sol", "medium", True)),
     "f": ((2.0, 0.3, 0.2, 0.9, 0.05, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "g": ((3.5, 0.5, 0.9, 0.9, 0.05, 0.1, 0.1), ("claude", "opus", "high", True)),
     "h": ((2.0, 1.2, 0.8, 0.6, 0.1, 0.2, 0.2), ("codex", "luna", "max", True)),

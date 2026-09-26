@@ -36,7 +36,7 @@ Biến dùng trong bảng: `c` = `judgments.complexity`, `r` = `judgments.risk`,
 | 2 | `confidence.risk < FLOOR_ROUTE` | `ESCALATE`, `act=false` (risk unknown) |
 | 3 | `confidence.complexity < FLOOR_ROUTE` | `ESCALATE`, `act=false` (complexity unknown) |
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
-| 5 | `needs_web > 0.7` hoặc `needs_long_context > 0.7` | `gemini` / `pro` / `medium` |
+| 5 | `needs_web > 0.7` hoặc `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
 | 6 | `c < 1.2` và `r < 0.6` và `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `low` |
 | 7 | Còn lại | `codex` / `luna` / `max` |
 
