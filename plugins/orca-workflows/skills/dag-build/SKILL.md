@@ -50,6 +50,8 @@ ORCA orchestration task-list --ready --brief --json     # what is startable now
 ORCA orchestration worker-start --task <task_id> --worktree current --agent codex --json
 ```
 
+Shadow routing: when the jev-dispatch `ask` tool is available, call it once per task before its first new-agent `worker-start` (not on `--terminal` reuse or `--retry-of`), following the `dispatch-routing` skill in shadow mode. Send `task` as a 1–3 sentence summary, never the component spec. Keep `--agent codex` and do not pass routing's `model`/`effort` through — its `sol`/`luna` are shorthand, not provider ids. `routing.requires_approval=true` → ask the user before starting that worker. Log the routing at start and append the worker outcome when it settles; that pair is the golden set.
+
 Start every ready task in the wave **before** waiting; a fresh worker already means a fresh terminal. Give a component its own worktree (`--worktree new-child --name <component> --setup run`) only when the user asked for one, components edit the same files, or its acceptance cannot be scoped away from sibling edits — then the integration task must merge that branch first (step 5). Then:
 
 ```sh
