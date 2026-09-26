@@ -101,18 +101,24 @@ claude plugin marketplace add .
 
 rồi trong Claude Code chạy `/plugin install <plugin-name>@agent-relay`.
 
-Kimi Code:
-
-```sh
-/plugins marketplace ./.kimi-plugin/marketplace.json
-```
-
-rồi trong Kimi Code mở `/plugins` để cài plugin, hoặc cài trực tiếp từ thư mục:
+Kimi Code — cài trực tiếp từ thư mục:
 
 ```sh
 /plugins install ./plugins/<plugin-name>
 ```
 
-hoặc trỏ biến môi trường `KIMI_CODE_PLUGIN_MARKETPLACE_URL` đến path/URL của `marketplace.json`.
+hoặc duyệt catalog qua `/plugins marketplace ./.kimi-plugin/marketplace.json` rồi cài từ tab Custom. Có thể trỏ biến môi trường `KIMI_CODE_PLUGIN_MARKETPLACE_URL` đến path/URL của `marketplace.json`. Sau khi cài cần `/reload` (hoặc `/new`).
 
-Sau khi đẩy repo lên GitHub, thay `.` ở lệnh thêm marketplace bằng `owner/repo`.
+Cài từ GitHub: Kimi cài plugin từ zip chứa manifest ở gốc, nên `source` trong `.kimi-plugin/marketplace.json` trỏ đến zip đính kèm GitHub Release. Người dùng thêm catalog bằng raw URL:
+
+```sh
+/plugins marketplace https://raw.githubusercontent.com/<owner>/<repo>/main/.kimi-plugin/marketplace.json
+```
+
+hoặc cài thẳng zip release:
+
+```sh
+/plugins install https://github.com/<owner>/<repo>/releases/download/vX.Y.Z/<plugin-name>-X.Y.Z.zip
+```
+
+Khi release bản mới: đóng gói lại zip plugin (manifest ở gốc zip), upload asset lên GitHub Release và cập nhật `source` trong `.kimi-plugin/marketplace.json`. Với Codex và Claude Code, sau khi đẩy repo lên GitHub chỉ cần thay `.` ở lệnh thêm marketplace bằng `owner/repo`.

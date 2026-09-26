@@ -3,7 +3,8 @@
 #
 # Checks:
 #   a. All three marketplace manifests parse and have the required keys; every
-#      plugins[].source points at an existing directory inside plugins/.
+#      plugins[].source points at an existing directory inside plugins/, or is
+#      an http(s) URL (e.g. GitHub release zip for remote Kimi installs).
 #   b. Every real plugin dir (not "_"-prefixed) has all five manifest files,
 #      all of them parse, "name" matches across all five and equals the dir
 #      name, "version" is identical across all five.
@@ -135,6 +136,11 @@ for spec in marketplaces:
         if isinstance(name, str) and name.strip():
             listed_names[rel].add(name)
         if bad_fields or not isinstance(source, str):
+            continue
+        if source.startswith("http://") or source.startswith("https://"):
+            out("PASS", "%s: %s entry %r -> remote source: %s"
+                % (label, spec["label"], name, source))
+            listed += 1
             continue
         if not source.startswith("./plugins/"):
             out("FAIL", "%s: %s source %r must start with \"./plugins/\""

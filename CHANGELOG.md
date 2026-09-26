@@ -9,6 +9,10 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 - **kimi-code**: hỗ trợ Kimi Code CLI plugin và marketplace — thêm `.kimi-plugin/marketplace.json`, manifest `.kimi-plugin/plugin.json` cho template và plugin `orca-workflows`, cập nhật `scripts/validate.sh` và `scripts/new-plugin.sh` để kiểm tra và đăng ký đồng bộ 3 marketplace và 5 manifest.
 
+### Fixed
+
+- **kimi-code**: cài từ GitHub — Kimi chỉ cài được plugin từ zip chứa manifest ở gốc nên `source` của `orca-workflows` trong `.kimi-plugin/marketplace.json` đổi thành URL zip asset trên GitHub Release (`orca-workflows-0.1.0.zip`); `scripts/validate.sh` chấp nhận `source` dạng http(s) bên cạnh path `./plugins/`.
+
 ## [0.1.0] - 2026-09-26
 
 ### Plugins
