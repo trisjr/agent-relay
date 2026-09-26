@@ -114,13 +114,15 @@ print("Replaced %s in %d file(s); renamed %d path(s)" % (placeholder, updated, r
 PYEOF
 
 # --- 4. register in all marketplaces ---------------------------------------
-python3 - "$NAME" "$ENTRY_DESCRIPTION" "$CODEX_MARKETPLACE" "$CLAUDE_MARKETPLACE" "$KIMI_MARKETPLACE" <<'PYEOF'
+python3 - "$NAME" "$ENTRY_DESCRIPTION" "$TEMPLATE_DIR/plugin.json" "$CODEX_MARKETPLACE" "$CLAUDE_MARKETPLACE" "$KIMI_MARKETPLACE" <<'PYEOF'
 import json
 import sys
 
-name, description = sys.argv[1], sys.argv[2]
+name, description, template_manifest = sys.argv[1], sys.argv[2], sys.argv[3]
+with open(template_manifest, "r", encoding="utf-8") as fh:
+    version = json.load(fh)["version"]
 
-for path in sys.argv[3:]:
+for path in sys.argv[4:]:
     with open(path, "r", encoding="utf-8") as fh:
         data = json.load(fh)
     plugins = data["plugins"]
@@ -131,14 +133,21 @@ for path in sys.argv[3:]:
     if already:
         print("Entry for %r already present in %s" % (name, path))
         continue
-    entry = {
-        "name": name,
-        "source": "./plugins/%s" % name,
-        "description": description,
-    }
     if "kimi" in path:
-        entry["id"] = name
-        entry["displayName"] = name
+        entry = {
+            "id": name,
+            "name": name,
+            "displayName": " ".join(w.capitalize() for w in name.split("-")),
+            "version": version,
+            "description": description,
+            "source": "./plugins/%s" % name,
+        }
+    else:
+        entry = {
+            "name": name,
+            "source": "./plugins/%s" % name,
+            "description": description,
+        }
     plugins.append(entry)
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, indent=2, ensure_ascii=False)
@@ -162,6 +171,7 @@ printf '     .qoder-plugin/plugin.json, gemini-extension.json, .kimi-plugin/plug
 printf '  4. Write your skills in plugins/%s/skills/<skill-name>/SKILL.md\n' "$NAME"
 printf '     (frontmatter requires name: and description:).\n'
 printf '  5. Re-run scripts/validate.sh before committing.\n'
+printf '\nNote: the Kimi marketplace source stays local (./plugins/%s) until /release packages the zip.\n' "$NAME"
 
 if [ "$VALIDATE_OK" -ne 1 ]; then
   printf '\nnew-plugin.sh: warning: validate.sh reported problems - fix them before committing.\n' >&2
