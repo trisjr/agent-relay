@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-26
+
+### Plugins
+
+- `jev-dispatch`: 0.2.0 → 0.3.0
+
+### Added
+
+- **jev-dispatch**: đổi đích route trong policy của MCP tool `ask` (skill `dispatch-routing`): task cần web hoặc long context chuyển từ `gemini/pro/medium` sang `codex/sol/medium`; task nhỏ, rủi ro thấp vẫn chạy `gemini/flash` nhưng effort tăng từ `low` lên `high`; nhánh mặc định (việc engineering thông thường) gắn thẳng model `luna` với effort `max` thay cho placeholder `gpt-default`/`medium`. Coordinator cần đảm bảo harness nhận được tên model và effort mới; policy đã đổi nên chạy lại golden set ở shadow mode trước khi bật auto-route.
+
 ## [0.3.0] - 2026-09-26
 
 ### Plugins
@@ -54,7 +64,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/trisjr/agent-relay/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/trisjr/agent-relay/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/trisjr/agent-relay/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/trisjr/agent-relay/releases/tag/v0.1.0
