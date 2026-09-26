@@ -13,6 +13,8 @@ Prerequisites: orca-router steps 1–2 (executable resolved, runtime ready, `ORC
 
 ### 1. Plan, then gate the spec
 
+Clarify first when the request leaves open a decision that would change the component split, the acceptance criteria, or a cross-cutting contract (data model, permissions, public API) — a vague goal such as "add permissions to the app", not a request that already names its components. When the `clarify-requirements` skill is available, run it here, in your own conversation; never hand it to a worker, which cannot reach the user. Write the spec from its requirements brief and cite it; details the spec can default go into the spec as assumptions, not questions. The spec gate below doubles as the brief's confirmation, so the user approves once. Without the skill, the gate's `revise` path is the fallback.
+
 Produce an implementation spec: the component split, each component's acceptance criteria, and the dependency graph. Then make the user's approval an explicit gate instead of a shrug in chat:
 
 ```sh
