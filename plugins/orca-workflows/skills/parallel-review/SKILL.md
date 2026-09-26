@@ -35,15 +35,16 @@ Prerequisites: orca-router steps 1–2 (executable resolved, runtime ready, `ORC
 3. **Start the full wave before waiting**, one worker per lens:
    ```sh
    ORCA orchestration worker-start --spec "<spec for lens X>" --worktree current --agent claude --json
+   ORCA orchestration worker-start --spec "<spec for lens Y>" --worktree current --agent codex --model gpt-6-sol --json
    ```
-   A non-zero exit is never relaunched — follow the receipt (router coordinator rules). Each spec contains Target (the pinned reference), Change (a findings report written to `<report_dir>/review-<lens>.md`, absolute path), Constraints (**review-only: no edits to repository files, no commits, no checkout**), Ownership (the assigned lens; ignore off-lens observations or demote them to a "notes" section), Observable acceptance (every finding has severity, `file:line` evidence, and a one-line rationale; no issue found = a report saying so).
+   Split the wave across both model families — at least one reviewer on `claude`, at least one on codex Sol — so one family's blind spots don't pass unseen. A non-zero exit is never relaunched — follow the receipt (router coordinator rules). Each spec contains Target (the pinned reference), Change (a findings report written to `<report_dir>/review-<lens>.md`, absolute path), Constraints (**review-only: no edits to repository files, no commits, no checkout**), Ownership (the assigned lens; ignore off-lens observations or demote them to a "notes" section), Observable acceptance (every finding has severity, `file:line` evidence, and a one-line rationale; no issue found = a report saying so).
 4. **Wait and process.**
    ```sh
    # --terminal <handle> only outside the coordinator's own Orca terminal
    ORCA orchestration check --wait --types "worker_done,escalation,question" --timeout-ms 900000 [--terminal <handle>] --json
    ```
    Reply to questions, handle escalations per the router's coordinator rules, validate each `worker_done` (outcome + report path), release settled terminals, `check --ack <delivery_id>`, roll the wait. Three consecutive empty waits → `worker-list --run <run_id> --json` (add `--include-remote` if any remote workers) and follow `projection.nextAction`; a `none` nextAction has no argv — read `liveness.reason` and keep waiting.
-5. **Merge and present.** Read the reports, then deliver one deduplicated list grouped by severity — each finding tagged with its lens and evidence — and name the report directory. When lenses disagree (e.g. simplicity vs. consistency), present both positions instead of silently picking one.
+5. **Merge and present.** Read the reports, then deliver one deduplicated list grouped by severity — each finding tagged with its lens, reviewer agent, and evidence — and name the report directory. When lenses disagree (e.g. simplicity vs. consistency), present both positions instead of silently picking one.
 
 ## Ownership rule — the coordinator does not fix
 
