@@ -1,0 +1,35 @@
+{
+  "skill_name": "clarify-requirements",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "anh muốn thêm một plugin mới vào marketplace này để quản lý secret/API key cho các agent, làm giúp anh",
+      "expected_output": "Explores the repo first and does not ask about conventions it can read (kebab-case name, five manifests, scripts/new-plugin.sh, jev-dispatch's sensitive userConfig precedent). Asks at most 3 self-contained questions about user preferences only (e.g. where secrets are stored, which harnesses must be supported, whether secrets may leave the machine), each with 2-3 options and the recommended option first marked (Recommended), in Vietnamese. Treats secret handling as high impact, logs low-risk defaults as assumptions, and does not scaffold or edit files before the answers arrive.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "bump version plugin orca-workflows lên 0.3.2 giúp anh",
+      "expected_output": "Right-sizes the request as fully specified: AGENTS.md already says all five manifests must keep name and version in sync, so it asks no clarifying questions and proceeds, naming the five manifest files (plugin.json, .claude-plugin/plugin.json, .qoder-plugin/plugin.json, gemini-extension.json, .kimi-plugin/plugin.json). No requirements brief ceremony.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Chạy non-interactive, không ai trả lời được đâu: dọn dẹp marketplace — xoá các plugin không còn dùng và các file thừa.",
+      "expected_output": "Recognizes a headless run with an irreversible, underspecified action. Does not delete anything and does not wait for input. May do read-only inventory, then stops before acting and makes a numbered question block (e.g. which plugins count as unused, what counts as a leftover file, whether marketplace entries are removed too) with recommended defaults its final output, clearly marking the deletion as BLOCKED until answered.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "thêm vào jev-dispatch một cách export dispatch log ra CSV để anh mở bằng Excel",
+      "expected_output": "Reads the dispatch-routing skill and README to learn the log path and record shapes (append-only JSONL with route and outcome records joined by id) instead of asking. Asks at most one or two questions that change the output (e.g. one row per route+outcome pair vs one row per record) with a recommended option, or proceeds with logged assumptions if every choice is reversible. Ends with a short requirements brief whose acceptance is a checklist, not Gherkin.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "giải thích giúp anh skill dag-build hoạt động thế nào",
+      "expected_output": "Treats this as a pure explanation: answers directly from plugins/orca-workflows/skills/dag-build/SKILL.md without clarifying questions, assumptions lists, or a requirements brief.",
+      "files": []
+    }
+  ]
+}

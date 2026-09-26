@@ -14,6 +14,11 @@
       "name": "jev-dispatch",
       "source": "./plugins/jev-dispatch",
       "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill)."
+    },
+    {
+      "name": "clarify-requirements",
+      "source": "./plugins/clarify-requirements",
+      "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief."
     }
   ]
 }
