@@ -10,9 +10,9 @@
       "id": "orca-workflows",
       "name": "orca-workflows",
       "displayName": "Orca Workflows",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.2.0/orca-workflows-0.2.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.5.0/orca-workflows-0.5.0.zip"
     },
     {
       "id": "jev-dispatch",

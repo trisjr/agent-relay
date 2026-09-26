@@ -1,5 +1,5 @@
 {
   "name": "orca-workflows",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates."
 }

@@ -5,6 +5,17 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-26
+
+### Plugins
+
+- `orca-workflows`: 0.2.0 → 0.3.0
+
+### Added
+
+- **orca-workflows**: skill `dag-build` gọi MCP tool `ask` của jev-dispatch (shadow mode) một lần mỗi task trước khi start worker mới, khi tool có sẵn. Chỉ gửi tóm tắt 1–3 câu thay vì cả component spec, vẫn giữ `--agent codex` và không truyền `model`/`effort` từ routing. Task có `requires_approval` phải được người dùng duyệt trước khi start worker. Coordinator log routing kèm outcome của worker để tích lũy golden set.
+- **orca-workflows**: skill `parallel-review` chia reviewer cho hai model family: ít nhất một reviewer `claude --model opus` và một reviewer codex Sol (`--model gpt-6-sol`), cả hai chạy effort `xhigh`. Mỗi finding khi merge ghi thêm reviewer agent đã tìm ra nó.
+
 ## [0.4.0] - 2026-09-26
 
 ### Plugins
@@ -64,7 +75,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/trisjr/agent-relay/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/trisjr/agent-relay/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/trisjr/agent-relay/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/trisjr/agent-relay/compare/v0.1.0...v0.2.0
