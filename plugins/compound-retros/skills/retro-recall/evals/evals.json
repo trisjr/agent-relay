@@ -1,0 +1,45 @@
+{
+  "skill_name": "retro-recall",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Thêm trường discount cho order. Nhớ là từng có lỗi amnesty discount tính sai; hãy xem solution notes trước khi sửa.",
+      "expected_output": "Finds the existing docs/solutions store, shortlists by title/area/tags using task terms and planned order/billing paths, and reads no more than three full notes. Applies the discount-amnesty-rounding lesson to the task and cites docs/solutions/discount-amnesty-rounding.md in its explanation. Does not dump all five note bodies or increment occurrences merely for consulting them.",
+      "files": [
+        "files/recall-discount/docs/solutions/discount-amnesty-rounding.md",
+        "files/recall-discount/docs/solutions/order-money-format.md",
+        "files/recall-discount/docs/solutions/refund-rounding.md",
+        "files/recall-discount/docs/solutions/auth-session-expiry.md",
+        "files/recall-discount/docs/solutions/ci-timezone.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "This repository has no docs/solutions directory or other note-shaped store. Add a one-line guard to the parser and finish the task.",
+      "expected_output": "Handles the small task normally. Does not create docs/solutions, ask where to put it, or suggest starting a notes store.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "The same hand-written migration failure described in docs/solutions/generate-migrations.md happened again today: a manual migration missed the generated index, and we confirmed the generator fixes it. Recall the note before the fix. Also state what would happen to the counter if we had only read the note for reference.",
+      "expected_output": "Reads the matching note and cites its path. Because the described failure actually recurred, updates that existing file in place from occurrences: 2 to occurrences: 3 and sets last_seen to today's YYYY-MM-DD date; it does not create a duplicate. Drafts exactly one AGENTS.md/CLAUDE.md promotion line with an insertion point and seeks consent before any instruction-file edit; in headless mode it only proposes the line. Explicitly says a reference-only read would leave occurrences and last_seen unchanged.",
+      "files": [
+        "files/real-recurrence/docs/solutions/generate-migrations.md"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Dọn mấy note cũ trong docs/solutions giúp anh. package.json now requires Node 20 or later; show me what you found.",
+      "expected_output": "Shows a path-by-path keep/merge/stale/contradiction list before making changes: keep the still-true checkout-idempotency note; mark the two timezone CI notes as a possible merge; mark node18-fetch-workaround stale after verifying package.json satisfies retire_when; and present the two opposing tax-rounding notes as an unresolved contradiction for the user. Proposes shortening or retiring the stale note without deleting a still-true lesson. Deletes or merges nothing before the user sees the list and decides, and in headless mode makes no deletions or merges.",
+      "files": [
+        "files/curate-request/package.json",
+        "files/curate-request/docs/solutions/node18-fetch-workaround.md",
+        "files/curate-request/docs/solutions/ci-utc-zone.md",
+        "files/curate-request/docs/solutions/ci-timezone-env.md",
+        "files/curate-request/docs/solutions/tax-round-before-discount.md",
+        "files/curate-request/docs/solutions/tax-round-after-discount.md",
+        "files/curate-request/docs/solutions/checkout-idempotency.md"
+      ]
+    }
+  ]
+}

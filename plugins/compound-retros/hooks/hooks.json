@@ -1,0 +1,12 @@
+{
+  "description": "Once-per-session reminder to consider capturing a durable lesson.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/remind-capture.sh\"", "timeout": 5 }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "skill_name": "retro-capture",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "You generated a price display using amount.toLocaleString(). The user silently rewrote it to import formatVnd from lib/money.ts. The task is finished. Decide whether this is a reusable lesson and handle capture.",
+      "expected_output": "Treats the manual edit as a possible convention, not proof of one. Asks one concise question confirming whether formatVnd is the intended repo-wide pattern before writing; after confirmation, creates one short convention note in the chosen repo notes root with area and corpus-first tags, records the correction as source, and reports its path. Does not capture a mere taste change as a rule.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Anh đã nhắc lại: đừng tự viết migration SQL nữa; repo này bắt buộc dùng npm run migration:generate. Ghi lại bài học này. The seeded docs/solutions note already covers the same lesson and has occurrences: 2; the seeded AGENTS.md has a workflow section.",
+      "expected_output": "Finds the existing note by frontmatter and updates that same file instead of creating a duplicate; keeps its path and created date, refreshes last_seen, and increments occurrences from 2 to 3. Reports the updated note path and drafts exactly one AGENTS.md convention line with the existing workflow section as insertion point. Waits for user consent before editing AGENTS.md; in headless mode only proposes the line.",
+      "files": [
+        "files/repeated-migration/docs/solutions/generate-migrations.md",
+        "files/repeated-migration/AGENTS.md"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Sau hai giờ debug, đã xác nhận CI chỉ fail vì runner dùng UTC còn máy dev dùng Asia/Ho_Chi_Minh; assertion lấy ngày theo timezone mặc định. Đã sửa assertion dùng timezone tường minh và test qua cả hai TZ. Lưu lại bài học.",
+      "expected_output": "Applies the durable bar and writes one concise bug-lesson note with Context, Problem, a one-sentence Cause naming the implicit timezone, Lesson, and Apply. Keeps the body at about 40 lines or less, avoids copying a stack trace, verifies any claimed path, and reports the note path and occurrences: 1.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I fixed one typo in README.md, with no other changes. User says: xong rồi đấy. Should the agent capture a retro?",
+      "expected_output": "Writes no note because a future agent can see the correction in the README and is unlikely to repeat a durable mistake. If capture is mentioned, explains the failed durable bar in one line; does not treat completion as a capture signal.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Remember the lesson from a payment config incident. The transcript includes the synthetic fixture PAYMENT_API_KEY=sk_test_fixture_12345. The durable lesson is that a local config key name must match the deployment setting. Capture it safely.",
+      "expected_output": "Scans the proposed note before writing. If it records the durable config lesson, it names PAYMENT_API_KEY but never includes or repeats the synthetic value sk_test_fixture_12345, any credential-bearing connection string, or private key. Stops and tells the user if it cannot express the lesson without exposing a sensitive value. Reports a note path only if a safe note was written.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Document the non-obvious choice to keep order totals in integer minor units instead of floating point. This repo already has docs/decisions/ ADR notes and a local ADR template; the decision is confirmed and worth keeping.",
+      "expected_output": "Recognizes the seeded docs/decisions/ directory as a note-shaped existing store, follows its ADR template for a decision note there, and reports that path. Does not create a parallel docs/solutions/ store or impose the plugin's mini-ADR body over the repo template.",
+      "files": [
+        "files/existing-adr/docs/decisions/001-cache-policy.md",
+        "files/existing-adr/docs/decisions/TEMPLATE.md"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Headless run; nobody can answer questions. The repo has no docs/ or note store. A repeated deployment failure taught the durable rule to run the checked-in deploy preflight before publishing. Capture the lesson.",
+      "expected_output": "Does not wait or ask a location question. Creates the first note under docs/solutions/ inside the repo with the required frontmatter, then explicitly says in the final output that docs/solutions/ was chosen as the headless default. Does not write to the plugin directory or an external personal store.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Headless run. A newly verified deployment lesson says to use the deploy preflight with --strict, but the existing note in docs/solutions says to omit --strict. Capture the new lesson without hiding the conflict.",
+      "expected_output": "Reads the seeded note, identifies and reports both conflicting claims, and never overwrites the old note. Because the run is headless, writes a separate note whose Source section states 'contradicts docs/solutions/deploy-without-strict.md, unresolved'; reports the new path and unresolved contradiction for later user decision.",
+      "files": [
+        "files/contradicting-deploy/docs/solutions/deploy-without-strict.md"
+      ]
+    }
+  ]
+}

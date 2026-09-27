@@ -1,0 +1,20 @@
+---
+description: Apply after meaningful work or before similar non-trivial work with stored lessons; skip trivial changes and repos without a solutions store for recall.
+globs:
+alwaysApply: false
+---
+
+# compound-retros
+
+Capture: after meaningful work, write one short structured lesson, including a confirmed convention from a user correction.
+Recall: before similar non-trivial work, shortlist notes by title, area, tags, and affected paths; read only the few relevant notes in full and cite them.
+
+1. Apply the durable bar: would losing this note let a future agent repeat the mistake or investigation despite current code, tests, docs, and `AGENTS.md`? If not, skip capture.
+2. Never record secrets, credentials, or sensitive values; name configuration keys without their values.
+3. Choose the notes root inside the user's repo, never this plugin: a path named by the user or `AGENTS.md`/`CLAUDE.md`; an existing note-shaped store and its template; otherwise `docs/solutions/`.
+4. If no `docs/` exists, ask once before the first note in an interactive session; headless use `docs/solutions/` and report that choice.
+5. Update an overlapping note in place; do not silently overwrite a contradiction.
+6. When `occurrences` reaches 3, propose one line for `AGENTS.md` or `CLAUDE.md` and wait for user consent; headless only propose.
+7. If no solutions store exists, skip recall without creating one.
+
+Follow `retro-capture` or `retro-recall` when the corresponding skill is available.
