@@ -23,6 +23,11 @@
       "name": "debug-root-cause",
       "source": "./plugins/debug-root-cause",
       "description": "Debug with method, not guesses: reproduce and isolate the failure, gather evidence, run a hypothesis ledger with minimal experiments, fix the root cause behind a failing test, verify green, and write a short bug report — for any concrete test, build, CI, or runtime failure."
+    },
+    {
+      "name": "compound-retros",
+      "source": "./plugins/compound-retros",
+      "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter."
     }
   ]
 }

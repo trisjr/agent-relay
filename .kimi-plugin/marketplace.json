@@ -37,6 +37,14 @@
       "version": "0.1.0",
       "description": "Debug with method, not guesses: reproduce and isolate the failure, gather evidence, run a hypothesis ledger with minimal experiments, fix the root cause behind a failing test, verify green, and write a short bug report — for any concrete test, build, CI, or runtime failure.",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.7.0/debug-root-cause-0.7.0.zip"
+    },
+    {
+      "id": "compound-retros",
+      "name": "compound-retros",
+      "displayName": "Compound Retros",
+      "version": "0.1.0",
+      "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter.",
+      "source": "./plugins/compound-retros"
     }
   ]
 }

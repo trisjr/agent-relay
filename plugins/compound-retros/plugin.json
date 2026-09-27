@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "compound-retros",
+  "version": "0.1.0",
+  "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  }
+}
