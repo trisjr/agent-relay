@@ -5,6 +5,20 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-09-27
+
+### Plugins
+
+- `compound-retros`: 0.1.0 (mới)
+
+### Added
+
+- **compound-retros**: plugin mới hiện thực hoá compound engineering loop — biến bài học của mỗi phiên làm việc với agent thành solution note ngắn, có cấu trúc, nằm trong repo (mặc định `docs/solutions/`, tôn trọng kho/convention sẵn có).
+  - Skill `retro-capture`: ghi một bài học mỗi note (4 loại `bug-lesson`, `convention`, `decision`, `pitfall`), kể cả bài học từ việc user sửa tay hay nhắc agent. Chỉ ghi khi qua durable bar ("mất note này thì agent tương lai có lặp lại sai lầm không?"), trùng thì update-in-place và tăng `occurrences`, mâu thuẫn thì không ghi đè. Tự quét secrets trước khi ghi. Lặp lại ≥ 3 lần thì chỉ đề xuất một dòng convention vào `AGENTS.md`/`CLAUDE.md` và chờ user duyệt.
+  - Skill `retro-recall`: tra note theo frontmatter (`tags`, `area`, `title`) trước khi làm việc tương tự, đọc full tối đa 3 note, cite và áp dụng; code hiện tại mâu thuẫn với note thì code thắng. Dọn kho theo yêu cầu: phân loại keep / merge / stale / contradiction và không xoá gì khi user chưa xem danh sách.
+  - Stop hook cho Claude Code và Codex: chỉ nhắc (không block), tối đa một lần mỗi phiên, khi câu của user có dấu hiệu sửa agent hoặc yêu cầu ghi nhớ. Cần `python3`; tắt bằng `COMPOUND_RETROS_HOOK_OFF=1`. Kimi chưa hỗ trợ hook ở bản này.
+  - Kèm `references/note-template.md` và 12 eval case. Gemini CLI headless load `gemini-context.md`; Cursor dùng rule `.cursor/rules/compound-retros.mdc`.
+
 ## [0.7.0] - 2026-09-27
 
 ### Plugins
@@ -128,7 +142,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/trisjr/agent-relay/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/trisjr/agent-relay/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/trisjr/agent-relay/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/trisjr/agent-relay/compare/v0.5.0...v0.5.1

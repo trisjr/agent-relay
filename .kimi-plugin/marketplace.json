@@ -44,7 +44,7 @@
       "displayName": "Compound Retros",
       "version": "0.1.0",
       "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter.",
-      "source": "./plugins/compound-retros"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.8.0/compound-retros-0.8.0.zip"
     }
   ]
 }
