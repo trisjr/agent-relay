@@ -5,6 +5,20 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-27
+
+### Plugins
+
+- `debug-root-cause`: 0.1.0 (mới)
+
+### Added
+
+- **debug-root-cause**: plugin mới có skill `debug-root-cause`, giúp debug một failure cụ thể đã xảy ra (test đỏ, build/CI fail, lỗi runtime, stack trace, flaky test, regression "hồi trước chạy đúng") theo quy trình có phương pháp thay vì đoán rồi sửa thử.
+  - 5 pha, mỗi pha có entry/exit criteria rõ ràng: Reproduce & isolate → Gather evidence → Hypothesis ledger → Fix & regression → Aftermath. Có nhánh riêng cho lỗi chỉ fail trên CI, lỗi flaky (chạy lặp tối thiểu 5 lần để đo tần suất) và trường hợp chỉ có stack trace.
+  - 4 Iron Rule: không sửa code khi chưa có failing test; không nói "fixed" khi chưa verify; mỗi lần chỉ một giả thuyết, một experiment, một thay đổi; vá triệu chứng coi như chưa fix.
+  - Stop rule: 3 giả thuyết bị bác bỏ hoặc 3 lần fix thất bại thì dừng, tóm tắt ledger và hỏi user. Lỗi infra/vendor/dependency ngoài tầm kiểm soát thì escalate kèm bằng chứng, không force-fix.
+  - Kèm `references/` (evidence playbook, template hypothesis ledger và bug report) cùng `evals/evals.json` gồm 12 case. Gemini CLI headless load `gemini-context.md`; Cursor dùng rule `.cursor/rules/debug-root-cause.mdc`.
+
 ## [0.6.0] - 2026-09-26
 
 ### Plugins
@@ -114,7 +128,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/trisjr/agent-relay/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/trisjr/agent-relay/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/trisjr/agent-relay/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/trisjr/agent-relay/compare/v0.4.0...v0.5.0
