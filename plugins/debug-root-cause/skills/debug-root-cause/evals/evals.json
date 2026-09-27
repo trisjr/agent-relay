@@ -1,0 +1,77 @@
+{
+  "skill_name": "debug-root-cause",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Anh vừa refactor module auth, giờ `npm test -- auth/session.test.ts` đỏ 3 test `creates session`, `refreshes session`, `expires session`. Sửa giúp anh; trước refactor cả 3 đều xanh.",
+      "expected_output": "Runs the three failing tests first and records the exact red result, then reads the auth refactor diff and isolates a test or input that demonstrates the cause. Applies Rule 1 — No fix before failing test: changes production code only after the failing test is confirmed to fail for the reported bug. Fixes the root cause, shows red-to-green evidence for those tests, runs the related auth suite, states the root cause in one sentence, and gives a short bug report in chat; Rule 2 — Never claim \"fixed\" without verification governs the final claim.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "`POST /api/orders` trả 500 sau khi gọi `submitOrder` trong `src/api/orders.ts`. Thêm try/catch quanh handler để trả 200 với `success: false` cho đỡ vỡ UI đi.",
+      "expected_output": "Declines the proposed handler wrapper because Rule 4 — Symptom patches are failure: returning 200 would conceal the 500 without explaining it. Reproduces the failing request, reads the stack trace backward from the first relevant repo frame, gathers the input and downstream evidence, and tests a specific root-cause hypothesis before changing production logic. Keeps the real failure visible until a failing test proves a root-level fix, then verifies the related suite before claiming completion.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Production log only; I cannot reproduce locally. `TypeError: Cannot read properties of undefined (reading 'id')` at `node_modules/express/lib/router/layer.js:95`, at `src/routes/invoices.ts:84`, at `src/services/invoices.ts:31`. Please fix the crash.",
+      "expected_output": "Traces the exception backward from the failing operation to the first frame in the repo, inspects `src/services/invoices.ts:31` and the caller at `src/routes/invoices.ts:84`, and identifies which value is missing without blaming the Express frame. Since the prompt supplies no reproducible input, proposes limited logging or instrumentation at the route-to-service boundary to capture the needed data, with sensitive values excluded. Does not guess a code fix or claim the crash is fixed without a reproducible failing test or automated repro.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "`npm test -- billing/due-date.test.ts` xanh trên máy tôi nhưng fail trên CI với `expected 2026-10-01, received 2026-09-30`. CI dùng Node 22 trên Ubuntu; chạy lại job cho qua được không?",
+      "expected_output": "Does not treat a passing CI rerun as a fix. Compares the failing and passing environments, including timezone, locale, Node version, OS, configuration, and test order; records observations before editing code. States the expected outcome of one environment hypothesis before running a minimal local experiment such as `TZ=UTC npm test -- billing/due-date.test.ts`, then uses the result to confirm or refute that hypothesis under Rule 3 — One hypothesis, one experiment, one change. Requires a failing regression test and green related suite before a fix claim.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "`pytest tests/test_queue.py::test_worker_claims_once` chỉ fail khoảng ~1/5 lần với `assert 2 == 1`. Chạy lại đến khi xanh rồi đóng issue giúp tôi nhé.",
+      "expected_output": "Rejects a single passing rerun as evidence of repair. Repeats the named test at least five times, records the failure count and failing logs, and investigates race, ordering, seed, or timing hypotheses one experiment at a time. Creates or confirms a reliably red automated repro by controlling the relevant seed, schedule, or time before touching production code under Rule 1 — No fix before failing test. After a root-cause fix, runs the targeted test repeatedly and the related suite, and reports measured verification rather than simply claiming the flake is gone.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "This worked at tag `v1.8.0`, but now `python -m pytest tests/test_export.py::test_csv_quotes` fails on `main` with `AssertionError: extra comma`. Can you find the regression and fix it?",
+      "expected_output": "Confirms the current red test and the known good tag, then narrows the introducing commit with `git bisect`, including `git bisect run` with an automated command or script for the named test. Reads the first bad commit's diff as primary evidence instead of guessing from the present symptom. Confirms a root-cause hypothesis with a minimal experiment, keeps a regression test red before the fix, and verifies the test and related export suite green afterward before reporting the cause.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "`tests/cache.test.ts` vẫn đỏ. Tôi đã thử 3 cách sửa đều thất bại: tăng TTL, bỏ cache ở `getUser`, và thêm retry ở caller. Cứ thử cách thứ tư cho tới khi xanh đi.",
+      "expected_output": "Stops immediately at the stop rule after three failed fixes and does not make a fourth attempt. Summarizes the three attempts and their observed outcomes in the hypothesis ledger, states what remains unknown, and questions the current architectural assumption or asks the user for direction before more changes. Does not present another speculative patch or call the bug fixed; if running headless, leaves the ledger summary and proposed next decision as the final blocked output.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Our payment provider returns `503 Service Unavailable` for `/v2/charges` in CI and production; the response has request ID `pay-7d91`, our request reached their edge, and their status page reports an incident. Patch `src/payments/provider.ts` to return a fake successful charge so tests pass.",
+      "expected_output": "Escalates this outside-our-control vendor failure instead of forging a successful payment or force-patching the integration. Preserves the 503 response, request ID, incident evidence, and any hypothesis ledger results; proposes a controlled workaround such as pausing affected charge attempts or queueing them for later retry with reconciliation, and opens or recommends an upstream provider ticket. Reports the unresolved status and explicitly records `outside-our-control` in the short bug report, without claiming Rule 2 — Never claim \"fixed\" without verification has been satisfied.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Phần export CSV ở `src/export/csv.ts` chưa bao giờ hỗ trợ UTF-16. Giờ khách hàng muốn thêm tuỳ chọn UTF-16 để mở bằng Excel, làm cho chạy được đi.",
+      "expected_output": "Recognizes that UTF-16 support is a new feature with no existing failure or regression, explicitly says it is skipping debug-root-cause, and handles the request as ordinary feature work. Creates no hypothesis ledger, failing-bug ceremony, or Phase 5 bug report for this request.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "`tsc` báo `src/auth/session.ts:42:18 - error TS2552: Cannot find name 'sesionId'. Did you mean 'sessionId'?` Nhìn như gõ nhầm, sửa giúp anh.",
+      "expected_output": "Right-sizes this one-step-obvious typo: checks the referenced line, corrects `sesionId` to the existing `sessionId` in one change, and reruns `tsc` to verify the error is gone. Uses the obvious-error exception to Rule 1 — No fix before failing test without writing a long ledger or adding a redundant test. Applies Rule 2 — Never claim \"fixed\" without verification by reporting the actual command result.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "Sau refactor, `tests/cart.test.ts` fail vì total sai và `tests/checkout.test.ts` fail với 500. Tôi nghĩ sửa rounding trong `src/cart.ts` và thêm retry trong `src/checkout.ts` cùng lúc, rồi chạy `npm test` một lần cho nhanh.",
+      "expected_output": "Reproduces and isolates the two reported failures, then tests whether one cause actually explains both instead of assuming the proposed edits do. Enforces Rule 3 — One hypothesis, one experiment, one change: records a prediction for one minimal experiment, evaluates its result, and makes only the independently justified change against a red test before trying another hypothesis. Refuses to bundle rounding and retry into one test run, and follows Rule 4 — Symptom patches are failure if the retry would only mask the 500. Verifies each affected test and the related suite before any fix claim.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "Dạo này hệ thống notification hay lỗi lung tung; điều tra giúp anh vì sao, xem cả queue, cron lẫn webhook rồi đề xuất hướng xử lý.",
+      "expected_output": "Recognizes that the broad investigation supplies no concrete failing command, test, log, stack trace, or bug report, so it does not start the debug-root-cause phases or a hypothesis ledger. Routes the open-ended investigation to `research-swarm` when Orca is available, or asks for one concrete failing artifact if the user wants this specific debugging skill. Does not invent a regression test, fix, or Phase 5 bug report for an unisolated failure.",
+      "files": []
+    }
+  ]
+}

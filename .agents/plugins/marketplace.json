@@ -18,6 +18,11 @@
       "name": "clarify-requirements",
       "source": "./plugins/clarify-requirements",
       "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief."
+    },
+    {
+      "name": "debug-root-cause",
+      "source": "./plugins/debug-root-cause",
+      "description": "Debug with method, not guesses: reproduce and isolate the failure, gather evidence, run a hypothesis ledger with minimal experiments, fix the root cause behind a failing test, verify green, and write a short bug report — for any concrete test, build, CI, or runtime failure."
     }
   ]
 }

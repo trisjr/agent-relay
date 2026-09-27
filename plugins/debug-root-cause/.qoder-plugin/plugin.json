@@ -1,0 +1,10 @@
+{
+  "name": "debug-root-cause",
+  "version": "0.1.0",
+  "description": "Debug with method, not guesses: reproduce and isolate the failure, gather evidence, run a hypothesis ledger with minimal experiments, fix the root cause behind a failing test, verify green, and write a short bug report — for any concrete test, build, CI, or runtime failure.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/"
+}

@@ -1,0 +1,29 @@
+---
+description: Apply to one concrete, existing test, build, CI, or runtime failure; skip new features, healthy-diff review, vague requirements, and open-ended research.
+globs:
+alwaysApply: false
+---
+
+# debug-root-cause
+
+Debug one failure with evidence, one agent, and depth-first experiments.
+
+1. Right-size first: skip when there is no existing failure; route broad research to `research-swarm`, healthy-diff review to `parallel-review`, and unclear intent to `clarify-requirements`.
+2. Keep ceremony proportional: confirm and rerun a one-step-obvious typo or missing import quickly; keep a written ledger when the cause is uncertain.
+3. Phase 1 — Reproduce & isolate: rerun the exact failing path and reduce its input while preserving the failure.
+4. For CI-only failures compare environments; for flaky failures run at least five repeats and record failures/N; if no repro is possible, collect targeted boundary data without changing behavior.
+5. Phase 2 — Gather evidence: read the trace backward from the failure, inspect recent diffs and history, and compare config, versions, and dependencies.
+6. Check component input and output to find the first boundary where correct data becomes wrong; record observations and non-observations.
+7. Phase 3 — Hypothesis ledger: rank testable causes by likelihood × cost-to-test and write the expected result before each smallest experiment.
+8. Record each outcome as `confirmed`, `refuted`, or `inconclusive`; confirm a root cause only when it explains the relevant failures and nearby passes.
+9. Rule 3 — One hypothesis, one experiment, one change: vary one thing, inspect the result, and update the ledger before the next attempt.
+10. Phase 4 — Fix & regression: run the smallest test or automated repro script red for the reported reason, repair the confirmed root cause, then run it green and run the related suite.
+11. Rule 1 — No fix before failing test: do not change production logic before a red check, except a one-step-obvious correction named by the error; rerun its command afterward.
+12. Rule 4 — Symptom patches are failure: trace callers and repair the shared cause, not only the point where the error appears.
+13. Rule 2 — Never claim "fixed" without verification: require the original check and related suite green and a one-sentence root cause; state any verification limit.
+14. Stop at 3 refuted hypotheses or 3 failed fixes: summarize the ledger, question the system model or architecture, and ask the user before another attempt.
+15. Escalate without force-fixing unpatchable dependency bugs; infra, vendor, quota, DNS, or CI-runner trouble; an unapproved public-contract change or data migration; or a race outside your control.
+16. Phase 5 — Aftermath: report Symptom, Root cause, Fix, and Prevention in chat by default; label manual-only verification `unverified by automated test`.
+17. In a headless run, a stop or escalation ends with a final status block: ledger summary, evidence, unresolved cause, and proposal.
+
+Never silently make a fourth attempt or call a passing rerun of a flaky check a fix.
