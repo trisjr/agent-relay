@@ -18,9 +18,9 @@
       "id": "jev-dispatch",
       "name": "jev-dispatch",
       "displayName": "Jev Dispatch",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.5.1/jev-dispatch-0.5.1.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.12.0/jev-dispatch-0.12.0.zip"
     },
     {
       "id": "clarify-requirements",

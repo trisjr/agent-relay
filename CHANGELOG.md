@@ -5,6 +5,20 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-09-29
+
+### Plugins
+
+- `jev-dispatch`: 0.3.1 → 0.4.0
+
+### Added
+
+- **jev-dispatch**: policy routing có thêm nhánh Claude Sonnet 5.5. Task có complexity `2.2 <= c < 3.2` giờ route sang `claude` / `sonnet` / `high` thay vì `codex` / `luna` / `max`; Opus vẫn giữ cho task `c >= 3.2`. Nhánh mới đứng trước nhánh web/long-context. Ngưỡng 2.2 chưa được đo trên golden set, nên vẫn chạy shadow mode trước khi bật auto-routing.
+
+### Changed
+
+- **jev-dispatch**: siết quy tắc ghi dispatch log để replay golden set không bị lệch schema. Tên field giữ đúng như spec (`event`, không phải `kind`; `response` để nguyên), `outcome` chỉ nhận 4 giá trị trong enum, mỗi lần gọi `ask` chỉ ghi một record `route` sau khi chốt dispatch, task không qua `ask` thì không ghi. `used.model`/`used.effort` giờ ghi giá trị cụ thể worker chạy thay vì `null`. Worker lỗi lúc khởi động rồi chạy lại được vẫn tính `ok`. Đã đồng bộ SKILL, README, rule Cursor và eval.
+
 ## [0.11.0] - 2026-09-29
 
 ### Plugins
@@ -196,7 +210,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/trisjr/agent-relay/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/trisjr/agent-relay/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/trisjr/agent-relay/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/trisjr/agent-relay/compare/v0.8.0...v0.9.0
