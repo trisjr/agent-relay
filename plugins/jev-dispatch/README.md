@@ -36,11 +36,12 @@ Biến dùng trong bảng: `c` = `judgments.complexity`, `r` = `judgments.risk`,
 | 2 | `confidence.risk < FLOOR_ROUTE` | `ESCALATE`, `act=false` (risk unknown) |
 | 3 | `confidence.complexity < FLOOR_ROUTE` | `ESCALATE`, `act=false` (complexity unknown) |
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
-| 5 | `needs_web > 0.7` hoặc `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
-| 6 | `c < 1.2` và `r < 0.6` và `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
-| 7 | Còn lại | `codex` / `luna` / `max` |
+| 5 | `c >= 2.2` | `claude` / `sonnet` / `high` |
+| 6 | `needs_web > 0.7` hoặc `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
+| 7 | `c < 1.2` và `r < 0.6` và `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
+| 8 | Còn lại | `codex` / `luna` / `max` |
 
-`ESCALATE` luôn có dạng `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`. Chỉ rule 1 thêm `requires_approval` và `suggested`. Các rule route thật (4–7) trả `act=true`.
+`ESCALATE` luôn có dạng `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`. Chỉ rule 1 thêm `requires_approval` và `suggested`. Các rule route thật (4–8) trả `act=true`.
 
 Thứ tự đánh giá:
 
@@ -115,7 +116,10 @@ Có hai loại record, nối với nhau bằng `id`: task id của orchestrator 
 | `route` | Sau **mỗi** lần gọi `ask`, kể cả khi error, ESCALATE hay không dispatch gì | `id`, `ts` (UTC ISO 8601), `task` và `context` đúng như đã gửi, `response` là nguyên response của `ask`, `used` = `{harness, model, effort}` thực sự dispatch |
 | `outcome` | Một lần khi task kết thúc, sau mọi lần retry | `id`, `ts`, `outcome` (`ok` \| `retried` \| `failed` \| `cancelled`), `note` (tùy chọn, một dòng) |
 
-- `used.model`/`used.effort` là `null` khi để mặc định của harness.
+- Giữ đúng tên field và cấu trúc như bảng trên (`event`, không phải `kind`; `response` để nguyên, không kéo field ra ngoài; `outcome` chỉ nhận 4 giá trị trong enum), vì script replay đọc theo đúng schema này.
+- Mỗi lần gọi `ask` chỉ ghi một record `route`, ghi sau khi đã chốt dispatch. Task dispatch mà không gọi `ask` (user chỉ định model, plan đã duyệt) thì không ghi gì.
+- `used.model`/`used.effort` ghi giá trị cụ thể worker chạy (vd `claude-opus-5-5`, `gpt-6-luna`), kể cả khi đó là mặc định của harness. Chỉ để `null` khi thật sự không biết.
+- Worker lỗi lúc khởi động (vd readiness timeout) rồi chạy lại thành công vẫn tính là `ok`, ghi sự cố vào `note`. `retried` chỉ dành cho trường hợp phải retry hoặc giao lại vì kết quả của worker.
 - `used` là `null` khi không dispatch gì; khi đó không ghi `outcome`.
 - `cancelled` là task dừng vì lý do không liên quan tới worker, không tính vào metric routing.
 

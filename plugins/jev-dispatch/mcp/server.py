@@ -109,6 +109,9 @@ def route(j: dict, conf: dict, tail: float) -> dict[str, Any]:
     if c >= 3.2:
         return {"harness": "claude", "model": "opus", "effort": "high",
                 "why": f"very complex ({c:.1f})", "act": True}
+    if c >= 2.2:
+        return {"harness": "claude", "model": "sonnet", "effort": "high",
+                "why": f"complex ({c:.1f}) -> sonnet 5.5", "act": True}
     if p_web > 0.7 or p_long > 0.7:
         return {"harness": "codex", "model": "sol", "effort": "medium",
                 "why": f"web ({p_web:.2f}) / long-context ({p_long:.2f}) fits codex sol", "act": True}

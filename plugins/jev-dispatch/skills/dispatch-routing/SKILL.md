@@ -51,6 +51,8 @@ Jev scores the task on five independent questions in ONE request (~740 input tok
 The golden set is one append-only JSONL file: `~/.local/state/jev-dispatch/dispatch-log.jsonl`. It sits outside every repo and holds task text, so the no-secrets rule for `task` applies to it too.
 
 - One JSON object per line. Never edit or delete earlier lines.
+- Use the record shapes below exactly. Replay scripts read these field names, so never rename them (`event`, never `kind`), never lift `response` fields to the top level, and never invent `outcome` values.
+- Log only dispatches that went through `ask`. A task routed without calling `ask` (user-fixed model, pre-approved plan) gets no records: without judgments it is useless to the golden set.
 - `mkdir -p` the directory on first use.
 - Append through `jq`, never with `echo`, so quotes in task text cannot break the line. The quoted `'EOF'` disables shell interpolation; `jq` compacts the record to one line and appends nothing if the JSON is malformed:
 
@@ -60,17 +62,17 @@ The golden set is one append-only JSONL file: `~/.local/state/jev-dispatch/dispa
   EOF
   ```
 
-`route`, appended right after the dispatch decision:
+`route`, appended once per `ask` call, after the dispatch decision is final (not before, then again):
 
 ```json
-{"event": "route", "id": "<task id>", "ts": "<UTC ISO 8601>", "task": "<task as sent>", "context": {"repo": "...", "budget": "..."}, "response": {"...": "the ask response, verbatim"}, "used": {"harness": "codex", "model": null, "effort": null}}
+{"event": "route", "id": "<task id>", "ts": "<UTC ISO 8601>", "task": "<task as sent>", "context": {"repo": "...", "budget": "..."}, "response": {"...": "the ask response, verbatim"}, "used": {"harness": "claude", "model": "claude-opus-5-5", "effort": "medium"}}
 ```
 
 - `id`: unique per task, and reused by its `outcome`. Use the orchestrator's task id when there is one (e.g. the Orca task id). Otherwise generate one, such as a UTC timestamp plus a short slug.
 - `task`, `context`: exactly what was sent to `ask`. The response contains neither, and re-scoring after a wording or model change needs both.
 - `response`: the whole object `ask` returned, error responses included. Never trim or recompute it.
 - `used`: what was actually dispatched; in shadow mode it may differ from `routing`.
-  - `model`/`effort` are `null` when left at the harness default. Never fill them in from `routing`.
+  - `model`/`effort`: the concrete values the worker runs with (e.g. `claude-opus-5-5`, `gpt-6-luna`), including a harness default you can see. `null` only when truly unknown. Never fill them in from `routing`.
   - `used` is `null` when nothing was dispatched: the coordinator did the task itself, or the user declined.
 
 `outcome`, appended once when the task settles, after any retries:
@@ -81,7 +83,7 @@ The golden set is one append-only JSONL file: `~/.local/state/jev-dispatch/dispa
 
 - `outcome` is one of:
   - `ok`: accepted on the first worker.
-  - `retried`: accepted only after a retry or a reassignment.
+  - `retried`: accepted only after a retry or a reassignment caused by the worker's result. A worker that merely failed to start (e.g. readiness timeout) and then succeeded is still `ok`; put the hiccup in `note`.
   - `failed`: never accepted.
   - `cancelled`: stopped for a reason unrelated to the worker (scope change, user abort). It is excluded from routing metrics.
 - `note`: short evidence, such as the failing acceptance command. Never a log or diff dump.
@@ -97,13 +99,14 @@ Symbols: `c` = `judgments.complexity`, `r` = `judgments.risk`, `tail` = `risk_ta
 | 2 | `confidence.risk < FLOOR_ROUTE` | `ESCALATE`, `act=false` (risk unknown) |
 | 3 | `confidence.complexity < FLOOR_ROUTE` | `ESCALATE`, `act=false` (complexity unknown) |
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
-| 5 | `needs_web > 0.7` or `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
-| 6 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
-| 7 | otherwise | `codex` / `luna` / `max` |
+| 5 | `c >= 2.2` | `claude` / `sonnet` / `high` |
+| 6 | `needs_web > 0.7` or `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
+| 7 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
+| 8 | otherwise | `codex` / `luna` / `max` |
 
 - ESCALATE is always `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`.
 - Only rule 1 adds `requires_approval` and `suggested`.
-- Rules 4–7 return `act=true`.
+- Rules 4–8 return `act=true`.
 - `needs_planning` is scored and returned, but no rule uses it.
 
 This policy differs from the measured prototype. Re-run the golden set in shadow mode before enabling auto-routing.

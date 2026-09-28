@@ -85,6 +85,7 @@ ROWS = {
     "g": ((3.5, 0.5, 0.9, 0.9, 0.05, 0.1, 0.1), ("claude", "opus", "high", True)),
     "h": ((2.0, 1.2, 0.8, 0.6, 0.1, 0.2, 0.2), ("codex", "luna", "max", True)),
     "i": ((2.0, 0.3, 0.9, 0.2, 0.05, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
+    "j": ((2.5, 0.3, 0.9, 0.9, 0.05, 0.8, 0.1), ("claude", "sonnet", "high", True)),
 }
 for name, (row, expected) in ROWS.items():
     out = ask(srv, response(*row))
