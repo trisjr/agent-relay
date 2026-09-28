@@ -72,6 +72,12 @@
       "prompt": "Dạo này hệ thống notification hay lỗi lung tung; điều tra giúp anh vì sao, xem cả queue, cron lẫn webhook rồi đề xuất hướng xử lý.",
       "expected_output": "Recognizes that the broad investigation supplies no concrete failing command, test, log, stack trace, or bug report, so it does not start the debug-root-cause phases or a hypothesis ledger. Routes the open-ended investigation to `research-swarm` when Orca is available, or asks for one concrete failing artifact if the user wants this specific debugging skill. Does not invent a regression test, fix, or Phase 5 bug report for an unisolated failure.",
       "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "[Orca dispatch preamble] Executable: /usr/local/bin/orca. Handle: term_7f2. Capability: cap_91a. Task ID: task_int. Dispatch ID: disp_44c. Blocking question: `/usr/local/bin/orca orchestration ask --from term_7f2 --dispatch-capability cap_91a --question \"<question>\" --options \"<choice-a>,<choice-b>\" --timeout-ms 600000`.\n\nTask: integration — run `npm test`, which is red in `tests/ledger.test.ts` (`expected 100, received 99.99`). You have already refuted three hypotheses: float rounding in `src/ledger.ts`, locale formatting, and fixture ordering.",
+      "expected_output": "Applies the stop rule instead of trying a fourth hypothesis or fix. Recognizes the live preamble, so it does not open a local question UI such as AskUserQuestion; it sends the ledger summary, evidence, unresolved cause, and proposal to the coordinator through the preamble's `ask` command copied verbatim, or as an `escalation` message built from the orchestration guide's worker contract. Follows the coordinator's reply, and if the work ends unresolved reports `worker_done` with `--outcome failed`, never `succeeded`.",
+      "files": []
     }
   ]
 }

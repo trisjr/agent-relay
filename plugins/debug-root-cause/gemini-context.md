@@ -1,7 +1,7 @@
 # debug-root-cause
 
 Apply to one concrete, existing test, build, CI, or runtime failure; keep one agent on the failure and investigate depth-first.
-Ignore for new features, healthy-diff review, vague requirements, and open-ended research; route those to ordinary work, `parallel-review`, `clarify-requirements`, or `research-swarm` as appropriate.
+Ignore for new features, healthy-diff review, vague requirements, and open-ended research; route those to ordinary work, `parallel-review`, `clarify-requirements`, or `research-swarm` as appropriate, or handle them as a single agent when that skill is missing.
 
 - If `activate_skill` is available, activate the `debug-root-cause` skill and follow it.
 - Right-size first: an obvious error can take minutes; uncertain failures need recorded evidence and a hypothesis ledger.

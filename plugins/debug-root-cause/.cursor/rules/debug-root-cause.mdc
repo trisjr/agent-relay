@@ -8,7 +8,7 @@ alwaysApply: false
 
 Debug one failure with evidence, one agent, and depth-first experiments.
 
-1. Right-size first: skip when there is no existing failure; route broad research to `research-swarm`, healthy-diff review to `parallel-review`, and unclear intent to `clarify-requirements`.
+1. Right-size first: skip when there is no existing failure; route broad research to `research-swarm`, healthy-diff review to `parallel-review`, and unclear intent to `clarify-requirements`; without that rule/skill, handle it as a single agent.
 2. Keep ceremony proportional: confirm and rerun a one-step-obvious typo or missing import quickly; keep a written ledger when the cause is uncertain.
 3. Phase 1 — Reproduce & isolate: rerun the exact failing path and reduce its input while preserving the failure.
 4. For CI-only failures compare environments; for flaky failures run at least five repeats and record failures/N; if no repro is possible, collect targeted boundary data without changing behavior.

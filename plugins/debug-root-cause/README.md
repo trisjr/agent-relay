@@ -29,6 +29,7 @@ Các điểm cần giữ, gồm bốn **Iron Rules**:
 - **Rule 4 — Symptom patches are failure:** lần theo caller và ranh giới component để sửa tại nơi tạo ra hành vi sai.
 - **Stop rule:** 3 refuted hypotheses hoặc 3 failed fixes thì dừng, tóm tắt ledger, hỏi user hoặc xem lại mô hình/kiến trúc; không âm thầm thử lần thứ tư.
 - **Escalation:** dừng và báo bằng chứng, ledger cùng hướng xử lý khi gặp dependency bug không thể patch hợp lý; lỗi infra/vendor/quota/DNS/CI-runner; fix đúng cần đổi public contract hoặc migration chưa được duyệt; hoặc race ở tầng ngoài tầm kiểm soát.
+- **Orca worker:** khi chạy trong worker có live preamble, stop rule và escalation đi qua lệnh `ask` của preamble hoặc message `escalation` gửi coordinator, không mở UI hỏi local; không giải quyết được thì `worker_done --outcome failed`.
 
 `gemini-context.md` giữ bản tóm tắt vì Gemini headless (`-p`, CI) bỏ `activate_skill`, khiến `SKILL.md` thường không được load; tên file cố ý khác `GEMINI.md`. Cursor không đọc `SKILL.md` của plugin nên dùng `.cursor/rules/debug-root-cause.mdc` để áp dụng cùng quy trình.
 

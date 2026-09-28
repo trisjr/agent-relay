@@ -13,7 +13,7 @@ Treat debugging as the scientific method applied to one failure. A fix-try loop 
 | --- | --- | --- |
 | Skip | There is no existing failure. “Export never supported UTF-16; make it work” is a feature request disguised as a bug. | Handle the feature or refactor as ordinary work. For an outage outside your control, escalate immediately. |
 | Debug | A specific test, build, CI job, runtime path, benchmark, or reported behavior has failed. | Follow the phases below with one agent. |
-| Route elsewhere | The question needs broad, independent research; a healthy diff needs review; or the intended behavior is unclear. | Use `research-swarm`, `parallel-review`, or `clarify-requirements`, respectively. |
+| Route elsewhere | The question needs broad, independent research; a healthy diff needs review; or the intended behavior is unclear. | Use `research-swarm`, `parallel-review`, or `clarify-requirements`, respectively; when that skill is not installed, handle it as a single agent. |
 
 **When not to use:** Do not turn open-ended investigation into a debugging swarm. Do not use this for ongoing monitoring, load testing, or deep profiling. For a concrete performance regression, use a repeatable benchmark as the repro. Do not force a code patch for vendor, infrastructure, DNS, quota, or runner failures; follow escalation.
 
@@ -92,6 +92,8 @@ Escalate without force-fixing when the cause is an unpatchable dependency bug; i
 “No root cause” is rare. Use it only after the ledger rules out software you control. Then propose bounded error handling and observability, such as a timeout, retry, or targeted log, with a way to verify whether the unexplained failure recurs. Do not label the problem mysterious and close it.
 
 In a headless run or subagent with no one to answer, a stop or escalation ends in a full final status block: ledger summary, evidence, unresolved cause, and proposal. Do not wait indefinitely or silently proceed.
+
+As a dispatched Orca worker (a live injected preamble with executable, handle, capability, Task ID, and Dispatch ID), the coordinator is the one who answers, so this replaces the headless ending above — never open a local question UI nobody can see. Put that same status block in a stop question sent through the preamble's `ask` command, copied verbatim (on timeout, resume the same message ID; never ask again), or in an `escalation` message built exactly as `<preamble executable> skills get orchestration --reference references/worker-contract.md` shows. Follow the coordinator's reply; if the work ends unresolved, send `worker_done` with `--outcome failed`, never `succeeded`.
 
 ## Phase 5 — Aftermath
 
