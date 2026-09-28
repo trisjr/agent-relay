@@ -11,8 +11,8 @@ Before dispatching a worker task spec:
 1. Call the MCP tool `ask(battery="spec_readiness", task=<full spec>, context={"repo": ..., "siblings": ..., "round": "1"})`.
    - Cursor needs manual MCP config. See the plugin README.
    - If the tool is unavailable or returns an `error`, run the five-field manual checklist from the `spec-readiness` skill's SKILL.md and say so.
-2. `task`, `context.repo`, and `context.siblings` go to the TypeSafe API. Never include secrets, credentials, PII, orchestration preambles, or capability tokens. `siblings` is one `<worker>: <paths>` line per other spec in the same wave.
+2. `task`, `context.repo`, and `context.siblings` go to the TypeSafe API. Never include secrets, credentials, PII, orchestration preambles, or capability tokens: send only the five contract fields. `siblings` is one `<worker>: <paths>` line per other spec in the same wave, at most 1000 chars. Too long, or a known token/key shape, returns `kind: "input"`.
 3. Read `verdict.act`: `dispatch` (clear), `clarify` (fix only `verdict.missing_fields`, then re-score with `round: "2"`; `exhausted: true` means stop clarifying and decide yourself, adding a `readiness_override` line if you dispatch), `escalate` (decide yourself or ask the user).
 4. `mode: "shadow"` (default) never blocks: dispatch as usual and report the verdict in one line. Only `mode: "enforce"` follows the verdict. Only the user changes the mode.
-5. Log to `~/.local/state/spec-readiness-gate/readiness-log.jsonl` (append-only, `jq -c . <<'EOF' >> <log>`, no raw spec text): a `verdict` record after each successful `ask`, a `downstream` record with the dispatched spec's `spec_hash` when the worker settles. Formats are in SKILL.md.
-6. `overall_readiness` is 0-based (0..4). A field Noul near 0.5 means "unsure", not "half specified".
+5. Log to `~/.local/state/spec-readiness-gate/readiness-log.jsonl` (append-only, `jq -c . <<'EOF' >> <log>`, no raw spec text): a `verdict` record after each successful `ask`, a `downstream` record when the worker settles, carrying the `spec_hash` of the last `ask` response for that spec (later edits such as `readiness_override` do not change it). Formats are in SKILL.md.
+6. `overall_readiness` is 0-based (0..4). A field Noul near 0.5 means "unsure", not "half specified", and counts as weak (0.35–0.65).

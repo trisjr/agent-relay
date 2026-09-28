@@ -6,9 +6,12 @@
 
 serve: uv run --script <PLUGIN_ROOT>/mcp/server.py   (stdio; deps from the PEP 723 block, needs uv)
 test:  uv run --with "mcp[cli]>=2.2,<3" --with "typesafe-sdk>=0.7.1,<0.8" python test_server.py   (offline)
+eval:  same command with eval_live.py   (opt-in: real API over golden.json, needs TYPESAFE_API_KEY, billed)
 env:  TYPESAFE_API_KEY (optional; without it every ask returns kind "config" — pass through, never hardcode)
-      TYPESAFE_JEV_MODEL   (default "jev-1.13.0" — pinned, bump only after re-eval)
-      SPECGATE_FLOOR_FIELD (default 0.5  — a contract-field Noul below it lands in missing_fields)
+      TYPESAFE_JEV_MODEL   (default "jev-1.13.0" — pinned; bump, or change battery/contract wording, only after
+                            eval_live.py passes — evals/evals.json checks skill behavior only)
+      SPECGATE_FLOOR_FIELD (default 0.5  — a contract-field Noul below it, or within UNSURE_BAND of 0.5,
+                            lands in missing_fields)
       SPECGATE_FLOOR_SCORE (default 2.0  — min overall_readiness, 0..4 scale, to dispatch)
       SPECGATE_FLOOR_CONF  (default 0.35 — min overall_readiness confidence; below it -> escalate)
       SPECGATE_MODE        (default "shadow" | "enforce" — echoed in every response, never changes the verdict)
@@ -18,12 +21,13 @@ env:  TYPESAFE_API_KEY (optional; without it every ask returns kind "config" —
 import hashlib
 import math
 import os
+import re
 import time
 from typing import Any
 
 from mcp.server import MCPServer
 from typesafe_sdk import (AsyncTypeSafeClient, Noul, Score, TypeSafeAPIConnectionError,
-                          TypeSafeAPITimeoutError, TypeSafeError)
+                          TypeSafeAPIResponseValidationError, TypeSafeAPITimeoutError, TypeSafeError)
 
 mcp = MCPServer("spec-readiness-gate", dependencies=["typesafe-sdk>=0.7.1,<0.8"])
 _client: AsyncTypeSafeClient | None = None  # built on first ask so import works without a key
@@ -59,6 +63,11 @@ else:
 MAX_TASK = 8000
 CONTEXT_LIMITS = {"repo": 500, "siblings": 1000}  # sent to Jev; "round" is policy-only, never sent
 ROUNDS = ("1", "2")
+UNSURE_BAND = 0.15  # a field Noul within this of 0.5 is Jev being unsure: weak, even above FLOOR_FIELD
+# Last-line guard on what leaves the machine: Orca capability tokens and terminal handles, private keys,
+# API keys. ponytail: common shapes only, not a secret scanner — the caller still strips before sending.
+DENY = re.compile(r"dcap__|term_[0-9a-f]{8}-[0-9a-f]{4}-|-----BEGIN [A-Z ]*PRIVATE KEY|TYPESAFE_API_KEY\s*="
+                  r"|\b(?:sk-[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,})")
 
 DEFAULT_CONTEXT = {
     "repo": "unspecified repo — pass context.repo to override",
@@ -107,12 +116,14 @@ BATTERIES = {
 
 
 # overall_readiness is a 0-based probability-weighted position (criteria[0] = 0, spans 0..4).
+# A field is weak below FLOOR_FIELD or inside the unsure band around 0.5 (Nouls carry no confidence).
 # First match wins. Every direction the policy can err is safe: clarify/escalate, never a silent dispatch.
 def verdict(j: dict, conf: dict, rnd: str) -> dict[str, Any]:
     s, c, r = j["overall_readiness"], conf["overall_readiness"], int(rnd)
     if c < FLOOR_CONF:
         return {"act": "escalate", "why": f"readiness unknown: conf {c:.2f} < {FLOOR_CONF}", "round": r}
-    missing = [k for k, v in j.items() if k != "overall_readiness" and v < FLOOR_FIELD]
+    missing = [k for k, v in j.items()
+               if k != "overall_readiness" and (v < FLOOR_FIELD or abs(v - 0.5) < UNSURE_BAND)]
     if s >= FLOOR_SCORE and not missing:
         return {"act": "dispatch", "why": f"ready ({s:.1f} >= {FLOOR_SCORE})", "round": r}
     why = f"readiness {s:.1f} (floor {FLOOR_SCORE}); weak fields: {', '.join(missing) or 'none'}"
@@ -141,7 +152,8 @@ async def ask(battery: str, task: str, context: dict | None = None) -> dict[str,
     Ownership / Observable acceptance), non-empty, <= 8000 chars. `context` keys:
     "repo" (string <= 500), "siblings" (string <= 1000, one "<worker>: <paths>" line per other spec
     in the same wave), "round" ("1" default, or "2" after one clarify pass; anything else is an input
-    error). Other keys or oversized values are dropped and listed in context_ignored.
+    error). A repo/siblings that is not a string or is too long is an input error; other keys are
+    dropped and listed in context_ignored — a non-empty context_ignored means the call is wrong.
     - verdict.act="dispatch": spec is ready.
     - verdict.act="clarify": fix verdict.missing_fields, then re-score with round "2";
       exhausted=true means stop clarifying and decide yourself.
@@ -149,7 +161,8 @@ async def ask(battery: str, task: str, context: dict | None = None) -> dict[str,
       readiness unknown — decide yourself or ask the user.
     `mode` is "shadow" (never block on the verdict, only report and log it) or "enforce" (follow it).
     `task` and `context.repo/siblings` are sent to the TypeSafe API: never include secrets,
-    credentials, PII, or orchestration preambles/tokens.
+    credentials, PII, or orchestration preambles/tokens. Text matching a known token or key shape
+    is refused with kind "input" before anything is sent.
     """
     global _client
     if CONFIG_ERROR:
@@ -165,9 +178,19 @@ async def ask(battery: str, task: str, context: dict | None = None) -> dict[str,
     rnd = str(context.get("round", "1"))
     if rnd not in ROUNDS:
         return _error('context.round must be "1" or "2"', "input")
-    kept = {k: v for k, v in context.items()
-            if k in CONTEXT_LIMITS and isinstance(v, str) and len(v) <= CONTEXT_LIMITS[k]}
+    kept = {k: context[k] for k in CONTEXT_LIMITS if k in context}
+    for k, v in kept.items():  # a dropped siblings would read as "none" and pass ownership: fail closed
+        if not isinstance(v, str) or len(v) > CONTEXT_LIMITS[k]:
+            return _error(f"context.{k} must be a string of at most {CONTEXT_LIMITS[k]} chars", "input")
     ignored = sorted(str(k) for k in context if k not in kept and k != "round")
+    for name, text in (("task", task), *((f"context.{k}", v) for k, v in kept.items())):
+        try:
+            text.encode()
+        except UnicodeEncodeError:
+            return _error(f"{name} is not valid UTF-8 text (unpaired surrogate?)", "input")
+        if DENY.search(text):  # never echo the match: it is the secret
+            return _error(f"{name} looks like it holds a secret or an orchestration token (capability token, "
+                          "terminal handle, private key, API key) — send only the five contract fields", "input")
     if _client is None:
         if (key := _env("TYPESAFE_API_KEY")) is None:
             return _error("TYPESAFE_API_KEY is not set — use the manual checklist", "config")
@@ -183,6 +206,8 @@ async def ask(battery: str, task: str, context: dict | None = None) -> dict[str,
         return _error(str(e), "timeout", e)
     except TypeSafeAPIConnectionError as e:
         return _error(str(e), "connection", e)
+    except TypeSafeAPIResponseValidationError as e:  # HTTP 200 with malformed data, before the broad catch
+        return _error(str(e), "response", e)
     except TypeSafeError as e:
         return _error(str(e), "api", e)
     latency_ms = round((time.monotonic() - started) * 1000)
@@ -192,8 +217,9 @@ async def ask(battery: str, task: str, context: dict | None = None) -> dict[str,
         return _error(f"response missing answers: {missing}", "response")
     judgments = {k: nouls[k].noul if isinstance(q, Noul) else scores[k].score for k, q in questions.items()}
     conf = {k: scores[k].confidence for k, q in questions.items() if isinstance(q, Score)}
-    if not all(math.isfinite(v) for v in (*judgments.values(), *conf.values())):
-        return _error("response has non-finite values", "response")  # NaN would fail open
+    top = {k: 4 if isinstance(q, Score) else 1 for k, q in questions.items()}  # Score 0..4, Noul 0..1
+    if not (all(0 <= v <= top[k] for k, v in judgments.items()) and all(0 <= c <= 1 for c in conf.values())):
+        return _error("response has out-of-range or non-finite values", "response")  # NaN/999 would fail open
     out = {
         "model": resp.model,
         "battery": battery,

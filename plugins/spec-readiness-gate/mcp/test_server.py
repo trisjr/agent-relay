@@ -10,8 +10,8 @@ from pathlib import Path
 sys.dont_write_bytecode = True  # keep __pycache__ out of the plugin dir
 
 import httpx2
-from typesafe_sdk import (SystemOneResponse, TypeSafeAPIConnectionError, TypeSafeAPITimeoutError,
-                          TypeSafeInternalServerError)
+from typesafe_sdk import (SystemOneResponse, TypeSafeAPIConnectionError, TypeSafeAPIResponseValidationError,
+                          TypeSafeAPITimeoutError, TypeSafeInternalServerError)
 
 for var in ("TYPESAFE_API_KEY", "TYPESAFE_JEV_MODEL", "SPECGATE_FLOOR_FIELD", "SPECGATE_FLOOR_SCORE",
             "SPECGATE_FLOOR_CONF", "SPECGATE_MODE"):
@@ -81,7 +81,9 @@ GOOD = (0.9,) * 5
 # (nouls, score, conf, round) -> (act, missing_fields, exhausted)
 ROWS = {
     "ready": ((GOOD, 3.4, 0.8, "1"), ("dispatch", None, None)),
-    "at floors": (((0.5,) * 5, 2.0, 0.35, "1"), ("dispatch", None, None)),
+    "all unsure at floors": (((0.5,) * 5, 2.0, 0.35, "1"), ("clarify", list(FIELDS), None)),
+    "one unsure field": (((0.9, 0.9, 0.6, 0.9, 0.9), 3.0, 0.7, "1"), ("clarify", ["constraints_stated"], None)),
+    "just past unsure band": (((0.66,) * 5, 2.0, 0.35, "1"), ("dispatch", None, None)),
     "no acceptance": (((0.9, 0.9, 0.9, 0.9, 0.1), 1.6, 0.7, "1"), ("clarify", ["acceptance_testable"], None)),
     "ownership overlap": (((0.9, 0.9, 0.9, 0.2, 0.9), 3.0, 0.7, "1"), ("clarify", ["ownership_clear"], None)),
     "placeholder": (((0.1, 0.2, 0.1, 0.1, 0.1), 0.2, 0.9, "1"), ("clarify", list(FIELDS), None)),
@@ -132,13 +134,19 @@ check_error(ask(srv, TypeSafeAPIConnectionError("Connection error: refused")), "
 out = ask(srv, TypeSafeInternalServerError(503, None, httpx2.Headers({"x-typesafe-request-id": "req_1"})))
 check_error(out, "api")
 assert out["status"] == 503 and out["request_id"] == "req_1", out
+out = ask(srv, TypeSafeAPIResponseValidationError(200, None, httpx2.Headers(), "answers.overall_readiness"))
+check_error(out, "response")
+assert out["error_type"] == "TypeSafeAPIResponseValidationError", out
 
-# Bad responses: missing answer, non-finite Noul / score / confidence.
+# Bad responses: missing answer, non-finite or out-of-range Noul / score / confidence.
 check_error(ask(srv, response(GOOD, 3.4, 0.8, drop=("ownership_clear",))), "response")
 check_error(ask(srv, response(GOOD, 3.4, 0.8, drop=("overall_readiness",))), "response")
 check_error(ask(srv, response((float("nan"),) + GOOD[1:], 3.4, 0.8)), "response")
 check_error(ask(srv, response(GOOD, float("inf"), 0.8)), "response")
 check_error(ask(srv, response(GOOD, 3.4, float("nan"))), "response")
+for nouls, score, conf in (((2.0,) + GOOD[1:], 3.4, 0.8), ((-0.1,) + GOOD[1:], 3.4, 0.8),
+                           (GOOD, 999.0, 0.8), (GOOD, -0.5, 0.8), (GOOD, 3.4, 2.0), (GOOD, 3.4, -0.1)):
+    check_error(ask(srv, response(nouls, score, conf)), "response")
 
 # Input validation.
 out = ask(srv, response(GOOD, 3.4, 0.8), battery="nope")
@@ -159,8 +167,30 @@ sent = fake.states[-1]["context"]
 assert sent == {**srv.DEFAULT_CONTEXT, "repo": "x", "siblings": "w2: docs/"}, sent
 assert out["context_ignored"] == ["contract", "secret"], out
 assert fake.states[-1]["task"] == TASK
-out = asyncio.run(srv.ask("spec_readiness", TASK, {"siblings": "x" * 1001, "repo": "r" * 500}))
-assert out["context_ignored"] == ["siblings"] and fake.states[-1]["context"]["repo"] == "r" * 500, out
-assert fake.states[-1]["context"]["siblings"] == srv.DEFAULT_CONTEXT["siblings"]
+out = asyncio.run(srv.ask("spec_readiness", TASK, {"siblings": "x" * 1000, "repo": "r" * 500}))
+assert "error" not in out and fake.states[-1]["context"]["siblings"] == "x" * 1000, out
+
+# Fail closed, before any request: a bad repo/siblings would otherwise read as the "none" default,
+# an unencodable string would crash, a token or key would leave the machine.
+sent = len(fake.states)
+for ctx in ({"siblings": "x" * 1001}, {"repo": "r" * 501}, {"siblings": ["w2: src/"]}, {"repo": None}):
+    out = asyncio.run(srv.ask("spec_readiness", TASK, ctx))
+    check_error(out, "input")
+    key = next(iter(ctx))
+    assert f"context.{key}" in out["error"] and str(srv.CONTEXT_LIMITS[key]) in out["error"], out
+check_error(ask(srv, task=TASK + " \ud800"), "input")
+check_error(ask(srv, context={"siblings": "w2: \ud800"}), "input")
+SECRETS = ("--dispatch-capability dcap__abc123", "--from term_3d7ab315-1a2b-4c3d-8e9f-0123456789ab",
+           "-----BEGIN " + "RSA PRIVATE KEY-----", "TYPESAFE_API_KEY = abc", "sk-" + "a1" * 12,
+           "ghp_" + "A1" * 18, "AKIA" + "ABCD1234" * 2, "xoxb-" + "1234-" * 3)
+for secret in SECRETS:
+    for task, ctx in ((f"{TASK}\n{secret}", None), (TASK, {"siblings": f"w2: docs/ {secret}"}),
+                      (TASK, {"repo": secret})):
+        out = ask(srv, task=task, context=ctx)
+        check_error(out, "input")
+        assert secret not in out["error"] and "secret" in out["error"], (secret, out)
+assert len(fake.states) == sent, "an input error reached the client"
+out = ask(srv, task=TASK + " Use task-create; risk-free; a short-term_plan; skip sk-learn.")
+assert "error" not in out, out  # ordinary words are not tokens
 
 print("OK")

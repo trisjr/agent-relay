@@ -19,7 +19,7 @@ Plugin có hai lớp:
 | --- | --- | --- |
 | `spec-readiness` | Coordinator sắp dispatch spec cho worker (dag-build, research-swarm, parallel-review), hoặc worker xong và cần log outcome | Gọi `ask` trước `worker-start`/`task-create`, theo `verdict` (enforce) hoặc chỉ báo một dòng (shadow), clarify đúng trường yếu, log verdict + downstream |
 
-Skill kèm `evals/evals.json`: 11 ca mẫu kèm kỳ vọng hành vi (có ca spec tiếng Việt, injection, thiếu key, shadow không chặn).
+Skill kèm `evals/evals.json`: 11 ca mẫu kèm kỳ vọng hành vi (có ca spec tiếng Việt, injection, thiếu key, shadow không chặn). Output tool trong các ca này được mock, nên file này chỉ kiểm hành vi của skill, không chấm Jev. Bộ re-eval battery là `mcp/golden.json` (xem [Kiểm tra](#kiểm-tra)).
 
 ## Battery `spec_readiness`
 
@@ -44,24 +44,24 @@ Chạy từ trên xuống, **gặp rule đầu tiên khớp thì dừng**:
 | --- | --- | --- |
 | 1 | Floor/mode không hợp lệ | error `kind: "config"` |
 | 2 | `confidence.overall_readiness < SPECGATE_FLOOR_CONF` | `escalate` (readiness unknown) |
-| 3 | `overall_readiness >= SPECGATE_FLOOR_SCORE` và không Noul nào `< SPECGATE_FLOOR_FIELD` | `dispatch` |
-| 4 | `round = "1"` | `clarify`, `missing_fields` = các Noul dưới floor, hoặc `["overall"]` nếu chỉ điểm tổng thấp |
+| 3 | `overall_readiness >= SPECGATE_FLOOR_SCORE` và không Noul nào yếu (`< SPECGATE_FLOOR_FIELD`, hoặc nằm trong vùng unsure cố định 0.35–0.65) | `dispatch` |
+| 4 | `round = "1"` | `clarify`, `missing_fields` = các Noul yếu, hoặc `["overall"]` nếu chỉ điểm tổng thấp |
 | 5 | `round = "2"` | `clarify` + `exhausted: true`: coordinator tự quyết, dispatch thì ghi `readiness_override` vào spec |
 
 Mọi verdict có `act`, `why`, `round`. Rule escalate đứng trước nên confidence thấp vẫn escalate ở round 2.
 
-**Response thành công:** `{"model", "battery", "mode", "spec_hash", "judgments", "confidence", "score_scale", "verdict", "latency_ms", "usage"}`, thêm `context_ignored` khi có key context bị bỏ. `spec_hash` = `sha256:` + hash của `task`, dùng để join log.
+**Response thành công:** `{"model", "battery", "mode", "spec_hash", "judgments", "confidence", "score_scale", "verdict", "latency_ms", "usage"}`, thêm `context_ignored` khi có key context bị bỏ. `spec_hash` = `sha256:` + hash của `task`, dùng để join log. `context_ignored` khác rỗng nghĩa là lời gọi sai: sửa context rồi chấm lại.
 
 **Error contract.** Mọi lỗi đều trả về dict, không crash: `{"error", "kind", "mode", "verdict": {"act": "escalate", "why"}}`, có thể kèm `error_type`, `status`, `request_id`, `available`.
 
 | `kind` | Khi nào |
 | --- | --- |
 | `config` | Thiếu `TYPESAFE_API_KEY` (rỗng hoặc placeholder `${...}` chưa expand), key sai định dạng, floor ngoài khoảng, mode lạ |
-| `input` | Battery lạ (kèm `available`); `task` rỗng hoặc > 8000 ký tự; `context` không phải object; `context.round` khác `"1"`/`"2"` |
+| `input` | Battery lạ (kèm `available`); `task` rỗng hoặc > 8000 ký tự; `context` không phải object; `context.round` khác `"1"`/`"2"`; `context.repo`/`context.siblings` không phải string hoặc quá dài; `task`/`repo`/`siblings` không encode được UTF-8, hoặc trông như chứa secret/token (message không lặp lại chuỗi khớp) |
 | `api` | TypeSafe API trả lỗi (kèm `status`, `request_id`); key sai sẽ ra đây với `status` 401 |
 | `timeout` | Request quá thời gian chờ |
 | `connection` | Không kết nối được API |
-| `response` | Response thiếu answer hoặc có giá trị không hữu hạn (NaN/Inf) |
+| `response` | Response thiếu answer, có giá trị ngoài khoảng (Noul/confidence 0..1, score 0..4, kể cả NaN/Inf), hoặc SDK báo response không hợp lệ (`TypeSafeAPIResponseValidationError`) |
 
 Gate chỉ sai theo hướng an toàn: clarify thừa hoặc escalate, không bao giờ tự `dispatch` khi không chắc. `dispatch` chỉ nói spec **rõ**, không nói việc đó **an toàn**.
 
@@ -78,7 +78,7 @@ Gate chỉ sai theo hướng an toàn: clarify thừa hoặc escalate, không ba
 | --- | --- | --- |
 | `TYPESAFE_API_KEY` | — | Optional. Thiếu thì mọi `ask` trả `kind: "config"` và skill dùng checklist thủ công. Không bao giờ ghi literal vào file |
 | `TYPESAFE_JEV_MODEL` | `jev-1.13.0` | Model đã pin, chỉ bump sau khi re-eval |
-| `SPECGATE_FLOOR_FIELD` | `0.5` | Noul của trường nào dưới floor thì trường đó vào `missing_fields`. Khoảng [0, 1] |
+| `SPECGATE_FLOOR_FIELD` | `0.5` | Noul của trường nào dưới floor, hoặc trong vùng unsure 0.35–0.65 (cố định), thì trường đó vào `missing_fields`. Khoảng [0, 1] |
 | `SPECGATE_FLOOR_SCORE` | `2.0` | `overall_readiness` tối thiểu để `dispatch`. Khoảng [0, 4] |
 | `SPECGATE_FLOOR_CONF` | `0.35` | Confidence tối thiểu của `overall_readiness`, dưới floor thì `escalate`. Khoảng [0, 1] |
 | `SPECGATE_MODE` | `shadow` | `shadow` \| `enforce` |
@@ -87,8 +87,8 @@ Giá trị rỗng hoặc placeholder chưa expand (`${user_config.x}`) được 
 
 ## Data egress
 
-- Mỗi lần `ask` qua được validate local, server gửi lên TypeSafe API: `task` (toàn văn spec), `context.repo` (≤ 500 ký tự), `context.siblings` (≤ 1000 ký tự) và chuỗi `contract` cố định. Key khác hoặc giá trị quá dài bị bỏ, liệt kê trong `context_ignored`.
-- **Không bao giờ** đưa vào `task`/`context`: secret, credential, PII, preamble điều phối, capability token hay terminal handle.
+- Mỗi lần `ask` qua được validate local, server gửi lên TypeSafe API: `task` (toàn văn spec), `context.repo` (≤ 500 ký tự), `context.siblings` (≤ 1000 ký tự) và chuỗi `contract` cố định. `repo`/`siblings` sai kiểu hoặc quá dài trả `kind: "input"` (không lặng lẽ thay bằng default); key khác bị bỏ, liệt kê trong `context_ignored`.
+- **Không bao giờ** đưa vào `task`/`context`: secret, credential, PII, preamble điều phối, capability token hay terminal handle. Server chặn các dạng phổ biến bằng `kind: "input"` trước khi gửi: `dcap__`, `term_<uuid>`, `-----BEGIN … PRIVATE KEY`, `TYPESAFE_API_KEY=`, key `sk-`/`ghp_`/`AKIA`/`xox*-`. Đây chỉ là lưới an toàn cuối, không phải secret scanner.
 - `TYPESAFE_LOG_LEVEL=debug` (biến của SDK) ghi toàn bộ request body ra stderr của server; chỉ bật khi debug.
 
 ## Readiness log
@@ -98,10 +98,10 @@ Golden dataset: `~/.local/state/spec-readiness-gate/readiness-log.jsonl`, append
 | `event` | Ghi khi nào | Field chính |
 | --- | --- | --- |
 | `verdict` | Sau mỗi `ask` trả judgments (error không log) | `ts`, `mode`, `run_id`, `worker`, `lang`, `spec_hash`, `model`, `judgments`, `confidence`, `verdict`, `latency_ms` |
-| `downstream` | Khi worker của spec đã dispatch kết thúc | `ts`, `run_id`, `worker`, `spec_hash` của spec **thực sự dispatch**, `downstream.worker_outcome` (`succeeded` \| `failed` \| `escalated`), `reworked`, `fields_at_fault` |
+| `downstream` | Khi worker của spec đã dispatch kết thúc | `ts`, `run_id`, `worker`, `spec_hash` của **response `ask` cuối cùng** cho spec đó (sửa sau khi chấm, như dòng `readiness_override`, không đổi nó; không tự tính lại), `downstream.worker_outcome` (`succeeded` \| `failed` \| `escalated`), `reworked`, `fields_at_fault` |
 | `label` | Khi user xác nhận trường bị flag có thật sự thiếu | `ts`, `spec_hash`, `flagged`, `confirmed` |
 
-Log **không chứa raw spec**, chỉ `spec_hash`: spec có thể chứa nội dung nhạy cảm, còn tune floor chỉ cần replay `verdict()` trên judgments đã log (không tốn API call). Đổi wording câu hỏi hoặc model thì re-eval bằng `evals/evals.json`.
+Log **không chứa raw spec**, chỉ `spec_hash`: spec có thể chứa nội dung nhạy cảm, còn tune floor chỉ cần replay `verdict()` trên judgments đã log (không tốn API call). Đổi wording câu hỏi, chuỗi `contract` hoặc model thì re-eval bằng `mcp/eval_live.py` trên `mcp/golden.json`.
 
 ## Cài đặt
 
@@ -155,6 +155,12 @@ Test offline với fake client, không gọi mạng (`python` trần không có 
 ```sh
 cd plugins/spec-readiness-gate/mcp
 uv run --with "mcp[cli]>=2.2,<3" --with "typesafe-sdk>=0.7.1,<0.8" python test_server.py
+```
+
+Re-eval battery (opt-in, **gọi API thật** và tính phí, cần `TYPESAFE_API_KEY`): `eval_live.py` chấm 7 spec trong `golden.json`, gồm 6 ca §10 của design spec và một spec tiếng Việt. Mỗi ca in PASS/FAIL (`act` phải khớp; các trường trong `missing` phải nằm trong `missing_fields`), có ca FAIL thì exit khác 0. Chạy trước khi đổi wording câu hỏi, chuỗi `contract` hay bump `TYPESAFE_JEV_MODEL`:
+
+```sh
+uv run --with "mcp[cli]>=2.2,<3" --with "typesafe-sdk>=0.7.1,<0.8" python eval_live.py
 ```
 
 ## Tích hợp (PR follow-up)
