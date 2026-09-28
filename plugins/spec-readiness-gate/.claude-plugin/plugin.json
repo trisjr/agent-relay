@@ -1,0 +1,23 @@
+{
+  "name": "spec-readiness-gate",
+  "version": "0.1.0",
+  "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill).",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "userConfig": {
+    "typesafe_api_key": {
+      "type": "string",
+      "title": "TypeSafe API Key",
+      "description": "API key for the TypeSafe Jev model that scores task specs. Without it, every ask returns kind \"config\" and the spec-readiness skill falls back to its manual checklist.",
+      "sensitive": true,
+      "required": false
+    },
+    "mode": {
+      "type": "string",
+      "title": "Gate mode",
+      "description": "shadow: score, report, and log specs but never block dispatch. enforce: follow the verdict (dispatch, clarify, escalate). Switch only after reviewing shadow data.",
+      "default": "shadow"
+    }
+  }
+}

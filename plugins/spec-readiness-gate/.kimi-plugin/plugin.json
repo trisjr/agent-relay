@@ -1,0 +1,21 @@
+{
+  "name": "spec-readiness-gate",
+  "version": "0.1.0",
+  "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill).",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Spec Readiness Gate",
+    "shortDescription": "Score worker task specs with TypeSafe Jev before dispatch and name the missing contract fields, shadow mode first."
+  },
+  "mcpServers": {
+    "spec-readiness-gate": {
+      "command": "uv",
+      "args": ["run", "--script", "server.py"],
+      "cwd": "./mcp"
+    }
+  }
+}

@@ -53,6 +53,14 @@
       "version": "0.1.0",
       "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill).",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.10.0/jev-gate-0.10.0.zip"
+    },
+    {
+      "id": "spec-readiness-gate",
+      "name": "spec-readiness-gate",
+      "displayName": "Spec Readiness Gate",
+      "version": "0.1.0",
+      "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill).",
+      "source": "./plugins/spec-readiness-gate"
     }
   ]
 }
