@@ -73,8 +73,9 @@ def test_policy():
     assert gate.policy(rec, None) == ("proceed", "")
     assert gate.policy(rec, calm)[0] == "allow"
     assert gate.policy({"action": "ls # safe"}, calm)[0] == "proceed"  # comments never earn allow
-    assert gate.policy(rec, dict(calm, outward=0.6))[0] == "ask"
-    assert gate.policy(rec, dict(calm, destructive=0.5))[0] == "ask"
+    assert gate.policy(rec, dict(calm, outward=0.69))[0] == "proceed"
+    assert gate.policy(rec, dict(calm, outward=0.7))[0] == "ask"
+    assert gate.policy(rec, dict(calm, destructive=0.7))[0] == "ask"
     assert gate.policy({"rule": "sudo"}, calm)[0] == "ask"
     cand = {"id": "a", "age_s": 30, "bytes": 9000, "ok": True}
     assert gate.policy({"reuse": cand, "fast": True}, None)[0] == "reuse"
