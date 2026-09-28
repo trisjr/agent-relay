@@ -5,6 +5,19 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-09-28
+
+### Plugins
+
+- `debug-root-cause`: 0.1.0 → 0.2.0
+- `orca-workflows`: 0.4.0 → 0.5.0
+
+### Added
+
+- **debug-root-cause**: skill `debug-root-cause` biết khi nào nó đang chạy trong một Orca worker. Khi có live preamble, chạm stop rule (3 giả thuyết bị bác bỏ hoặc 3 lần fix hỏng) hoặc cần escalate thì skill gửi ledger và bằng chứng cho coordinator qua lệnh `ask` trong preamble hoặc message `escalation`, thay vì mở UI hỏi local mà không ai trả lời. Hỏi bị timeout thì resume đúng message ID; không giải quyết được thì báo `worker_done --outcome failed`. Kèm eval mới cho tình huống này.
+- **debug-root-cause**: khi cần chuyển việc sang `research-swarm`, `parallel-review` hoặc `clarify-requirements` mà skill đó chưa được cài, agent tự xử lý như một agent đơn.
+- **orca-workflows**: worker được giao sửa lỗi cụ thể (test/suite đỏ, build fail, crash) nhận spec dặn làm theo `debug-root-cause`, nếu harness của worker đã cài skill này. Áp dụng ở bước Fixes của chuỗi recipe trong `orca-router` và ở bước integrate của `dag-build`, nên worker bế tắc sẽ báo coordinator bằng `question`/`escalation` chứ không thử fix mò lần thứ tư.
+
 ## [0.8.0] - 2026-09-27
 
 ### Plugins
@@ -142,7 +155,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/trisjr/agent-relay/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/trisjr/agent-relay/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/trisjr/agent-relay/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/trisjr/agent-relay/compare/v0.5.1...v0.6.0
