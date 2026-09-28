@@ -34,6 +34,11 @@
       "name": "jev-gate",
       "source": "./plugins/jev-gate",
       "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill)."
+    },
+    {
+      "name": "spec-readiness-gate",
+      "source": "./plugins/spec-readiness-gate",
+      "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill)."
     }
   ]
 }
