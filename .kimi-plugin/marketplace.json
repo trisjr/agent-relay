@@ -52,7 +52,7 @@
       "displayName": "Jev Gate",
       "version": "0.1.0",
       "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill).",
-      "source": "./plugins/jev-gate"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.10.0/jev-gate-0.10.0.zip"
     }
   ]
 }

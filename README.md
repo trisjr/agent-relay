@@ -21,6 +21,7 @@ Marketplace cá nhân chứa các plugin tái sử dụng cho AI coding agents: 
 │       ├── .mcp.json                       # MCP server cho Claude Code (optional)
 │       ├── .cursor/rules/<plugin-name>.mdc # Cursor rule
 │       ├── mcp/                            # MCP server (optional)
+│       ├── hooks/hooks.json                # Hook cho Claude Code/Codex (optional)
 │       ├── skills/<skill-name>/SKILL.md    # Skill, frontmatter gồm name + description
 │       ├── skills/<skill-name>/evals/evals.json # Eval của skill
 │       └── README.md                       # Mô tả plugin

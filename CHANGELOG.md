@@ -5,6 +5,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-29
+
 ### Plugins
 
 - `jev-gate`: 0.1.0 (ra mắt)
@@ -174,7 +176,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/trisjr/agent-relay/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/trisjr/agent-relay/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/trisjr/agent-relay/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/trisjr/agent-relay/compare/v0.6.0...v0.7.0
