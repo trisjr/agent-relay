@@ -83,7 +83,7 @@ A request spanning plan → code → docs chains the recipes; each stage is its 
 1. **research-swarm** — only when the ground is broad; its reports feed the plan.
 2. **dag-build** — the spec cites those report paths; the gate is where the user approves the plan (planning-only requests stop after the gate). Docs are ordinary DAG tasks with file ownership: a docs task depends on the code tasks it describes, and drift-fixing over independent doc files skips the gate.
 3. **parallel-review** — on the resulting diff; for docs, swap lenses to accuracy (docs vs. code), completeness, and consistency with repo conventions.
-4. **Fixes** — a fresh fix worker or another dag-build wave, never the coordinator.
+4. **Fixes** — a fresh fix worker or another dag-build wave, never the coordinator. When the fix targets a concrete failure (a red test, build, or crash), its spec tells the worker to follow the `debug-root-cause` skill when installed in that worker's harness.
 
 Reports are Git-excluded and deleted afterward; a plan or doc the user keeps must be written into the repo by a task. Any stage that is small or sequential runs as a single agent instead.
 

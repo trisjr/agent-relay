@@ -79,7 +79,7 @@ ORCA orchestration worker-start --task <next_task_id> --worktree <that terminal'
 
 ### 5. Integrate and verify
 
-The last task in the DAG is integration, depending on every component; its observable acceptance is the full verification suite (build, all tests). If any component ran in its own worktree, the integration spec names those branches and merges them into the integration workspace first — otherwise the suite verifies a tree without their work. Fan-in merges verified work, not hopeful work.
+The last task in the DAG is integration, depending on every component; its observable acceptance is the full verification suite (build, all tests). If any component ran in its own worktree, the integration spec names those branches and merges them into the integration workspace first — otherwise the suite verifies a tree without their work. Fan-in merges verified work, not hopeful work. Whichever worker fixes a red suite — the integration worker or a fresh fix task — gets a spec that says to follow `debug-root-cause` when installed in its harness; its stop rules then reach you as a `question` or `escalation` instead of a fourth blind fix.
 
 ### 6. Report
 
