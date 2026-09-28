@@ -1,0 +1,23 @@
+{
+  "name": "jev-gate",
+  "version": "0.1.0",
+  "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill).",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "userConfig": {
+    "typesafe_api_key": {
+      "type": "string",
+      "title": "TypeSafe API Key",
+      "description": "API key for the TypeSafe Jev model that judges gray-zone tool calls. Without it, only the lock rules and the REUSE ledger run.",
+      "sensitive": true,
+      "required": false
+    },
+    "mode": {
+      "type": "string",
+      "title": "Gate mode",
+      "description": "shadow: only lock rules act, everything else is logged. enforce: also apply Jev asks and REUSE denials. Switch only after reviewing shadow data (gate-review skill).",
+      "default": "shadow"
+    }
+  }
+}

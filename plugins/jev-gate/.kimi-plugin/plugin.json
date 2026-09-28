@@ -1,0 +1,14 @@
+{
+  "name": "jev-gate",
+  "version": "0.1.0",
+  "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill).",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Jev Gate",
+    "shortDescription": "Lock rules, a REUSE ledger, and TypeSafe Jev judgments that gate agent tool calls, shadow mode first."
+  }
+}
