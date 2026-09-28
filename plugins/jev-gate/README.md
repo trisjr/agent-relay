@@ -36,7 +36,7 @@ Policy chạy từ trên xuống, gặp điều kiện đầu tiên khớp thì 
 | Điều kiện | `decision` | shadow | enforce |
 | --- | --- | --- | --- |
 | Lock rule khớp | `ask` | **áp dụng** | áp dụng |
-| `outward >= 0.5` hoặc `destructive >= 0.5` | `ask` | log | áp dụng |
+| `outward >= 0.7` hoặc `destructive >= 0.7` | `ask` | log | áp dụng |
 | Có ứng viên REUSE, và là fast path hoặc `external_state < 0.5` | `reuse` | log | deny một lần; chạy lại đúng lệnh đó thì cho qua |
 | `read_only >= 0.9`, `outward` và `destructive < 0.1`, action không có `#` hay xuống dòng | `allow` | log | log (bản này **không bao giờ** auto-allow) |
 | Còn lại, Jev lỗi hoặc thiếu key | `proceed` | — | — |
