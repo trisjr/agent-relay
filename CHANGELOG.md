@@ -5,6 +5,26 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-09-29
+
+### Plugins
+
+- `spec-readiness-gate`: 0.1.0 (ra mắt)
+- `jev-gate`: 0.1.0 → 0.1.1
+
+### Added
+
+- **spec-readiness-gate**: plugin MCP mới chấm độ sẵn sàng của task spec trước khi coordinator dispatch cho worker (`worker-start --spec`, `task-create` của Orca), mặc định ở **shadow mode**.
+  - Tool `ask` chạy battery TypeSafe Jev `spec_readiness` trong một request: 5 Noul cho các trường Target / Change / Constraints / Ownership / Observable acceptance, cộng điểm tổng 0..4.
+  - Policy thuần trong code ra verdict `dispatch`, `clarify` (chỉ rõ trường yếu, tối đa 2 vòng) hoặc `escalate`. Jev chỉ chấm, code mới quyết.
+  - Mọi lỗi trả về dict có `kind` và verdict `escalate`, không crash. Input trông như chứa secret/token bị từ chối trước khi gửi đi.
+  - Skill `spec-readiness` hướng dẫn khi nào gọi, clarify loop, checklist thủ công 5 trường khi thiếu API key, format log và tiêu chí bật enforce. Cursor dùng rule riêng.
+  - Là add-on: `orca-workflows` chạy bình thường khi không cài plugin này.
+
+### Changed
+
+- **jev-gate**: nâng ngưỡng `ASK_AT` từ 0.5 lên 0.7. Dữ liệu shadow cho thấy ở 0.5 Jev hỏi nhầm cả lệnh read-only (`gh pr view/list`, `git fetch`, lệnh quản lý worker của `orca`); replay trên log giảm số lần ask từ 33 xuống 12, các lệnh thật sự cần hỏi (`gh pr create/merge`, `rm -rf`) vẫn được hỏi.
+
 ## [0.10.0] - 2026-09-29
 
 ### Plugins
@@ -176,7 +196,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/trisjr/agent-relay/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/trisjr/agent-relay/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/trisjr/agent-relay/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/trisjr/agent-relay/compare/v0.7.0...v0.8.0
