@@ -45,6 +45,14 @@
       "version": "0.1.0",
       "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter.",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.8.0/compound-retros-0.8.0.zip"
+    },
+    {
+      "id": "jev-gate",
+      "name": "jev-gate",
+      "displayName": "Jev Gate",
+      "version": "0.1.0",
+      "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill).",
+      "source": "./plugins/jev-gate"
     }
   ]
 }

@@ -5,6 +5,25 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+### Plugins
+
+- `jev-gate`: 0.1.0 (ra mắt)
+
+### Added
+
+- **jev-gate**: plugin hook mới chặn từng tool call Bash/MCP trước khi chạy, mặc định ở **shadow mode**.
+  - PreToolUse chạy lần lượt:
+    1. Lock rule viết bằng code (`git push`, `git reset --hard`/`clean -f`/`branch -D`, publish package, `curl | sh`, `sudo`, `rm -rf` vào `/`, `~`, `.`, `*`). Khớp thì `ask`, ở mọi mode.
+    2. Fast path: lệnh read-only được chạy luôn, không gọi Jev.
+    3. REUSE ledger: đúng command cũ, git fingerprint không đổi, lần trước ≥ 5s hoặc ≥ 4 KB, trong vòng 15 phút; chỉ nhắc một lần.
+    4. TypeSafe Jev chấm 4 Noul cho vùng xám.
+  - Ở shadow mode, Jev chạy trong process tách rời nên hook không thêm latency đáng kể, và mọi quyết định khác lock chỉ được log.
+  - `enforce` áp dụng thêm Jev `ask` và REUSE deny; bản này không bao giờ auto-allow.
+  - Log JSONL theo session tại `~/.local/state/jev-gate/sessions/`, gồm quyết định và kích thước/hash output, không lưu output. Command đã bỏ thân heredoc và redact secret; MCP chỉ gửi tên tool và tên argument.
+  - Skill `gate-review` hướng dẫn đọc dữ liệu shadow, cho người dùng gán nhãn các lần Jev hỏi, đo độ chính xác của REUSE và kích thước output, và tiêu chí trước khi bật enforce.
+  - Cần `python3` ≥ 3.9 và `git`. API key TypeSafe là tùy chọn; thiếu key thì chỉ lock và REUSE chạy.
+  - Claude Code được hỗ trợ. Codex chưa verify ở runtime; với Codex, `ask` được map thành `deny` vì Codex chưa hỗ trợ `ask`.
+
 ## [0.9.0] - 2026-09-28
 
 ### Plugins

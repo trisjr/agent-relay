@@ -1,0 +1,30 @@
+---
+description: Use when the user asks to review jev-gate shadow-mode data, decide whether to switch jev-gate to enforce mode, tune its thresholds or lock rules, or judge whether large tool outputs justify pruning.
+globs:
+alwaysApply: false
+---
+
+# jev-gate review
+
+jev-gate's hooks do not run in Cursor. It gates Claude Code (and, unverified, Codex) through PreToolUse/PostToolUse hooks. This rule only covers reviewing the data those hooks log.
+
+- **Data.** `~/.local/state/jev-gate/sessions/*.jsonl`, or `$JEV_GATE_STATE_DIR/sessions/`. Events:
+  - `gate`: the decision at PreToolUse.
+  - `judge`: the detached shadow Jev judgment for that gate, with the same `id`.
+  - `out`: the output's bytes and sha, never the output itself.
+  - `reset`: compaction or /clear.
+- **Merge before counting.** Fold each `judge` into its `gate` by `id`, and attach the `out` with the same `id`. Then report:
+  - counts by `source` and `decision`;
+  - lock hits grouped by `rule` (look for false positives);
+  - Jev would-ask and borderline rows, for the user to label "should ask" or "fine to run";
+  - REUSE `same_output` (re-run sha equals the earlier run's sha) and the KB/seconds it would save;
+  - Jev error rate and p95 `latency_ms`;
+  - output sizes by tool, including the count of 16 KB or more (the evidence for pruning).
+- **The user decides.** Never switch the mode, edit thresholds, or change lock rules yourself. Recommend `enforce` only when all of these hold:
+  - at least 200 gated calls across several sessions;
+  - no noisy lock rule;
+  - the user accepts the labeled ask precision;
+  - REUSE mismatches are explained;
+  - Jev errors are under 5% and p95 is under 1500 ms.
+- **Keep the log local.** It holds command text, so never send it to an external service, Jev included.
+- **Switching.** Claude Code: `/plugin configure jev-gate@agent-relay`, then set `mode` to `enforce`. Other harnesses: `JEV_GATE_MODE=enforce`. Enforce applies Jev asks and REUSE denials; it never auto-allows.
