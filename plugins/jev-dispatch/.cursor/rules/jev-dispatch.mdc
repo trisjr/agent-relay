@@ -24,8 +24,9 @@ When coordinating agents and choosing the harness/model/effort for a task:
 5. Keep the golden dataset in `~/.local/state/jev-dispatch/dispatch-log.jsonl`. It is append-only, with one JSON object per line.
    - Append with `jq -c . <<'EOF' >> <log path>`, followed by the literal record and a closing `EOF`, never with `echo`. The quoted heredoc disables interpolation, and `jq` appends nothing when the JSON is malformed.
    - After every `ask` call, even when nothing is dispatched, append `{"event":"route","id":<task id, or a UTC timestamp plus slug>,"ts":<UTC ISO 8601>,"task":<as sent>,"context":<as sent>,"response":<ask response verbatim>,"used":{"harness","model","effort"}}`.
-     - `used` is what was actually dispatched. `model`/`effort` are `null` when left at the harness default.
+     - Keep these field names and shapes exactly (`event`, never `kind`; `response` nested verbatim). One `route` per `ask` call, appended after the dispatch decision is final. Tasks dispatched without `ask` get no records.
+     - `used` is what was actually dispatched. `model`/`effort` are the concrete values the worker runs with, including a visible harness default; `null` only when truly unknown.
      - `used` is `null` when nothing was dispatched.
-   - When a dispatched task settles, after any retries, append `{"event":"outcome","id":<same id>,"ts":...,"outcome":"ok|retried|failed|cancelled","note":<optional, one line>}`.
+   - When a dispatched task settles, after any retries, append `{"event":"outcome","id":<same id>,"ts":...,"outcome":"ok|retried|failed|cancelled","note":<optional, one line>}`. A worker that only failed to start, then succeeded, is `ok` with the hiccup in `note`.
 6. Never change the battery question wording, or bump `TYPESAFE_JEV_MODEL`, without re-running the golden set.
 7. Scores are 0-based (complexity 0..4, risk 0..2). A Noul near 0.5 means "unsure", not medium.

@@ -52,7 +52,7 @@
     {
       "id": 9,
       "prompt": "shadow mode, task 'refactor module auth' — ask trả routing codex/luna/max act=true, nhưng em quyết định dispatch cho claude với model mặc định. Worker fail lần đầu, retry thì pass. Log thế nào?",
-      "expected_output": "Appends to ~/.local/state/jev-dispatch/dispatch-log.jsonl, one JSON object per line appended through jq (not echo), never editing earlier lines. The route record has an id (generated, e.g. UTC timestamp plus slug, since there is no orchestrator task id), a UTC ts, the task and context as sent, the verbatim ask response, and used = {harness: claude, model: null, effort: null}, not the routing's codex/luna/max. After the retry passes it appends a single outcome record with the same id and outcome 'retried', not one record per worker.",
+      "expected_output": "Appends to ~/.local/state/jev-dispatch/dispatch-log.jsonl, one JSON object per line appended through jq (not echo), never editing earlier lines. The route record has an id (generated, e.g. UTC timestamp plus slug, since there is no orchestrator task id), a UTC ts, the task and context as sent, the verbatim ask response, and used = {harness: claude, model: <the concrete default model the worker runs, e.g. claude-opus-5-5>, effort: <its effort>}, with null only for a value it truly cannot see, not the routing's codex/luna/max. It uses the field name event, keeps the response nested, and writes one route record, after the dispatch decision. After the retry passes it appends a single outcome record with the same id and outcome 'retried', not one record per worker.",
       "files": []
     }
   ]
