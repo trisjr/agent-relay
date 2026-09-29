@@ -19,7 +19,7 @@ Default location: `~/.local/state/jev-gate/sessions/<session_id>.jsonl`, or `$JE
 
 - `gate`: written by the PreToolUse hook before the call runs.
   - Fields: `id` (the tool_use_id), `ts`, `agent`, `tool`, `action`, `rule`, `fast`, `fp`, `source`, `reuse`, `decision`, `why`, `applied`, `mode`, `harness`.
-  - `source` is one of `lock`, `fastpath`, `ipc` (the Orca coordinator protocol, not sent to Jev), `secret` (not sent to Jev), `no-key`, or `jev`.
+  - `source` is one of `lock`, `fastpath`, `ipc` (the Orca coordinator protocol or `git fetch`/`ls-remote`, not sent to Jev), `secret` (not sent to Jev), `no-key`, or `jev`.
   - `decision` is one of `ask`, `reuse`, `allow`, `proceed`, or `pending`. `pending` means a detached shadow judge was still to decide.
 - `judge`: the detached Jev judgment that shadow mode makes for a `pending` gate. It has the same `id`, plus `judgments` (the Nouls `read_only`, `destructive`, `outward`, `external_state`), `decision`, `latency_ms`, and `error`/`status` when the call failed open.
 - `out`: written by PostToolUse and PostToolUseFailure with the same `id`. It holds `bytes`, `sha` (a hash of the output, never the output itself), `ok`, and `dur_ms`.

@@ -68,11 +68,14 @@ def test_fastpath():
         assert not gate.fastpath_bash(cmd), cmd
     for cmd in ("orca orchestration send --type heartbeat --subject ok", "cd w && orca orchestration check --wait",
                 "git log -1 && orca orchestration ask --question q 2>&1 | tail -3",
-                "orca orchestration send --body 'ran a; b | c > d' | tail -2"):
+                "orca orchestration send --body 'ran a; b | c > d' | tail -2",
+                "git fetch -q origin --tags && git rev-list --left-right --count HEAD...origin/main",
+                "git ls-remote --tags origin v0.11.0"):
         assert gate.fastpath_bash(cmd, ipc=True) and not gate.fastpath_bash(cmd), cmd
     for cmd in ("orca orchestration worker-start --task t", "orca orchestration send x && npm test",
                 "orca orchestration check --json > out.json", 'orca orchestration send --body "$(cat f)"',
-                "orca orchestration send x & rm -r build"):
+                "orca orchestration send x & rm -r build", "git fetch --upload-pack=evil origin",
+                "git ls-remote -u evil origin", "git -c core.sshCommand=evil fetch origin", "git pull origin"):
         assert not gate.fastpath_bash(cmd, ipc=True), cmd
     assert gate.MCP_READ.search("notion-fetch") and gate.MCP_READ.search("slack_read_channel")
     assert not gate.MCP_READ.search("slack_send_message")

@@ -27,7 +27,7 @@ PreToolUse (`Bash|mcp__.*`) chạy lần lượt:
 | 1 | Lock rule | Regex trong `hooks/gate.py` | Khớp thì `ask`, ở **mọi mode**, và không gửi Jev |
 | 2 | Secret | Regex | Command có dấu hiệu secret thì không gửi Jev; log lưu bản đã redact |
 | 3 | Fast path | Allowlist lệnh read-only (`ls`, `cat`, `rg`, `git status/diff/log`…), MCP tool dạng `get/list/read/search…` | Cho chạy theo permission flow bình thường, không gọi Jev. Tách segment bằng `shlex`, nên `;`, `\|`, `>` nằm trong quote là text; `$(…)` và backtick thì bị loại ở mọi chỗ |
-| 4 | Orca IPC | `orca orchestration send/check/reply/ask/worker-read/worker-list/dispatch-show`, các segment còn lại phải là read-only | `source: "ipc"`: không gọi Jev, không REUSE. Đây là IPC local, và ask ở đây sẽ làm worker không có người trông bị treo |
+| 4 | Orca IPC, git remote read | `orca orchestration send/check/reply/ask/worker-read/worker-list/dispatch-show`, `git fetch/ls-remote` (không `-c`, `--upload-pack`), các segment còn lại phải là read-only | `source: "ipc"`: không gọi Jev, không REUSE vì kết quả phụ thuộc agent khác hoặc network. Ask ở IPC sẽ làm worker không có người trông bị treo; `git fetch/ls-remote` bị Jev chấm outward 0.70–0.78 dù không đổi gì ở remote |
 | 5 | REUSE | Ledger của session + git fingerprint | Chỉ áp dụng cho Bash |
 | 6 | Jev | 4 Noul trong một request: `read_only`, `destructive`, `outward`, `external_state` | Chỉ chấm vùng xám |
 | 7 | Policy | Hàm thuần `policy()` | Ra `ask` / `reuse` / `allow` / `proceed` |

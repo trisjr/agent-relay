@@ -67,7 +67,10 @@ SECRETS = re.compile("|".join([
 READ_ONLY = {"basename", "cat", "cd", "cut", "date", "df", "diff", "dirname", "du", "echo", "file", "find",
              "grep", "head", "jq", "ls", "nl", "printf", "pwd", "realpath", "rg", "sort", "stat", "tail",
              "type", "uniq", "wc", "which"}
-GIT_READ = {"blame", "describe", "diff", "grep", "log", "ls-files", "rev-parse", "show", "status"}
+GIT_READ = {"blame", "describe", "diff", "grep", "log", "ls-files", "rev-list", "rev-parse", "show", "status"}
+# Read a remote without changing it, yet Jev scored them outward 0.70-0.78 in shadow data. Only accepted with
+# ipc=True: the result depends on the network, so it must not earn REUSE. --upload-pack and -c run commands.
+GIT_REMOTE_READ = {"fetch", "ls-remote"}
 PUNCT = ";&|<>()\n"  # shell operator characters; shlex returns a run of them as one token
 WRITE_FLAGS = {"find": ("-delete", "-exec", "-execdir", "-ok", "-okdir", "-fprint", "-fprintf", "-fls"),
                "sort": ("-o",)}
@@ -159,7 +162,9 @@ def fastpath_bash(cmd, ipc=False):
                 elif not x.startswith("-"):
                     sub = x
                     break
-            if sub not in GIT_READ:
+            remote = ipc and sub in GIT_REMOTE_READ and "-c" not in w and not any(
+                a.startswith(("--upload-pack", "-u")) for a in w)
+            if sub not in GIT_READ and not remote:
                 return False
         elif w[0] not in READ_ONLY or any(a.startswith(WRITE_FLAGS.get(w[0], ("\0",))) for a in w[1:]):
             return False
