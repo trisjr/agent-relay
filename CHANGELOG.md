@@ -5,6 +5,29 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-09-29
+
+### Plugins
+
+- `jev-dispatch`: 0.4.0 → 0.5.0
+- `orca-workflows`: 0.5.0 → 0.6.0
+
+### Added
+
+- **jev-dispatch**: dựng lại policy routing dựa trên research tháng 9/2026 về Opus 5.5, Sonnet 5.5, GPT-6 Sol và GPT-6 Luna, chia tải giữa subscription Claude và Codex (replay shadow log: khoảng 4/11 task sang Claude).
+  - `c >= 3.2` → `opus/high`, `c >= 2.2` → `sonnet/high` (không lên `xhigh`/`max` vì đắt hơn Opus mỗi task).
+  - Task cần web → `sonnet/medium`, vì Claude Code có sẵn web search còn worker Codex không kèm `--search` thì không có.
+  - Task long-context → `sol/high`. Việc engineering thông thường → `sol/high` từ `c` 2.0, `sol/medium` từ 1.5; Luna chỉ nhận task `c < 1.5`.
+  - Bỏ nhánh `gemini/flash`: task trivial giờ đi `codex/luna/medium`, `FLOOR_RISK` gate nhánh này.
+  - Task rủi ro cao: `suggested` là route task sẽ nhận nếu an toàn (`opus/high` khi Jev không chắc); khi `r >= 1.5` không bao giờ đề xuất codex, thấp nhất `sonnet/high`.
+  - Bảng map tên viết tắt sang provider id (`sonnet` → `claude-sonnet-5-5`, `luna` → `gpt-6-luna`, …) đặt cạnh bảng policy trong SKILL, README và rule Cursor; gặp tên không có trong bảng thì coi như `act=false`.
+  - Các ngưỡng 1.5 và 2.0 chưa được đo; user có thể chủ động opt-in auto-routing trước khi chạy lại golden set.
+- **orca-workflows**: `dag-build` route worker theo `jev-dispatch` thay vì luôn chạy `--agent codex` mặc định.
+  - `act=true` → launch đúng `--agent`/`--model`/`--effort` của routing (đã map sang provider id); task được user duyệt chạy `suggested` hoặc route user chọn; retry giữ nguyên route.
+  - Gọi `ask` cả trước khi reuse terminal, chỉ reuse khi harness/model/effort khớp.
+  - Override chỉ-nâng: coordinator được nâng worker (`luna` < `sol` < `sonnet` < `opus`) khi spec lộ độ khó kỹ thuật mà bản tóm tắt che mất, không bao giờ hạ, và ghi `override: <lý do>` vào note outcome.
+  - Log `used` lấy model/effort thật từ `launch.effective` của receipt, không còn ghi cứng `null`, để golden set so được giữa các model.
+
 ## [0.12.0] - 2026-09-29
 
 ### Plugins
@@ -210,7 +233,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/trisjr/agent-relay/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/trisjr/agent-relay/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/trisjr/agent-relay/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/trisjr/agent-relay/compare/v0.9.0...v0.10.0
