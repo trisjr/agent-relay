@@ -42,6 +42,24 @@
       "prompt": "xây giúp anh hệ thống phân quyền cho app, chia cho mấy agent làm song song cho nhanh",
       "expected_output": "Sees that the role model, permission granularity, and API contract are open decisions that change the component split, so it runs clarify-requirements in the coordinator's own conversation before any spec — at most 3 questions with a recommended option each, never delegated to a worker. Writes the spec from the resulting brief and cites it, then creates exactly one spec gate (approve/revise/abort) that also confirms the brief; no separate approval round, and no component tasks before the gate resolves.",
       "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "wave 1 có 3 task đã ready, jev-dispatch ask trả: task A codex/luna/max act=true, task B codex/sol/medium act=true, task C claude/sonnet/high act=true. Start worker cho cả wave",
+      "expected_output": "Starts all three workers before waiting, each on its routing's harness with the shorthand mapped to provider ids: A --agent codex --model gpt-6-luna --effort max, B --agent codex --model gpt-6-sol --effort medium, C --agent claude --model claude-sonnet-5-5 --effort high. Never passes bare sol/luna/sonnet. Appends one route record per task with the Orca task id as id and used filled from each receipt's launch.effective (harness = the agent launched), not null and not copied from routing.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "task D: ask trả requires_approval=true, suggested claude/sonnet/high. Task E là follow-up ngay sau task A (worker codex gpt-6-luna vừa xong), ask cho E trả claude/sonnet/medium act=true",
+      "expected_output": "For D, asks the user before starting anything and, once approved, launches --agent claude --model claude-sonnet-5-5 --effort high (the mapped suggested, not the codex default) unless the user picks another route. For E, calls ask before deciding on reuse, sees the routing does not match A's codex/gpt-6-luna terminal, so it releases or leaves that terminal and starts a fresh --agent claude --model claude-sonnet-5-5 --effort medium worker instead of --terminal reuse. Logs one route record per task with used from the receipt.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "component F: spec chi tiết viết lock-free queue cho job scheduler, có acceptance rõ. ask trả claude/sonnet/high act=true. Component G: đổi tên biến trong 2 file, ask trả codex/sol/medium act=true nhưng em thấy luna là đủ",
+      "expected_output": "For F, sees concurrency difficulty the summary hid and may upgrade to --agent claude --model claude-opus-5-5 --effort high; logs used as launched (differs from routing) and starts F's outcome note with 'override: <reason>'. For G, keeps --agent codex --model gpt-6-sol --effort medium as routed, because the override is upgrade-only and never lowers a route to luna.",
+      "files": []
     }
   ]
 }
