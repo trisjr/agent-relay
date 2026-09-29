@@ -39,10 +39,10 @@ Jev scores the task on five independent questions in ONE request (~740 input tok
    - `task` and `context` are sent to the TypeSafe API on every call. NEVER include secrets, credentials, PII, source/diff/log dumps, orchestration preambles, capability tokens, or terminal handles.
 2. Read the response in this order:
    1. **Top-level `error` field** (kind `config|input|api|timeout|connection|response`): treat it as `act=false`. Its `routing` is already ESCALATE. Decide with your own reasoning, and log `kind` (and `request_id` if present).
-   2. **`routing.requires_approval=true`**: the task is high risk. Ask the user before dispatching anything. You may show `routing.suggested` (claude/opus/high) and `routing.why`. Dispatch only after explicit approval, even when Jev's confidence is high.
+   2. **`routing.requires_approval=true`**: the task is high risk. Ask the user before dispatching anything. You may show `routing.suggested` (the route the task would get if it were safe) and `routing.why`. Dispatch only after explicit approval, even when Jev's confidence is high, and then with `suggested` or the route the user picks.
    3. **`routing.act=false`** (ESCALATE without `requires_approval`): do NOT dispatch per the routing. Decide with the orchestrating reasoning model, or ask the user.
    4. **`routing.act=true`**:
-      - Auto-routing mode: dispatch with exactly `routing.harness / model / effort`, and attach `routing.why` to the dispatch log.
+      - Auto-routing mode: dispatch with exactly `routing.harness`, the provider id of `routing.model` (see the [model id table](#routing-policy)), and `routing.effort`, and attach `routing.why` to the dispatch log.
       - Shadow mode: log the routing and decide yourself (see below).
 3. Append a `route` record to the [dispatch log](#dispatch-log) after every `ask` call, even when nothing gets dispatched. Append an `outcome` record once the task settles.
 
@@ -95,21 +95,39 @@ Symbols: `c` = `judgments.complexity`, `r` = `judgments.risk`, `tail` = `risk_ta
 
 | # | Condition | `routing` |
 | --- | --- | --- |
-| 1 | `r >= 1.5` or `tail >= 0.2` | `ESCALATE`, `act=false`, `requires_approval=true`, `suggested={"harness":"claude","model":"opus","effort":"high"}` |
+| 1 | `r >= 1.5` or `tail >= 0.2` | `ESCALATE`, `act=false`, `requires_approval=true`, `suggested` = the route rules 4–11 would pick (`claude/opus/high` when a Score confidence is below FLOOR_ROUTE; `claude/sonnet/high` instead of any codex pick when `r >= 1.5`) |
 | 2 | `confidence.risk < FLOOR_ROUTE` | `ESCALATE`, `act=false` (risk unknown) |
 | 3 | `confidence.complexity < FLOOR_ROUTE` | `ESCALATE`, `act=false` (complexity unknown) |
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
 | 5 | `c >= 2.2` | `claude` / `sonnet` / `high` |
-| 6 | `needs_web > 0.7` or `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
-| 7 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
-| 8 | otherwise | `codex` / `luna` / `max` |
+| 6 | `needs_web > 0.7` | `claude` / `sonnet` / `medium` |
+| 7 | `needs_long_context > 0.7` | `codex` / `sol` / `high` |
+| 8 | `c >= 2.0` | `codex` / `sol` / `high` |
+| 9 | `c >= 1.5` | `codex` / `sol` / `medium` |
+| 10 | `c < 1.2` and `r < 0.6` and `confidence.risk >= FLOOR_RISK` | `codex` / `luna` / `medium` |
+| 11 | otherwise | `codex` / `luna` / `max` |
 
 - ESCALATE is always `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`.
 - Only rule 1 adds `requires_approval` and `suggested`.
-- Rules 4–8 return `act=true`.
+- Rules 4–11 return `act=true`.
+- The load is split across both subscriptions: `claude` takes design-heavy (`c >= 2.2`) and web work, `sol` takes standard engineering. `sonnet` effort tops out at `high`: at `xhigh`/`max` it spends enough tokens to cost more per task than `opus`.
+- Web tasks go to `claude`: Claude Code ships web search, while Codex workers launched without `--search` have none.
+- Confidently risky tasks (`r >= 1.5`) are never suggested to codex: `sol` tried workarounds after an access denial in most adversarial runs, and `luna` hallucinates more.
+- `luna` only takes `c < 1.5`, because it degrades on long context and ambiguous multi-file work. The 1.5 and 2.0 thresholds have not been measured; the 2.2 split gives the golden set outcomes from both `sonnet` and `sol` around it.
 - `needs_planning` is scored and returned, but no rule uses it.
 
-This policy differs from the measured prototype. Re-run the golden set in shadow mode before enabling auto-routing.
+`routing.model` is shorthand. Map it to the provider id before dispatching; never pass the shorthand as `--model`:
+
+| `routing.model` | Provider id |
+| --- | --- |
+| `opus` | `claude-opus-5-5` |
+| `sonnet` | `claude-sonnet-5-5` |
+| `sol` | `gpt-6-sol` |
+| `luna` | `gpt-6-luna` |
+
+A shorthand missing from this table means the table is stale: treat the routing as `act=false`.
+
+This policy differs from the measured prototype. Re-run the golden set in shadow mode before enabling auto-routing, unless the user knowingly opts in earlier (`dag-build` in orca-workflows has).
 
 ## Reading the answers correctly
 
@@ -118,7 +136,7 @@ This policy differs from the measured prototype. Re-run the golden set in shadow
 - Confidence gates follow the evaluation order. There is no single `min(confidence)` gate in front of the whole policy:
   - The high-risk/tail check runs first, with no confidence floor, so a confidently risky task is never auto-dispatched.
   - Only after that must both Score confidences clear FLOOR_ROUTE.
-  - The high floor FLOOR_RISK guards only the cheap `gemini/flash` path, so mid-risk tasks whose `confidence.risk` sits between the floors fall through to codex.
+  - The high floor FLOOR_RISK guards only the cheapest `luna/medium` path, so mid-risk tasks whose `confidence.risk` sits between the floors fall through to `luna/max`.
   - The Noul branch has no confidence field.
 - `risk` is a weighted mean, so it can hide a real chance of the worst case. `risk_tail` exposes that chance directly, which is why rule 1 checks it.
 - Judgments are reproducible but NOT perfectly deterministic across runs on this battery. Regression tests need a tolerance band and must pin `model`.
@@ -129,7 +147,7 @@ This policy differs from the measured prototype. Re-run the golden set in shadow
 - **Tune, then pin:**
   - Adjust the floors via env based on the golden set: measure escalation rate against bad-routing rate, tune on one part of the log, and verify on the rest.
   - Keep `TYPESAFE_JEV_MODEL` pinned.
-  - Re-run the golden set whenever question wording, the state builder, or the model changes (Jev reads instructions literally). Enable auto-routing only after it passes.
+  - Re-run the golden set whenever question wording, the state builder, or the model changes (Jev reads instructions literally). Enable auto-routing only after it passes, unless the user knowingly opts in earlier; routed outcomes then still feed the golden set.
 - **Escalation budget:** expect ~5–10% of dispatches to escalate. Far more means the floors are too strict; far less means risk decisions are unguarded.
 - **Language:** Vietnamese task descriptions were judged coherently in a small sample, but Jev performs best on English state. Measure degradation on your own golden set before assuming it is fine.
 

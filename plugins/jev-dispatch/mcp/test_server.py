@@ -76,24 +76,33 @@ assert srv.MODEL == "jev-1.13.0" and srv.CONFIG_ERROR is None
 
 # (c, r, conf_c, conf_r, tail, web, long) -> (harness, model, effort, act)
 ROWS = {
-    "a": ((0.3, 0.2, 0.9, 0.9, 0.02, 0.1, 0.1), ("gemini", "flash", "high", True)),
+    "a": ((0.3, 0.2, 0.9, 0.9, 0.02, 0.1, 0.1), ("codex", "luna", "medium", True)),
     "b": ((0.3, 0.2, 0.9, 0.6, 0.02, 0.1, 0.1), ("codex", "luna", "max", True)),
     "c": ((0.2, 1.9, 0.10, 0.99, 0.9, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "d": ((1.0, 0.9, 0.9, 0.9, 0.45, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
-    "e": ((2.0, 0.3, 0.9, 0.9, 0.05, 0.8, 0.1), ("codex", "sol", "medium", True)),
+    "e": ((1.7, 0.3, 0.9, 0.9, 0.05, 0.8, 0.8), ("claude", "sonnet", "medium", True)),
     "f": ((2.0, 0.3, 0.2, 0.9, 0.05, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "g": ((3.5, 0.5, 0.9, 0.9, 0.05, 0.1, 0.1), ("claude", "opus", "high", True)),
-    "h": ((2.0, 1.2, 0.8, 0.6, 0.1, 0.2, 0.2), ("codex", "luna", "max", True)),
+    "h": ((2.0, 1.2, 0.8, 0.6, 0.1, 0.2, 0.2), ("codex", "sol", "high", True)),
     "i": ((2.0, 0.3, 0.9, 0.2, 0.05, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
     "j": ((2.5, 0.3, 0.9, 0.9, 0.05, 0.8, 0.1), ("claude", "sonnet", "high", True)),
+    "k": ((1.7, 0.3, 0.9, 0.9, 0.05, 0.1, 0.8), ("codex", "sol", "high", True)),
+    "n": ((2.5, 1.6, 0.9, 0.9, 0.3, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
+    "o": ((1.0, 1.8, 0.9, 0.9, 0.9, 0.1, 0.1), ("ESCALATE", "orchestrator-llm", "-", False)),
+    "l": ((1.3, 0.3, 0.9, 0.9, 0.05, 0.1, 0.1), ("codex", "luna", "max", True)),
+    "m": ((1.7, 0.3, 0.9, 0.9, 0.05, 0.1, 0.1), ("codex", "sol", "medium", True)),
 }
+# High-risk rows: suggested = the route rules 4-10 would pick; opus when a score is too unsure;
+# never codex when r >= 1.5 (o), while tail-only escalations keep the pick (d).
+SUGGESTED = {"c": ("claude", "opus", "high"), "d": ("codex", "luna", "max"),
+             "n": ("claude", "sonnet", "high"), "o": ("claude", "sonnet", "high")}
 for name, (row, expected) in ROWS.items():
     out = ask(srv, response(*row))
     rt = out["routing"]
     assert (rt["harness"], rt["model"], rt["effort"], rt["act"]) == expected, (name, rt)
-    if name in ("c", "d"):
+    if name in SUGGESTED:
         assert rt["requires_approval"] is True, (name, rt)
-        assert rt["suggested"] == {"harness": "claude", "model": "opus", "effort": "high"}, (name, rt)
+        assert rt["suggested"] == dict(zip(("harness", "model", "effort"), SUGGESTED[name])), (name, rt)
     else:
         assert "requires_approval" not in rt and "suggested" not in rt, (name, rt)
     assert out["risk_tail"] == row[4] and "context_ignored" not in out, (name, out)

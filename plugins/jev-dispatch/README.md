@@ -21,7 +21,7 @@ Skill kèm `evals/evals.json`: bộ prompt mẫu kèm kỳ vọng hành vi, dùn
 
 ## Nguyên tắc dùng chung
 
-- **Shadow mode trước, auto-route sau.** Chưa chạy lại golden set với policy hiện tại thì `routing` chỉ để log và tham khảo; coordinator vẫn tự quyết.
+- **Shadow mode trước, auto-route sau.** Chưa chạy lại golden set với policy hiện tại thì `routing` chỉ để log và tham khảo; coordinator vẫn tự quyết. Ngoại lệ: user chủ động opt-in sớm hơn (skill `dag-build` của orca-workflows đã opt-in), khi đó outcome theo route vẫn được log vào golden set.
 - **Fail-closed.** ESCALATE và error không bao giờ dẫn tới dispatch tự động. Task rủi ro cao luôn phải được user duyệt (`requires_approval`), kể cả khi Jev rất chắc.
 - **Không đổi battery khi chưa re-eval.** Wording câu hỏi, state builder, hay `TYPESAFE_JEV_MODEL` đổi thì phải chạy lại golden set trước khi dùng kết quả để route.
 - **Gửi đi tối thiểu.** `task` chỉ là mô tả ngắn, `context` chỉ có `repo`/`budget`, không có secret hay preamble (xem Data egress).
@@ -32,22 +32,38 @@ Biến dùng trong bảng: `c` = `judgments.complexity`, `r` = `judgments.risk`,
 
 | # | Điều kiện | `routing` |
 | --- | --- | --- |
-| 1 | `r >= 1.5` hoặc `tail >= 0.2` | `ESCALATE`, `act=false`, `requires_approval=true`, `suggested={"harness":"claude","model":"opus","effort":"high"}` |
+| 1 | `r >= 1.5` hoặc `tail >= 0.2` | `ESCALATE`, `act=false`, `requires_approval=true`, `suggested` = route mà rule 4–11 sẽ chọn (`claude/opus/high` khi confidence của Score dưới `FLOOR_ROUTE`; khi `r >= 1.5` thì route codex được thay bằng `claude/sonnet/high`) |
 | 2 | `confidence.risk < FLOOR_ROUTE` | `ESCALATE`, `act=false` (risk unknown) |
 | 3 | `confidence.complexity < FLOOR_ROUTE` | `ESCALATE`, `act=false` (complexity unknown) |
 | 4 | `c >= 3.2` | `claude` / `opus` / `high` |
 | 5 | `c >= 2.2` | `claude` / `sonnet` / `high` |
-| 6 | `needs_web > 0.7` hoặc `needs_long_context > 0.7` | `codex` / `sol` / `medium` |
-| 7 | `c < 1.2` và `r < 0.6` và `confidence.risk >= FLOOR_RISK` | `gemini` / `flash` / `high` |
-| 8 | Còn lại | `codex` / `luna` / `max` |
+| 6 | `needs_web > 0.7` | `claude` / `sonnet` / `medium` |
+| 7 | `needs_long_context > 0.7` | `codex` / `sol` / `high` |
+| 8 | `c >= 2.0` | `codex` / `sol` / `high` |
+| 9 | `c >= 1.5` | `codex` / `sol` / `medium` |
+| 10 | `c < 1.2` và `r < 0.6` và `confidence.risk >= FLOOR_RISK` | `codex` / `luna` / `medium` |
+| 11 | Còn lại | `codex` / `luna` / `max` |
 
-`ESCALATE` luôn có dạng `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`. Chỉ rule 1 thêm `requires_approval` và `suggested`. Các rule route thật (4–8) trả `act=true`.
+`ESCALATE` luôn có dạng `{"harness":"ESCALATE","model":"orchestrator-llm","effort":"-","act":false,"why":...}`. Chỉ rule 1 thêm `requires_approval` và `suggested`. Các rule route thật (4–11) trả `act=true`.
+
+`routing.model` là tên viết tắt, phải map sang provider id trước khi dispatch: `opus` → `claude-opus-5-5`, `sonnet` → `claude-sonnet-5-5`, `sol` → `gpt-6-sol`, `luna` → `gpt-6-luna`. Gặp tên viết tắt không có trong bảng thì coi như `act=false`.
+
+Lý do chọn model (theo tài liệu hãng công bố tháng 9/2026, chưa đo trên golden set):
+
+- **Opus 5.5** cho task mở hoặc cần phán đoán dài: dẫn SWE-bench Pro, ít hành động khó đảo ngược.
+- **Sonnet 5.5** gần bằng Opus ở terminal/agentic coding với giá bằng một nửa, và vượt Sol ở Terminal-Bench/SWE-bench Pro. Sonnet nhận task cần thiết kế nhiều file (`c >= 2.2`). Effort dừng ở `high`, vì ở `xhigh`/`max` nó tốn token tới mức mỗi task đắt hơn Opus.
+- **Task cần web** đi Sonnet: Claude Code có sẵn web search, còn worker Codex launch không kèm `--search` thì không có.
+- **GPT-6 Sol** là model tầm trung của OpenAI, giữ chất lượng tốt ở long context. Sol nhận việc engineering thông thường (`1.5 <= c < 2.2`, effort `high` từ 2.0) và task long-context. Trong shadow log, Sol xhigh chạy ổn mọi task tới `c` 2.6.
+- **GPT-6 Luna** rẻ nhất, hợp với thay đổi nhỏ, phạm vi rõ. Luna yếu ở long context và hallucinate nhiều hơn Sol, nên chỉ nhận task `c < 1.5`.
+- **Chia tải hai subscription:** trên shadow log, khoảng 4/11 task đi Claude, phần còn lại đi Codex. Ngưỡng 2.2 để golden set có outcome của cả Sonnet lẫn Sol quanh ranh giới đó.
+- **Task chắc chắn rủi ro cao** (`r >= 1.5`) không bao giờ được đề xuất sang codex: trong adversarial test, Sol thường tìm cách lách sau khi bị từ chối quyền, còn Luna hallucinate nhiều hơn.
+- Hai ngưỡng `1.5` và `2.0` chưa được đo.
 
 Thứ tự đánh giá:
 
 - Gate high-risk/tail chạy **đầu tiên** và không cần confidence floor: task chắc chắn rủi ro cao không bao giờ bị auto-dispatch.
 - Sau đó cả hai confidence của Score phải `>= FLOOR_ROUTE`.
-- `FLOOR_RISK` chỉ gate nhánh rẻ `gemini/flash`.
+- `FLOOR_RISK` chỉ gate nhánh rẻ nhất `luna/medium`.
 - Nhánh Noul (`> 0.7`) không có field confidence.
 
 **Response thành công:** `{"model", "battery", "judgments", "confidence", "risk_tail", "score_scale", "routing", "usage"}`, thêm `context_ignored` khi có key context bị bỏ.
@@ -70,7 +86,7 @@ Thứ tự đánh giá:
 - Có field `error`: coi như `act=false`.
 - `act=false` không kèm `requires_approval` (rule 2/3 và mọi error): coordinator tự quyết bằng reasoning model, hoặc hỏi user.
 
-> **Policy này đã khác bản prototype từng được đo.** Gate risk/tail được đưa lên đầu và có thêm `requires_approval`, `FLOOR_RISK` giờ chỉ gate nhánh flash. Vì vậy phải **chạy lại golden set** (shadow mode) trước khi bật auto-routing.
+> **Policy này đã khác bản prototype từng được đo.** Gate risk/tail được đưa lên đầu và có thêm `requires_approval`, `FLOOR_RISK` giờ chỉ gate nhánh `luna/medium`. Vì vậy phải **chạy lại golden set** (shadow mode) trước khi bật auto-routing.
 
 ## Biến môi trường
 
@@ -81,7 +97,7 @@ Server chỉ đọc 4 biến sau:
 | `TYPESAFE_API_KEY` | — | Bắt buộc. Claude Code lấy từ `userConfig` sensitive của plugin (lưu trong keychain), Gemini CLI lấy từ extension setting (lưu dạng sensitive); harness khác truyền từ env của host. Không bao giờ ghi literal vào file. Server vẫn khởi động khi thiếu key, nhưng mọi `ask` đều trả `kind: "config"` cho tới khi host khởi động lại server với key trong env |
 | `TYPESAFE_JEV_MODEL` | `jev-1.13.0` | Model đã pin. Chỉ bump sau khi re-eval golden set; để rỗng thì dùng mặc định |
 | `JEV_DISPATCH_FLOOR_ROUTE` | `0.35` | Confidence tối thiểu của `risk` và `complexity` để route |
-| `JEV_DISPATCH_FLOOR_RISK` | `0.85` | Confidence tối thiểu của `risk` cho nhánh rẻ `gemini/flash` |
+| `JEV_DISPATCH_FLOOR_RISK` | `0.85` | Confidence tối thiểu của `risk` cho nhánh rẻ nhất `luna/medium` |
 
 - Floor phải thỏa `0 <= FLOOR_ROUTE <= FLOOR_RISK <= 1`. Sai định dạng hoặc ngoài khoảng thì mọi `ask` trả `kind: "config"`.
 - Ngưỡng tail `0.2` là hằng số trong code, không cấu hình qua env.

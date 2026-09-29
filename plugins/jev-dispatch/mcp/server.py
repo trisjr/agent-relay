@@ -90,36 +90,56 @@ BATTERIES = {
 # complexity spans 0..4 (criteria[0] = 0), risk spans 0..2. Verified empirically
 # on jev-1.13.0 — thresholds below are in that scale, not 1-based level numbers.
 # First match wins. The policy differs from the measured prototype: re-run the
-# golden set (shadow mode) before enabling auto-routing.
+# golden set (shadow mode) before enabling auto-routing, unless the user opts in knowingly.
 def _escalate(why: str) -> dict[str, Any]:
     return {"harness": "ESCALATE", "model": "orchestrator-llm", "effort": "-", "why": why, "act": False}
 
 
 def route(j: dict, conf: dict, tail: float) -> dict[str, Any]:
-    c, r = j["complexity"], j["risk"]
-    p_web, p_long = j["needs_web"], j["needs_long_context"]
+    r = j["risk"]
     # needs_planning is scored and returned but unused; removal deferred pending golden-set re-eval.
     if r >= 1.5 or tail >= RISK_TAIL:
+        # Suggest where the task would go if it were safe; opus when the scores are too unsure to pick.
+        sure = conf["risk"] >= FLOOR_ROUTE and conf["complexity"] >= FLOOR_ROUTE
+        pick = _pick(j, conf) if sure else {"harness": "claude", "model": "opus", "effort": "high"}
+        if r >= 1.5 and pick["harness"] == "codex":  # confidently risky work stays off codex (sol: workarounds after denial)
+            pick = {"harness": "claude", "model": "sonnet", "effort": "high"}
         return {**_escalate(f"high risk ({r:.2f}, P(risk=2)={tail:.2f}) — ask the user"),
-                "requires_approval": True, "suggested": {"harness": "claude", "model": "opus", "effort": "high"}}
+                "requires_approval": True, "suggested": {k: pick[k] for k in ("harness", "model", "effort")}}
     if conf["risk"] < FLOOR_ROUTE:
         return _escalate(f"risk unknown: conf {conf['risk']:.2f} < {FLOOR_ROUTE}")
     if conf["complexity"] < FLOOR_ROUTE:
         return _escalate(f"complexity unknown: conf {conf['complexity']:.2f} < {FLOOR_ROUTE}")
+    return _pick(j, conf)
+
+
+def _pick(j: dict, conf: dict) -> dict[str, Any]:
+    """Rules 4-11: the route for a task that cleared the risk and confidence gates."""
+    c, r = j["complexity"], j["risk"]
+    p_web, p_long = j["needs_web"], j["needs_long_context"]
     if c >= 3.2:
         return {"harness": "claude", "model": "opus", "effort": "high",
                 "why": f"very complex ({c:.1f})", "act": True}
-    if c >= 2.2:
+    if c >= 2.2:  # high is the ceiling: sonnet at xhigh/max costs more per task than opus
         return {"harness": "claude", "model": "sonnet", "effort": "high",
                 "why": f"complex ({c:.1f}) -> sonnet 5.5", "act": True}
-    if p_web > 0.7 or p_long > 0.7:
+    if p_web > 0.7:  # claude code ships web search; codex workers launched without --search have none
+        return {"harness": "claude", "model": "sonnet", "effort": "medium",
+                "why": f"web ({p_web:.2f}) -> sonnet 5.5", "act": True}
+    if p_long > 0.7:  # luna degrades on long inputs; sol holds up
+        return {"harness": "codex", "model": "sol", "effort": "high",
+                "why": f"long-context ({p_long:.2f}) -> codex sol", "act": True}
+    if c >= 2.0:  # upper standard band; shadow log: sol xhigh passed every task up to c 2.6
+        return {"harness": "codex", "model": "sol", "effort": "high",
+                "why": f"standard feature ({c:.1f}) -> codex sol", "act": True}
+    if c >= 1.5:  # ponytail: 1.5 and 2.0 are untested cut points — calibrate on shadow data
         return {"harness": "codex", "model": "sol", "effort": "medium",
-                "why": f"web ({p_web:.2f}) / long-context ({p_long:.2f}) fits codex sol", "act": True}
+                "why": f"standard engineering work ({c:.1f}) -> codex sol", "act": True}
     if c < 1.2 and r < 0.6 and conf["risk"] >= FLOOR_RISK:
-        return {"harness": "gemini", "model": "flash", "effort": "high",
-                "why": f"trivial ({c:.1f}) + confidently low risk ({r:.2f}) -> cheap path", "act": True}
+        return {"harness": "codex", "model": "luna", "effort": "medium",
+                "why": f"trivial ({c:.1f}) + confidently low risk ({r:.2f}) -> cheapest path", "act": True}
     return {"harness": "codex", "model": "luna", "effort": "max",
-            "why": "standard engineering work", "act": True}
+            "why": f"small focused change ({c:.1f}) -> codex luna", "act": True}
 
 
 def _error(msg: str, kind: str, exc: Exception | None = None, **extra: Any) -> dict[str, Any]:
