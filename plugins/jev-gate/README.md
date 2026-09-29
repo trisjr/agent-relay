@@ -26,10 +26,11 @@ PreToolUse (`Bash|mcp__.*`) chạy lần lượt:
 | --- | --- | --- | --- |
 | 1 | Lock rule | Regex trong `hooks/gate.py` | Khớp thì `ask`, ở **mọi mode**, và không gửi Jev |
 | 2 | Secret | Regex | Command có dấu hiệu secret thì không gửi Jev; log lưu bản đã redact |
-| 3 | Fast path | Allowlist lệnh read-only (`ls`, `cat`, `rg`, `git status/diff/log`…), MCP tool dạng `get/list/read/search…` | Cho chạy theo permission flow bình thường, không gọi Jev |
-| 4 | REUSE | Ledger của session + git fingerprint | Chỉ áp dụng cho Bash |
-| 5 | Jev | 4 Noul trong một request: `read_only`, `destructive`, `outward`, `external_state` | Chỉ chấm vùng xám |
-| 6 | Policy | Hàm thuần `policy()` | Ra `ask` / `reuse` / `allow` / `proceed` |
+| 3 | Fast path | Allowlist lệnh read-only (`ls`, `cat`, `rg`, `git status/diff/log`…), MCP tool dạng `get/list/read/search…` | Cho chạy theo permission flow bình thường, không gọi Jev. Tách segment bằng `shlex`, nên `;`, `\|`, `>` nằm trong quote là text; `$(…)` và backtick thì bị loại ở mọi chỗ |
+| 4 | Orca IPC | `orca orchestration send/check/reply/ask/worker-read/worker-list/dispatch-show`, các segment còn lại phải là read-only | `source: "ipc"`: không gọi Jev, không REUSE. Đây là IPC local, và ask ở đây sẽ làm worker không có người trông bị treo |
+| 5 | REUSE | Ledger của session + git fingerprint | Chỉ áp dụng cho Bash |
+| 6 | Jev | 4 Noul trong một request: `read_only`, `destructive`, `outward`, `external_state` | Chỉ chấm vùng xám |
+| 7 | Policy | Hàm thuần `policy()` | Ra `ask` / `reuse` / `allow` / `proceed` |
 
 Policy chạy từ trên xuống, gặp điều kiện đầu tiên khớp thì dừng:
 
@@ -133,7 +134,7 @@ Ngưỡng là hằng số ở đầu `hooks/gate.py`: `ASK_AT`, `EXTERNAL_AT`, `
 - Chỉ call ở vùng xám mới gửi lên TypeSafe (`https://api.typesafe.ai/v1/systemone`, URL cố định, không đọc `TYPESAFE_BASE_URL`). Dữ liệu gửi đi là `kind` và `action`:
   - Bash: command đã bỏ thân heredoc, cắt 2000 ký tự. Command có dấu hiệu secret thì **không gửi**.
   - MCP: chỉ tên server, tên tool và **tên** các argument, không gửi giá trị.
-- Lock hit và fast path không bao giờ rời khỏi máy.
+- Lock hit, fast path và Orca IPC không bao giờ rời khỏi máy.
 - TypeSafe chỉ có zero data retention ở gói enterprise.
 
 ## Giới hạn đã biết
@@ -144,6 +145,9 @@ Ngưỡng là hằng số ở đầu `hooks/gate.py`: `ASK_AT`, `EXTERNAL_AT`, `
   - Quote hoặc indirection, ví dụ `g''it push` hay `$(echo git) push`.
 
   Ranh giới thật vẫn là permission rule của harness, sandbox hoặc container.
+- Orca IPC chỉ được bỏ qua Jev khi các segment còn lại đều read-only. Nếu worker gộp heartbeat với việc khác trong cùng một lệnh (vd `orca orchestration send … ; uv run …`):
+  - Lệnh có capability token `dcap_…`: rơi vào nhánh secret, không bao giờ tới Jev, kể cả khi phần gộp thêm là lệnh phá hủy. Khi đó chỉ còn lock rule.
+  - Lệnh không có token: vẫn đi qua Jev, và ở enforce có thể bị ask.
 - Fingerprint không thấy file bị gitignore (build output, `node_modules`). Nếu REUSE nhắc sai vì lý do này thì agent chỉ cần chạy lại là qua.
 - REUSE giả định output cũ vẫn còn trong context trong vòng 15 phút. Harness có thể đã dọn tool result cũ, nên luôn cho qua ở lần chạy lại.
 - Jev tin text trong state. Theo Check Point, một attacker mạnh lật được verdict 25/27 lần. Vì thế Jev ở đây chỉ **thêm** ask, không bao giờ allow, và lock luôn chạy trước Jev.
@@ -155,7 +159,7 @@ Ngưỡng là hằng số ở đầu `hooks/gate.py`: `ASK_AT`, `EXTERNAL_AT`, `
 python3 plugins/jev-gate/hooks/test_gate.py
 ```
 
-Test chạy offline, không gọi network. Nó kiểm lock (cả ca dương và ca âm), redact, heredoc, fast path, policy, state machine của REUSE, và end-to-end qua subprocess: đúng shape `hookSpecificOutput`, deny một lần rồi cho qua, file đổi làm fingerprint đổi, reset, và fail-open khi input hỏng.
+Test chạy offline, không gọi network. Nó kiểm lock (cả ca dương và ca âm), redact, heredoc, fast path (kể cả quote và các cách lách bằng `&`, `#`, `\"`), Orca IPC, policy, state machine của REUSE, và end-to-end qua subprocess: đúng shape `hookSpecificOutput`, deny một lần rồi cho qua, file đổi làm fingerprint đổi, reset, và fail-open khi input hỏng.
 
 ## Nguồn
 

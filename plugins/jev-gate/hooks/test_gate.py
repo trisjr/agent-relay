@@ -47,6 +47,8 @@ def test_redact_and_heredoc():
               "git clone https://me:hunter22@host/repo"):
         red, hit = gate.redact(s)
         assert hit and "abcdefghijklmnop1234" not in red and "hunter22" not in red and "a" * 36 not in red, s
+    red, hit = gate.redact("orca orchestration send --dispatch-capability dcap_" + "b" * 40 + " --type heartbeat")
+    assert hit and "b" * 40 not in red
     assert gate.redact("npm test -- --watch=false") == ("npm test -- --watch=false", False)
     cmd = "cat > f.py <<'EOF'\nimport os\nos.system('git push')\nEOF\npython3 f.py"
     stripped = gate.strip_heredocs(cmd)
@@ -58,11 +60,20 @@ def test_redact_and_heredoc():
 
 def test_fastpath():
     for cmd in ("ls -la", "git status && git diff HEAD", "git -C sub log --oneline | head -5",
-                "rg foo src 2>/dev/null | wc -l", "cat a.txt | sort | uniq"):
+                "rg foo src 2>/dev/null | wc -l", "cat a.txt | sort | uniq", "grep -n 'a|b;c' f", "cat < f"):
         assert gate.fastpath_bash(cmd), cmd
     for cmd in ("echo x > f", "find . -delete", "sort -o out a", "git branch new", "npm test",
-                "ls $(pwd)", "FOO=1 ls", "git commit -m x"):
+                "ls $(pwd)", "FOO=1 ls", "git commit -m x", "ls & rm -r build", "ls\nrm x", "ls # ; rm x",
+                'echo \\"; rm x; echo "ok"', "echo \"it's\"; rm y", 'echo "open', 'echo "$(rm x)"', "echo 'a > b' > f"):
         assert not gate.fastpath_bash(cmd), cmd
+    for cmd in ("orca orchestration send --type heartbeat --subject ok", "cd w && orca orchestration check --wait",
+                "git log -1 && orca orchestration ask --question q 2>&1 | tail -3",
+                "orca orchestration send --body 'ran a; b | c > d' | tail -2"):
+        assert gate.fastpath_bash(cmd, ipc=True) and not gate.fastpath_bash(cmd), cmd
+    for cmd in ("orca orchestration worker-start --task t", "orca orchestration send x && npm test",
+                "orca orchestration check --json > out.json", 'orca orchestration send --body "$(cat f)"',
+                "orca orchestration send x & rm -r build"):
+        assert not gate.fastpath_bash(cmd, ipc=True), cmd
     assert gate.MCP_READ.search("notion-fetch") and gate.MCP_READ.search("slack_read_channel")
     assert not gate.MCP_READ.search("slack_send_message")
 
@@ -135,6 +146,12 @@ def test_hook_end_to_end():
     assert all("x" * 100 not in json.dumps(e) for e in log)  # outputs are sized and hashed, never stored
     run("reset", {"session_id": "s1", "source": "compact"})
     assert gate.load("s1") == []
+    # Orca coordinator protocol skips Jev even in enforce mode, and its capability token is redacted.
+    cmd = "orca orchestration send --dispatch-capability dcap_" + "c" * 40 + " --type heartbeat"
+    assert run("pre", dict(base, session_id="s2", tool_use_id="o1", tool_input={"command": cmd}),
+               JEV_GATE_MODE="enforce") is None
+    rec = gate.load("s2")[0]
+    assert (rec["source"], rec["decision"], "c" * 40 in rec["action"]) == ("ipc", "proceed", False), rec
     # Garbage input fails open: exit 0, no output.
     p = subprocess.run([sys.executable, os.path.join(HERE, "gate.py"), "pre"], input="not json",
                        capture_output=True, text=True, env=ENV)

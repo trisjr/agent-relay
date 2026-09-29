@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -57,6 +58,7 @@ SECRETS = re.compile("|".join([
     r"\bgh[pousr]_\w{20,}|\bgithub_pat_\w{20,}",
     r"\bAKIA[0-9A-Z]{16}\b",
     r"\bxox[abprs]-[\w-]{10,}",
+    r"\bdcap_[\w-]{20,}",  # Orca dispatch capability
     r"://[^/\s:@]+:[^/\s@]+@",
     r"(?i:[\w-]*(?:api[_-]?key|token|secret|passw(?:or)?d)[\w-]*[\"']?\s*[=:]\s*[\"']?[^\s\"']{4,})",
     r"(?i:--(?:api[_-]?key|token|secret|password)[\s=]+[\"']?[^\s\"']{4,})",
@@ -66,8 +68,14 @@ READ_ONLY = {"basename", "cat", "cd", "cut", "date", "df", "diff", "dirname", "d
              "grep", "head", "jq", "ls", "nl", "printf", "pwd", "realpath", "rg", "sort", "stat", "tail",
              "type", "uniq", "wc", "which"}
 GIT_READ = {"blame", "describe", "diff", "grep", "log", "ls-files", "rev-parse", "show", "status"}
+PUNCT = ";&|<>()\n"  # shell operator characters; shlex returns a run of them as one token
 WRITE_FLAGS = {"find": ("-delete", "-exec", "-execdir", "-ok", "-okdir", "-fprint", "-fprintf", "-fls"),
                "sort": ("-o",)}
+# Orca's coordinator protocol is local IPC, yet Jev scored worker heartbeats outward 0.75-0.96 in shadow data: an
+# ask there stalls an unattended worker, and a Codex deny says "escalate", which is another send. Never fast: the
+# result depends on other agents, so it must not earn REUSE.
+ORCA_IPC = {"orca orchestration " + c for c in ("send", "check", "reply", "ask", "worker-read", "worker-list",
+                                                "dispatch-show")}
 MCP_READ = re.compile(r"(?:^|[_-])(?:get|list|search|read|fetch|query|find|view|describe|lookup)(?:[_-]|$)", re.I)
 
 QUESTIONS = {
@@ -120,14 +128,28 @@ def lock_rule(cmd):
     return None
 
 
-def fastpath_bash(cmd):
-    """True when every segment is a known read-only command with no redirect or substitution."""
+def fastpath_bash(cmd, ipc=False):
+    """True when every segment is a known read-only command with no redirect or substitution.
+    ipc=True also accepts Orca coordinator-protocol segments (ORCA_IPC). shlex splits the segments, so an
+    operator inside a quoted argument, such as a message body, stays text."""
     c = re.sub(r"\d?>\s*/dev/null|2>&1", "", cmd)
-    if re.search(r"[`>]|\$\(|<\(", c):
+    if re.search(r"`|\$\(|<\(", c):  # substitution runs even inside double quotes
         return False
-    for seg in re.split(r"&&|\|\||[;|\n]", c):
-        w = seg.split()
-        if not w:
+    lex = shlex.shlex(c, posix=True, punctuation_chars=PUNCT)
+    lex.whitespace, lex.whitespace_split, lex.commenters = " \t\r", True, ""  # newline separates; `#` is text
+    segs = [[]]
+    try:
+        for t in lex:
+            if not set(t) <= set(PUNCT):
+                segs[-1].append(t)
+            elif ">" in t:
+                return False
+            elif t.strip("<"):  # `<` and `<<<` only read input; every other operator starts a segment
+                segs.append([])
+    except ValueError:  # unbalanced quote
+        return False
+    for w in segs:
+        if not w or ipc and " ".join(w[:3]) in ORCA_IPC:
             continue
         if w[0] == "git":
             sub, it = None, iter(w[1:])
@@ -303,19 +325,20 @@ def pre(ev):
         kind, (action, secret) = "shell command", redact(stripped)
         rule = lock_rule(raw if SHELL_HEREDOC.search(raw) else stripped)
         fast = fastpath_bash(stripped)
+        ipc = not fast and fastpath_bash(stripped, ipc=True)
         rec["key"] = hashlib.sha1(" ".join(raw.split()).encode()).hexdigest()[:16]
         if not rule:
             rec["fp"] = fingerprint(ev.get("cwd") or os.getcwd())
     elif tool.startswith("mcp__"):
         parts = tool.split("__", 2)
         name = parts[2] if len(parts) == 3 else tool
-        kind, secret, rule = "MCP tool call", False, None
+        kind, secret, rule, ipc = "MCP tool call", False, None, False
         action = "%s.%s(%s)" % (parts[1] if len(parts) == 3 else "", name, ", ".join(sorted(map(str, ti))))
         fast = bool(MCP_READ.search(name))  # argument values never leave the machine
     else:
         return None
     rec.update(action=action[:MAX_ACTION], rule=rule, fast=fast,
-               source="lock" if rule else "fastpath" if fast else "secret" if secret else "jev")
+               source="lock" if rule else "fastpath" if fast else "ipc" if ipc else "secret" if secret else "jev")
     rec["reuse"] = reuse_candidate(load(sid), rec, now) if rec["fp"] else None
     key, j = api_key(), None
     if rec["source"] == "jev" and not key:
