@@ -11,6 +11,7 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 - `jev-dispatch`: 0.4.0 → 0.5.0
 - `orca-workflows`: 0.5.0 → 0.6.0
+- `jev-gate`: 0.1.1 → 0.1.2
 
 ### Added
 
@@ -27,6 +28,18 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - Gọi `ask` cả trước khi reuse terminal, chỉ reuse khi harness/model/effort khớp.
   - Override chỉ-nâng: coordinator được nâng worker (`luna` < `sol` < `sonnet` < `opus`) khi spec lộ độ khó kỹ thuật mà bản tóm tắt che mất, không bao giờ hạ, và ghi `override: <lý do>` vào note outcome.
   - Log `used` lấy model/effort thật từ `launch.effective` của receipt, không còn ghi cứng `null`, để golden set so được giữa các model.
+
+### Fixed
+
+- **jev-gate**: worker Orca không còn bị treo khi bật enforce. Các lệnh giao thức coordinator (`orca orchestration send/check/reply/ask/worker-read/worker-list/dispatch-show`) được ghi `source: "ipc"`, không gửi Jev và không REUSE.
+  - Trước đây Jev chấm heartbeat của worker outward 0.75–0.96, và ở enforce, ask này làm worker không có người trông bị treo. Worker Codex thì bị deny kèm lời nhắn "escalate", mà escalate lại chính là một lệnh `send`.
+  - Fast path tách segment bằng `shlex`, nên `;`, `|`, `>` nằm trong quote (vd `--body` của heartbeat, pattern `grep`/`jq`) được coi là text. `$(…)` và backtick vẫn bị loại ở mọi chỗ.
+  - Replay shadow log: số Jev ask giảm từ 26 xuống 18, và 29 lệnh read-only chuyển sang fast path. Lệnh gộp heartbeat với việc khác thì chỉ được bỏ qua Jev khi phần còn lại read-only.
+
+### Security
+
+- **jev-gate**: redact capability token `dcap_…` của Orca. Trước đây token này bị lưu plaintext trong session log và bị gửi lên TypeSafe khi Jev chấm lệnh `orca orchestration send`. Log cũ cần tự che, vì bản này chỉ áp dụng cho call mới.
+- **jev-gate**: fast path tách segment theo `&` đơn, nên `ls & rm -r build` không còn được coi là read-only và bỏ qua Jev.
 
 ## [0.12.0] - 2026-09-29
 
