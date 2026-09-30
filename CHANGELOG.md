@@ -5,6 +5,21 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-09-30
+
+### Plugins
+
+- `orca-workflows`: 0.6.0 → 0.6.1
+- `jev-gate`: 0.1.2 → 0.1.3
+
+### Fixed
+
+- **orca-workflows**: `orca-router` thêm cách xử lý khi `worker-start --agent codex` timeout ở `agent_readiness` (thấy trên Orca 1.4.216 với codex 0.158–0.159, kể cả khi truyền `--model`/`--effort`).
+  - Codex vẫn chạy bình thường, chỉ là Orca không nhận được hook status lúc khởi động nên báo `missing_status`.
+  - Nếu terminal của worker đang idle ở prompt của codex thì không relaunch `worker-start`, mà `task-create` task mới rồi `dispatch --inject` vào chính terminal đó và chờ `worker_done` như bình thường.
+  - Đây là workaround có điều kiện, bỏ khi Orca hoặc codex bản mới qua được bước readiness.
+- **jev-gate**: `git fetch` và `git ls-remote` không còn bị gửi Jev, `git rev-list` được thêm vào fast path read-only, nên các lệnh đồng bộ repo của worker không còn bị hỏi thừa.
+
 ## [0.13.0] - 2026-09-29
 
 ### Plugins
@@ -246,7 +261,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.13.1...HEAD
+[0.13.1]: https://github.com/trisjr/agent-relay/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/trisjr/agent-relay/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/trisjr/agent-relay/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/trisjr/agent-relay/compare/v0.10.0...v0.11.0
