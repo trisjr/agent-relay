@@ -2,6 +2,12 @@
 
 Marketplace cá nhân chứa các plugin tái sử dụng cho AI coding agents: "Reusable workflows for coding agents". Một plugin đóng gói skills (kèm hooks, commands khi cần) và cài được trên nhiều platform nhờ bộ manifest song song. Duy trì bởi AgentRelay Maintainers.
 
+## Video giới thiệu
+
+[![Xem video giới thiệu AgentRelay](brag-output/brag.jpg)](brag-output/brag.mp4)
+
+Nhấn vào ảnh để [xem video giới thiệu AgentRelay](brag-output/brag.mp4).
+
 ## Cấu trúc
 
 ```text
