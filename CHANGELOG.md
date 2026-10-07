@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.16.1] - 2026-10-07
+
+### Plugins
+
+- `launch-video`: 0.2.0 → 0.2.1
+
+### Fixed
+
+- **launch-video**: bản slim (`/launch-video-slim`, và cũng là bản `/launch-video` tự chuyển sang khi chạy trên Opus 5.5) giờ cũng chọn `--workers` theo cấu hình máy khi render bằng HyperFrames. Trước đó phần tăng tốc render của v0.16.0 chỉ có ở bản đầy đủ, nên trên Opus 5.5 render vẫn chạy `auto` với 1–2 worker.
+
 ## [0.16.0] - 2026-10-07
 
 ### Plugins
@@ -294,7 +304,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.16.1...HEAD
+[0.16.1]: https://github.com/trisjr/agent-relay/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/trisjr/agent-relay/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/trisjr/agent-relay/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/trisjr/agent-relay/compare/v0.13.1...v0.14.0
