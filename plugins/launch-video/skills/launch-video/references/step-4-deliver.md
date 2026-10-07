@@ -27,19 +27,18 @@ If the user approves or asks to render:
 
 ## Render
 
-Pick the worker count from the machine's specs before rendering. `--workers auto` is conservative for a 15-25s launch video: its contention cap (`cpus / 2.5`, divided further for shader/blur/video-heavy scenes) often lands on 1-2 workers. Each worker is a separate Chrome process, so size by both CPU cores and RAM:
+`--workers auto` caps a 15-25s launch video at `cpus / 2.5` workers (3 on an 8-core machine) and lowers that further when it detects costly scenes (shaders, heavy blur, embedded video). Each worker is a separate Chrome process. On a strong machine, one extra worker shaves roughly 10% off a light composition, so raise it only there and keep `auto` everywhere else:
 
-| Machine | `--workers` |
+| Machine and composition | `--workers` |
 |---|---|
-| ≥ 8 cores and ≥ 16 GB RAM | `4` |
-| ≥ 4 cores and ≥ 8 GB RAM | `3` |
-| Smaller | omit the flag (`auto`) |
+| ≥ 8 cores and ≥ 16 GB RAM, no shader transitions, heavy blur, or embedded video | `4` |
+| Anything else | omit the flag (`auto`) |
 
 ```bash
 CORES=$(getconf _NPROCESSORS_ONLN)
 MEM_GB=$(( $(sysctl -n hw.memsize 2>/dev/null || awk '/MemTotal/ {print $2 * 1024}' /proc/meminfo) / 1073741824 ))
-if [ "$CORES" -ge 8 ] && [ "$MEM_GB" -ge 16 ]; then WORKERS="--workers 4"
-elif [ "$CORES" -ge 4 ] && [ "$MEM_GB" -ge 8 ]; then WORKERS="--workers 3"
+# Set HEAVY=1 if the composition uses shader transitions, heavy blur, or embedded video.
+if [ "${HEAVY:-0}" = 0 ] && [ "$CORES" -ge 8 ] && [ "$MEM_GB" -ge 16 ]; then WORKERS="--workers 4"
 else WORKERS=""; fi
 echo "cores=$CORES mem=${MEM_GB}GB -> ${WORKERS:-auto}"
 
@@ -48,7 +47,7 @@ npx hyperframes render $WORKERS --output ../launch-video.mp4
 
 This outputs to `<output-dir>/launch-video.mp4` (one level up from the composition directory). Reuse the same `$WORKERS` for the draft and final renders below.
 
-If the render fails with a parallel-capture timeout, a worker exiting early, or Chrome running out of memory, step down one worker at a time (4 → 3 → 2) and re-render; drop to `--workers 1` only if 2 still fails (Hyperframes recommends it for video-heavy compositions).
+If the render fails with a parallel-capture timeout, a worker exiting early, or Chrome running out of memory, drop the flag (back to `auto`) and re-render; if `auto` still fails, try `--workers 2`, then `--workers 1` (Hyperframes recommends it for video-heavy compositions).
 
 For a faster iteration render:
 ```bash
