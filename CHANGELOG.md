@@ -5,6 +5,19 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-10-07
+
+### Plugins
+
+- `launch-video`: 0.1.0 (mới)
+
+### Added
+
+- **launch-video**: plugin biến project vừa làm xong (hoặc một website URL) thành launch video ngắn, sẵn để chia sẻ, render bằng HyperFrames. Agent đọc code project trực tiếp, không cần URL live hay screenshot.
+  - Skill `launch-video` (`/launch-video`): chọn tone, lên plan và storyboard, compose HyperFrames, mix nhạc + SFX có sẵn trong plugin, render `launch-video.mp4` kèm poster và share copy vào `launch-video-output/`.
+  - Skill `launch-video-slim` (`/launch-video-slim`): bản gọn một file, không asset kèm theo, model tự dựng toàn bộ bằng tool có sẵn trên máy. `launch-video` tự chuyển sang bản này khi chạy trên Opus 5.5, trừ khi có `--full` hoặc `--voice`.
+  - Vendor từ [latent-spaces/brag](https://github.com/latent-spaces/brag) v0.4.0 (MIT), đổi tên theo quy ước của marketplace.
+
 ## [0.14.0] - 2026-10-07
 
 ### Plugins
@@ -271,7 +284,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/trisjr/agent-relay/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/trisjr/agent-relay/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/trisjr/agent-relay/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/trisjr/agent-relay/compare/v0.12.0...v0.13.0
