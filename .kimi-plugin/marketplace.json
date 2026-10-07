@@ -68,7 +68,7 @@
       "displayName": "Compact Nudge",
       "version": "0.1.0",
       "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only (function hooks); never compacts on its own.",
-      "source": "./plugins/compact-nudge"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.14.0/compact-nudge-0.14.0.zip"
     }
   ]
 }

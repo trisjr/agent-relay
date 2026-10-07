@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-10-07
+
+### Plugins
+
+- `compact-nudge`: 0.1.0 (mới)
+
+### Added
+
+- **compact-nudge**: plugin function hooks cho Claude Code, nhắc `/compact` khi context vượt ngưỡng token (mặc định 200K, nhắc lại mỗi +100K) và soạn sẵn lệnh `/compact <cần giữ lại>` bằng `$.model.fork` trên transcript đang cache. Không bao giờ tự compact; ngưỡng chỉnh trong `/config`.
+
 ## [0.13.1] - 2026-09-30
 
 ### Plugins
@@ -261,7 +271,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.13.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/trisjr/agent-relay/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/trisjr/agent-relay/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/trisjr/agent-relay/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/trisjr/agent-relay/compare/v0.11.0...v0.12.0
