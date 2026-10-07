@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-10-07
+
+### Plugins
+
+- `launch-video`: 0.1.0 → 0.2.0
+
+### Added
+
+- **launch-video**: bước render tự chọn `--workers` theo cấu hình máy (≥ 8 core và ≥ 16 GB RAM → 4, ≥ 4 core và ≥ 8 GB → 3, yếu hơn để `auto`) thay vì để `auto` mặc định vốn chỉ chạy 1–2 worker với video 15–25s, giúp render nhanh hơn. Gặp timeout hoặc worker lỗi thì giảm dần về `--workers 1`.
+
 ## [0.15.0] - 2026-10-07
 
 ### Plugins
@@ -284,7 +294,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/trisjr/agent-relay/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/trisjr/agent-relay/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/trisjr/agent-relay/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/trisjr/agent-relay/compare/v0.13.0...v0.13.1
