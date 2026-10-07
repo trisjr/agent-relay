@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "compact-nudge",
+  "version": "0.1.0",
+  "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only (function hooks); never compacts on its own.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  }
+}

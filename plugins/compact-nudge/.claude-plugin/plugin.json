@@ -1,0 +1,23 @@
+{
+  "name": "compact-nudge",
+  "version": "0.1.0",
+  "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only (function hooks); never compacts on its own.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "threshold": {
+      "type": "number",
+      "title": "Nudge threshold (tokens)",
+      "description": "Start nudging once the context window holds at least this many tokens.",
+      "default": 200000
+    },
+    "step": {
+      "type": "number",
+      "title": "Re-nudge step (tokens)",
+      "description": "After a nudge, wait until the context grows by this many tokens before nudging again.",
+      "default": 100000
+    }
+  }
+}

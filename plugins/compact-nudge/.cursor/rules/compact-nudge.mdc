@@ -1,0 +1,9 @@
+---
+description: compact-nudge chỉ chạy trên Claude Code (function hooks); rule này chỉ để ghi chú, không có hành vi trên Cursor.
+globs:
+alwaysApply: false
+---
+
+# compact-nudge
+
+Plugin này là function hooks của Claude Code: nhắc người dùng `/compact` khi context vượt ngưỡng token. Cursor không có cơ chế tương ứng nên rule này không yêu cầu agent làm gì.

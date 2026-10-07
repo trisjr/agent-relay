@@ -1,0 +1,13 @@
+{
+  "name": "compact-nudge",
+  "version": "0.1.0",
+  "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only (function hooks); never compacts on its own.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Compact Nudge",
+    "shortDescription": "Reminds you to /compact past a token threshold, with a drafted command."
+  }
+}

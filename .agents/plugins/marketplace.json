@@ -38,6 +38,11 @@
       "name": "spec-readiness-gate",
       "source": "./plugins/spec-readiness-gate",
       "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill)."
+    },
+    {
+      "name": "compact-nudge",
+      "source": "./plugins/compact-nudge",
+      "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only (function hooks); never compacts on its own."
     }
   ]
 }
