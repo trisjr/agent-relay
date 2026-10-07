@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.16.2] - 2026-10-07
+
+### Plugins
+
+- `launch-video`: 0.2.1 → 0.2.2
+
+### Fixed
+
+- **launch-video**: thu hẹp quy tắc `--workers` ở cả bản đầy đủ lẫn bản slim theo số đo thực tế. Nhận định ở v0.16.0/v0.16.1 rằng `auto` chỉ chạy 1–2 worker là sai: trên máy 8 core, `auto` đã tự chọn 3, và 4 worker chỉ nhanh hơn khoảng 10% (video 22s: ~19s so với ~21s). Giờ skill chỉ truyền `--workers 4` khi máy ≥ 8 core, ≥ 16 GB RAM và composition không có shader transition, blur nặng hay video lồng; mọi trường hợp khác để `auto` tự hạ worker theo độ nặng của scene. Render lỗi thì quay về `auto`, rồi 2, rồi 1.
+
 ## [0.16.1] - 2026-10-07
 
 ### Plugins
@@ -304,7 +314,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.16.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.16.2...HEAD
+[0.16.2]: https://github.com/trisjr/agent-relay/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/trisjr/agent-relay/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/trisjr/agent-relay/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/trisjr/agent-relay/compare/v0.14.0...v0.15.0
