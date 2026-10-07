@@ -1,0 +1,14 @@
+{
+  "name": "launch-video",
+  "version": "0.1.0",
+  "description": "Turn the current project or a website URL into a short, polished, shareable launch video using HyperFrames.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Launch Video",
+    "shortDescription": "Turn your project into a shareable launch video"
+  }
+}

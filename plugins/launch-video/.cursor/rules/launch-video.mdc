@@ -1,0 +1,12 @@
+---
+description: Áp dụng khi người dùng muốn làm launch video cho project ("/launch-video", "show off this project", "make a launch video", "turn this into a video").
+globs:
+alwaysApply: false
+---
+
+# launch-video
+
+Khi người dùng muốn khoe project vừa làm xong bằng một video ngắn, đọc và làm theo skill `skills/launch-video/SKILL.md` của plugin này (bản đầy đủ: nhạc, SFX, HyperFrames). Nếu thiếu asset hoặc cần bản gọn một file, dùng `skills/launch-video-slim/SKILL.md`.
+
+- Đọc code project trực tiếp, không cần URL live hay screenshot.
+- Render bằng HyperFrames (`npx hyperframes render`); output mặc định là `launch-video-output/launch-video.mp4` trong thư mục hiện tại.

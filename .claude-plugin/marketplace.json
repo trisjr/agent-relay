@@ -44,6 +44,11 @@
       "name": "compact-nudge",
       "source": "./plugins/compact-nudge",
       "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only (function hooks); never compacts on its own."
+    },
+    {
+      "name": "launch-video",
+      "source": "./plugins/launch-video",
+      "description": "Turn the current project or a website URL into a short, polished, shareable launch video using HyperFrames."
     }
   ]
 }
