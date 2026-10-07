@@ -27,20 +27,37 @@ If the user approves or asks to render:
 
 ## Render
 
+Pick the worker count from the machine's specs before rendering. `--workers auto` is conservative for a 15-25s launch video: its contention cap (`cpus / 2.5`, divided further for shader/blur/video-heavy scenes) often lands on 1-2 workers. Each worker is a separate Chrome process, so size by both CPU cores and RAM:
+
+| Machine | `--workers` |
+|---|---|
+| ≥ 8 cores and ≥ 16 GB RAM | `4` |
+| ≥ 4 cores and ≥ 8 GB RAM | `3` |
+| Smaller | omit the flag (`auto`) |
+
 ```bash
-npx hyperframes render --output ../launch-video.mp4
+CORES=$(getconf _NPROCESSORS_ONLN)
+MEM_GB=$(( $(sysctl -n hw.memsize 2>/dev/null || awk '/MemTotal/ {print $2 * 1024}' /proc/meminfo) / 1073741824 ))
+if [ "$CORES" -ge 8 ] && [ "$MEM_GB" -ge 16 ]; then WORKERS="--workers 4"
+elif [ "$CORES" -ge 4 ] && [ "$MEM_GB" -ge 8 ]; then WORKERS="--workers 3"
+else WORKERS=""; fi
+echo "cores=$CORES mem=${MEM_GB}GB -> ${WORKERS:-auto}"
+
+npx hyperframes render $WORKERS --output ../launch-video.mp4
 ```
 
-This outputs to `<output-dir>/launch-video.mp4` (one level up from the composition directory).
+This outputs to `<output-dir>/launch-video.mp4` (one level up from the composition directory). Reuse the same `$WORKERS` for the draft and final renders below.
+
+If the render fails with a parallel-capture timeout, a worker exiting early, or Chrome running out of memory, step down one worker at a time (4 → 3 → 2) and re-render; drop to `--workers 1` only if 2 still fails (Hyperframes recommends it for video-heavy compositions).
 
 For a faster iteration render:
 ```bash
-npx hyperframes render --quality draft --output ../launch-video.mp4
+npx hyperframes render $WORKERS --quality draft --output ../launch-video.mp4
 ```
 
 For final delivery:
 ```bash
-npx hyperframes render --quality high --output ../launch-video.mp4
+npx hyperframes render $WORKERS --quality high --output ../launch-video.mp4
 ```
 
 ## Pick the poster frame
