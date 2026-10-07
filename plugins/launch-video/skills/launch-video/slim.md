@@ -92,7 +92,7 @@ Write the music and sound effects as one piece: effects in the same key and the 
 
 Build it with whatever works on this machine. If you draw the video in a browser, make every frame a pure function of time and wait for fonts and images to load before capturing each one.
 
-Before the full render, look at stills from every scene *and* from mid-transition, and fix overflow, collisions, and low contrast. A plain crossfade between two busy layouts makes a muddy double exposure; stagger it (old content out, then new content in) or dip through the background. Then render `launch-video.mp4`.
+Before the full render, look at stills from every scene *and* from mid-transition, and fix overflow, collisions, and low contrast. A plain crossfade between two busy layouts makes a muddy double exposure; stagger it (old content out, then new content in) or dip through the background. Then render `launch-video.mp4`. If you render with HyperFrames, set the worker count from the machine instead of leaving it on `auto`, which often runs only 1-2 workers for a clip this short: `--workers 4` with ≥ 8 CPU cores and ≥ 16 GB RAM, `--workers 3` with ≥ 4 cores and ≥ 8 GB, otherwise leave the flag off. If the render times out or a worker dies, step down one worker at a time.
 
 ## 4. Deliver
 
