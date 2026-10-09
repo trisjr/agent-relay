@@ -4,9 +4,9 @@ Marketplace cá nhân chứa các plugin tái sử dụng cho AI coding agents: 
 
 ## Video giới thiệu
 
-[![Xem video giới thiệu AgentRelay](brag-output/brag.jpg)](brag-output/brag.mp4)
+[![Xem video giới thiệu AgentRelay](public/agent-relay-launch.jpg)](public/agent-relay-launch.mp4)
 
-Nhấn vào ảnh để [xem video giới thiệu AgentRelay](brag-output/brag.mp4).
+Nhấn vào ảnh để [xem video giới thiệu AgentRelay](public/agent-relay-launch.mp4).
 
 ## Cấu trúc
 
