@@ -33,6 +33,7 @@ Nhấn vào ảnh để [xem video giới thiệu AgentRelay](public/agent-relay
 │       └── README.md                       # Mô tả plugin
 ├── scripts/new-plugin.sh                   # Tạo plugin từ template + đăng ký vào 3 marketplace.json
 ├── scripts/validate.sh                     # Kiểm tra toàn bộ manifest + cấu trúc
+├── public/                                 # Asset công khai của repo (video giới thiệu, poster)
 ├── CHANGELOG.md
 ├── LICENSE
 ├── README.md

@@ -26,9 +26,9 @@
       "id": "clarify-requirements",
       "name": "clarify-requirements",
       "displayName": "Clarify Requirements",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.6.0/clarify-requirements-0.6.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.17.0/clarify-requirements-0.2.0.zip"
     },
     {
       "id": "debug-root-cause",

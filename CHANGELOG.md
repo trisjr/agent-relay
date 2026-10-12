@@ -5,6 +5,20 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-12
+
+### Plugins
+
+- `clarify-requirements`: 0.1.0 → 0.2.0
+
+### Added
+
+- **clarify-requirements**: bước "khám phá trước khi hỏi" giờ delegate việc đọc code/test/docs cho explore subagent (model rẻ kiểu Haiku / GPT-mini) khi vùng cần đọc rộng — chạy song song, mỗi agent một khu vực độc lập, trả kết luận kèm tham chiếu `file:line` để context chính không bị đầy bản dump. Số agent tùy vùng chưa biết: 0 khi câu trả lời chỉ cách 1–2 file đã biết, thường 1–4 tương ứng một khu vực mỗi agent. Việc phân loại câu hỏi và hỏi người dùng vẫn giữ ở conversation chính vì subagent không có tool hỏi.
+
+### Changed
+
+- **README**: thay video giới thiệu bằng launch video AgentRelay có lời narrate, kèm poster, đặt tại `public/agent-relay-launch.mp4` / `.jpg` thay cho thư mục `brag-output/`.
+
 ## [0.16.2] - 2026-10-07
 
 ### Plugins
@@ -314,7 +328,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.16.2...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/trisjr/agent-relay/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/trisjr/agent-relay/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/trisjr/agent-relay/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/trisjr/agent-relay/compare/v0.15.0...v0.16.0
