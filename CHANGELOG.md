@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-10-12
+
+### Plugins
+
+- `clarify-requirements`: 0.2.0 → 0.3.0
+
+### Added
+
+- **clarify-requirements**: bổ sung trường đề xuất cách triển khai (`Approach`) vào requirements brief kèm bảng hướng dẫn chọn phương thức (Inline một agent, Subagents độc lập, Workflow lặp/fan-out, hoặc DAG có gate) dựa trên quy mô và hình thái bài toán thay vì thói quen; mặc định ưu tiên Inline và yêu cầu xác nhận trước khi dùng Workflow hay DAG.
+
 ## [0.17.0] - 2026-10-12
 
 ### Plugins
@@ -328,7 +338,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.17.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.18.0...HEAD
+[0.18.0]: https://github.com/trisjr/agent-relay/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/trisjr/agent-relay/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/trisjr/agent-relay/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/trisjr/agent-relay/compare/v0.16.0...v0.16.1
