@@ -131,6 +131,7 @@ Decisions: <answers that change behavior — cite the user or repo evidence>
 Assumptions: <low-risk defaults, with source or "agent default">
 Acceptance: <2–5 observable checks, including the key failure path>
 Constraints: <binding ones only>
+Approach: <inline | subagents | workflow | DAG> — <one-line reason>; recommended, user may override
 Open: <none | non-blocking item | BLOCKED: decision + affected action>
 ```
 
@@ -145,6 +146,24 @@ Then:
 - Keep the brief in chat unless the user or a downstream plan needs a file. If you write one, update it in place rather than appending copies — the brief is the single source of truth, and duplicates get re-implemented.
 - For large or irreversible work, show the brief and get a yes before acting. For small work, show it and proceed.
 - When the work is planned as a DAG or split across workers, each task receives only its own decisions and acceptance checks, not the whole brief.
+
+## 9. Recommend how to implement
+
+Choose the approach from the brief's size and shape, not from habit. Recommend one, give its reason, and let the user override.
+
+| Approach | Use when | Cost and risk |
+| --- | --- | --- |
+| Inline (one agent) | One or two files, steps depend on judgment, or the answer is a short explanation | Lowest; everything stays in one context |
+| Subagents | A few independent areas, or a large read that would flood the main context; the main agent reconciles the results | Moderate; each step is coordinated by hand |
+| Workflow (scripted fan-out) | Many similar items (files, modules, findings) that get the same check, plus loops or adversarial verification | Highest token spend; define the verify step before running |
+| Supervised DAG of workers | A multi-part feature across modules or services, with decision gates and parallel waves | Highest coordination overhead; only with a gate the user approves |
+
+Rules:
+
+- Default to inline. Escalate only when the brief names a reason from the right-hand column.
+- Mark the recommendation and give one reason: `Approach: subagents — three independent modules (api, ui, db) with no shared state.`
+- Workflow and DAG multiply cost and coordination. Ask the user before running either; put that ask in `Open`, unless the user already approved it.
+- Match the model to the step: a cheaper model for reading and fan-out, the strongest available model for verification and synthesis.
 
 ## Anti-patterns
 
