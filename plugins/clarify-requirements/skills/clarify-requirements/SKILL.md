@@ -17,7 +17,9 @@ Ceremony must stay proportional: a bug fix never needs user stories, and a brief
 
 ## 2. Explore before asking
 
-Read the relevant code, tests, docs, conventions, and earlier messages first. Sort every unknown into one of three buckets:
+Read the relevant code, tests, docs, conventions, and earlier messages first. Sort every unknown into one of three buckets.
+
+When the surface to read is wide, delegate the reading to subagents if the harness provides them: an explore agent on a cheap model (Haiku / GPT-mini class) digests code, tests, and docs and returns conclusions with `file:line` references, keeping raw dumps out of the main context — run several in parallel over independent areas. Size the fan-out to the unknowns, never a fixed count: zero agents when the answer is one or two known files away, otherwise one agent per independent area (the feature's module, docs/conventions, prior art) — usually 1–4. Needing more means the request has outgrown clarification; exploration at that scale belongs to the planning step, not to asking cheaper questions. Keep the bucketing decisions below, and especially the asking (section 6), in the main conversation: question tools do not exist inside subagents.
 
 - **Discoverable fact** (which module owns X, what format existing exports use): find it yourself. If it is still ambiguous after looking, present the concrete candidates you found and recommend one — never hand the user your research.
 - **Preference or trade-off** (scope, priority, UX, data policy, who gets access): the user's call, so it is a candidate question.
