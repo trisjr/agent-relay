@@ -2,11 +2,11 @@
 
 Plugin chấm **độ sẵn sàng của task spec** trước khi coordinator dispatch cho worker (`worker-start --spec`, `task-create` của Orca). Mỗi spec được chấm qua một **battery phán đoán TypeSafe Jev** trong một request, rồi một **policy thuần trong code** ra verdict: `dispatch`, `clarify` (chỉ rõ trường nào yếu) hoặc `escalate`. Jev chỉ chấm, code mới quyết. Plugin không viết hay vá spec thay coordinator.
 
-Plugin là **add-on**: `orca-workflows` chạy bình thường khi vắng plugin. Không có API key thì skill dùng checklist thủ công 5 trường.
+Plugin là **add-on**: `dev-workflows` chạy bình thường khi vắng plugin. Không có API key thì skill dùng checklist thủ công 5 trường.
 
 ## Bối cảnh
 
-Mọi fan-out có giám sát trong `orca-workflows` dispatch worker bằng spec theo contract 5 trường: **Target / Change / Constraints / Ownership / Observable acceptance**. Spec mơ hồ làm worker fail, đi lệch hoặc phải escalate giữa chừng, tốn trọn một lần dispatch. Plugin cho coordinator một thang đo nhất quán trước khi dispatch, và một log để học xem spec kiểu nào hay gây fail.
+Mọi fan-out có giám sát trong `dev-workflows` dispatch worker bằng spec theo contract 5 trường: **Target / Change / Constraints / Ownership / Observable acceptance**. Spec mơ hồ làm worker fail, đi lệch hoặc phải escalate giữa chừng, tốn trọn một lần dispatch. Plugin cho coordinator một thang đo nhất quán trước khi dispatch, và một log để học xem spec kiểu nào hay gây fail.
 
 Plugin có hai lớp:
 
@@ -165,4 +165,4 @@ uv run --with "mcp[cli]>=2.2,<3" --with "typesafe-sdk>=0.7.1,<0.8" python eval_l
 
 ## Tích hợp (PR follow-up)
 
-Chưa nằm trong bản đầu, mỗi mục là một PR nhỏ, revert được: bước "nếu có tool thì chấm spec" trong `orca-workflows/dag-build`; chế độ nhận `missing_fields` làm input targeted trong `clarify-requirements`; một dòng nhắc gate trong coordinator rules của `orca-router`.
+Chưa nằm trong bản đầu, mỗi mục là một PR nhỏ, revert được: bước "nếu có tool thì chấm spec" trong `dev-workflows/dag-build`; chế độ nhận `missing_fields` làm input targeted trong `clarify-requirements`; một dòng nhắc gate trong coordinator rules của `orca-router`.
