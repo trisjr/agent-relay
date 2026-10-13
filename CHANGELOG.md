@@ -5,6 +5,28 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-10-13
+
+### Plugins
+
+- `jev-dispatch`: 0.5.0 → 0.5.1
+- `spec-readiness-gate`: 0.1.0 → 0.1.1
+- `dev-workflows`: 0.1.0 (ra mắt)
+
+### Added
+
+- **dev-workflows**: plugin mới gom workflow chuẩn cho dev làm việc với coding agent, một lần cài đủ tám skill: `clarify-requirements` (làm rõ yêu cầu trước khi build), `debug-root-cause` (debug tới root cause theo bằng chứng), `retro-capture` và `retro-recall` (ghi và tái dùng bài học của project), cùng bốn skill điều phối Orca: `orca-router`, `research-swarm`, `parallel-review`, `dag-build`. Kèm hook nhắc ghi bài học và Cursor rule cho từng skill.
+
+### Changed
+
+- **jev-dispatch**: skill `dispatch-routing` và README trỏ `dag-build` sang `dev-workflows`.
+- **spec-readiness-gate**: README trỏ `dag-build` sang `dev-workflows`.
+- **README**: Cursor rule của plugin có thể gồm nhiều file `.mdc`, không còn giả định một file theo tên plugin.
+
+### Removed
+
+- **orca-workflows**, **clarify-requirements**, **debug-root-cause**, **compound-retros**: xoá khỏi cả ba marketplace, đã gom vào `dev-workflows`. Đây là breaking change: gỡ bản cũ bằng `/plugin uninstall <name>@agent-relay` rồi cài `dev-workflows`. Kimi không còn nhận bản cập nhật của bốn plugin này.
+
 ## [0.18.0] - 2026-10-12
 
 ### Plugins
@@ -338,7 +360,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/trisjr/agent-relay/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/trisjr/agent-relay/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/trisjr/agent-relay/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/trisjr/agent-relay/compare/v0.16.1...v0.16.2

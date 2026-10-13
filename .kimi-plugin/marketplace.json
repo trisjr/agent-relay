@@ -10,9 +10,9 @@
       "id": "jev-dispatch",
       "name": "jev-dispatch",
       "displayName": "Jev Dispatch",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.13.0/jev-dispatch-0.13.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.19.0/jev-dispatch-0.19.0.zip"
     },
     {
       "id": "jev-gate",
@@ -26,9 +26,9 @@
       "id": "spec-readiness-gate",
       "name": "spec-readiness-gate",
       "displayName": "Spec Readiness Gate",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.11.0/spec-readiness-gate-0.11.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.19.0/spec-readiness-gate-0.19.0.zip"
     },
     {
       "id": "compact-nudge",
@@ -52,7 +52,7 @@
       "displayName": "Dev Workflows",
       "version": "0.1.0",
       "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
-      "source": "./plugins/dev-workflows"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.19.0/dev-workflows-0.19.0.zip"
     }
   ]
 }
