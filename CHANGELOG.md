@@ -5,6 +5,20 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.20.1] - 2026-10-13
+
+### Plugins
+
+- `dev-workflows`: 0.2.0 → 0.2.1
+
+### Changed
+
+- **dev-workflows**: `retro-capture` và `retro-recall` dùng chung quy tắc chọn kho bài học ở `references/notes-root.md` thay vì lặp lại ở cả hai skill. Nội dung hai skill được viết gọn lại, quy tắc chính giữ nguyên; mô tả trigger cũng được diễn đạt lại, nên việc Claude tự kích hoạt skill có thể khác đôi chút.
+
+### Fixed
+
+- **dev-workflows**: hook nhắc `retro-capture` chỉ khớp tín hiệu khi cụm từ đứng riêng thành một từ, nên các câu chứa `đừng`, `lần sau`… như một phần của từ dài hơn không còn kích hoạt nhắc nhầm.
+
 ## [0.20.0] - 2026-10-13
 
 ### Plugins
@@ -370,7 +384,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.20.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.20.1...HEAD
+[0.20.1]: https://github.com/trisjr/agent-relay/compare/v0.20.0...v0.20.1
 [0.20.0]: https://github.com/trisjr/agent-relay/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/trisjr/agent-relay/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/trisjr/agent-relay/compare/v0.17.0...v0.18.0

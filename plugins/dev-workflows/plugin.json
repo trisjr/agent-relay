@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "dev-workflows",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
   "author": {
     "name": "AgentRelay Maintainers"
