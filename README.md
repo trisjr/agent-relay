@@ -25,7 +25,7 @@ Nhấn vào ảnh để [xem video giới thiệu AgentRelay](public/agent-relay
 │       ├── gemini-extension.json           # Gemini CLI extension manifest
 │       ├── .kimi-plugin/plugin.json        # Kimi Code manifest
 │       ├── .mcp.json                       # MCP server cho Claude Code (optional)
-│       ├── .cursor/rules/<plugin-name>.mdc # Cursor rule
+│       ├── .cursor/rules/*.mdc             # Cursor rule (một hoặc nhiều file)
 │       ├── mcp/                            # MCP server (optional)
 │       ├── hooks/hooks.json                # Hook cho Claude Code/Codex (optional)
 │       ├── skills/<skill-name>/SKILL.md    # Skill, frontmatter gồm name + description
@@ -49,7 +49,7 @@ Mỗi plugin mang nhiều manifest để các platform nhận diện theo cách 
 | Kimi Code | `.kimi-plugin/marketplace.json` | `.kimi-plugin/plugin.json` |
 | Qoder | — | `.qoder-plugin/plugin.json` |
 | Gemini CLI | — | `gemini-extension.json` |
-| Cursor | — | `.cursor/rules/<plugin-name>.mdc` |
+| Cursor | — | `.cursor/rules/*.mdc` |
 ## Thêm plugin mới
 
 Dùng script thay vì sửa tay, vì plugin mới bắt buộc đăng ký vào cả ba `marketplace.json`:
