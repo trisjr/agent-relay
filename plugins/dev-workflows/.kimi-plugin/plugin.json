@@ -1,0 +1,14 @@
+{
+  "name": "dev-workflows",
+  "version": "0.1.0",
+  "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
+  "author": {
+    "name": "AgentRelay Maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Dev Workflows",
+    "shortDescription": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI."
+  }
+}

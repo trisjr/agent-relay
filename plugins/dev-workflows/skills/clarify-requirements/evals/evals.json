@@ -9,7 +9,7 @@
     },
     {
       "id": 2,
-      "prompt": "bump version plugin orca-workflows lên 0.3.2 giúp anh",
+      "prompt": "bump version plugin dev-workflows lên 0.3.2 giúp anh",
       "expected_output": "Right-sizes the request as fully specified: AGENTS.md already says all five manifests must keep name and version in sync, so it asks no clarifying questions and proceeds, naming the five manifest files (plugin.json, .claude-plugin/plugin.json, .qoder-plugin/plugin.json, gemini-extension.json, .kimi-plugin/plugin.json). No requirements brief ceremony.",
       "files": []
     },
@@ -28,7 +28,7 @@
     {
       "id": 5,
       "prompt": "giải thích giúp anh skill dag-build hoạt động thế nào",
-      "expected_output": "Treats this as a pure explanation: answers directly from plugins/orca-workflows/skills/dag-build/SKILL.md without clarifying questions, assumptions lists, or a requirements brief.",
+      "expected_output": "Treats this as a pure explanation: answers directly from plugins/dev-workflows/skills/dag-build/SKILL.md without clarifying questions, assumptions lists, or a requirements brief.",
       "files": []
     }
   ]

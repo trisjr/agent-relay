@@ -6,29 +6,9 @@
   },
   "plugins": [
     {
-      "name": "orca-workflows",
-      "source": "./plugins/orca-workflows",
-      "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates."
-    },
-    {
       "name": "jev-dispatch",
       "source": "./plugins/jev-dispatch",
       "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill)."
-    },
-    {
-      "name": "clarify-requirements",
-      "source": "./plugins/clarify-requirements",
-      "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief."
-    },
-    {
-      "name": "debug-root-cause",
-      "source": "./plugins/debug-root-cause",
-      "description": "Debug with method, not guesses: reproduce and isolate the failure, gather evidence, run a hypothesis ledger with minimal experiments, fix the root cause behind a failing test, verify green, and write a short bug report — for any concrete test, build, CI, or runtime failure."
-    },
-    {
-      "name": "compound-retros",
-      "source": "./plugins/compound-retros",
-      "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter."
     },
     {
       "name": "jev-gate",
@@ -49,6 +29,11 @@
       "name": "launch-video",
       "source": "./plugins/launch-video",
       "description": "Turn the current project or a website URL into a short, polished, shareable launch video using HyperFrames."
+    },
+    {
+      "name": "dev-workflows",
+      "source": "./plugins/dev-workflows",
+      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI."
     }
   ]
 }

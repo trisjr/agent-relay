@@ -7,44 +7,12 @@
   },
   "plugins": [
     {
-      "id": "orca-workflows",
-      "name": "orca-workflows",
-      "displayName": "Orca Workflows",
-      "version": "0.6.1",
-      "description": "Supervised multi-agent workflows for the Orca CLI: research swarms, parallel lens-based code review, and DAG-based builds with decision gates.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.13.1/orca-workflows-0.13.1.zip"
-    },
-    {
       "id": "jev-dispatch",
       "name": "jev-dispatch",
       "displayName": "Jev Dispatch",
       "version": "0.5.0",
       "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill).",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.13.0/jev-dispatch-0.13.0.zip"
-    },
-    {
-      "id": "clarify-requirements",
-      "name": "clarify-requirements",
-      "displayName": "Clarify Requirements",
-      "version": "0.3.0",
-      "description": "Clarify vague or high-stakes requests before building: explore the repo first, ask a few high-impact questions with recommended defaults, log assumptions, and hand off a short requirements brief.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.18.0/clarify-requirements-0.18.0.zip"
-    },
-    {
-      "id": "debug-root-cause",
-      "name": "debug-root-cause",
-      "displayName": "Debug Root Cause",
-      "version": "0.2.0",
-      "description": "Debug with method, not guesses: reproduce and isolate the failure, gather evidence, run a hypothesis ledger with minimal experiments, fix the root cause behind a failing test, verify green, and write a short bug report — for any concrete test, build, CI, or runtime failure.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.9.0/debug-root-cause-0.9.0.zip"
-    },
-    {
-      "id": "compound-retros",
-      "name": "compound-retros",
-      "displayName": "Compound Retros",
-      "version": "0.1.0",
-      "description": "Turn each agent session into reusable project knowledge: capture short structured solution notes (bug lessons, conventions, decisions, pitfalls — including lessons from user corrections), recall the few relevant ones before similar work, and curate the store against rot — each loop makes the next one smarter.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.8.0/compound-retros-0.8.0.zip"
     },
     {
       "id": "jev-gate",
@@ -77,6 +45,14 @@
       "version": "0.2.2",
       "description": "Turn the current project or a website URL into a short, polished, shareable launch video using HyperFrames.",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.16.2/launch-video-0.16.2.zip"
+    },
+    {
+      "id": "dev-workflows",
+      "name": "dev-workflows",
+      "displayName": "Dev Workflows",
+      "version": "0.1.0",
+      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
+      "source": "./plugins/dev-workflows"
     }
   ]
 }
