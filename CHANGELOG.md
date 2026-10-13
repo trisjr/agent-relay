@@ -5,6 +5,10 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+### Added
+
+- **dev-workflows**: skill `parallel-scopes` chia một task nhiều phần độc lập (FE/BE/docs/test) thành các scope chạy song song bằng subagent thường, không cần Orca: chốt contract trước, ownership file không chồng, một working tree mặc định, tích hợp và verify ở main session.
+
 ## [0.19.0] - 2026-10-13
 
 ### Plugins

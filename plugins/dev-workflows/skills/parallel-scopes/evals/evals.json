@@ -1,0 +1,35 @@
+{
+  "skill_name": "parallel-scopes",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "thêm endpoint GET /users/:id/avatar ở backend, hiển thị avatar ở trang profile phía FE, và cập nhật docs API, làm song song giúp anh",
+      "expected_output": "Writes the API contract (route, response shape) before spawning; produces a scope table with BE, FE and docs rows, each owning disjoint paths; spawns all three agents in one message with self-contained prompts, `model` and `effort` set per scope, in a single working tree without worktrees; integrates afterward by checking reports, running validation/tests and reading the combined diff.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "chia scope chạy song song: đổi tên field `user_name` thành `username` ở API và cả FE đang dùng field đó",
+      "expected_output": "Recognizes the scopes depend on one shared contract and heavily overlap; either pins the new field name as the contract first and splits by directory, or declines to split and does it as one agent. Never lets two agents guess the rename independently.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "test integration đang đỏ trên CI, spawn nhiều agent mỗi agent thử một hướng giúp anh",
+      "expected_output": "Does not fan out for a single concrete failure; keeps one agent depth-first and routes to `debug-root-cause` (hypothesis ledger, failing test before fix), explaining that parallel scopes are for independent parts, not competing guesses.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "chạy song song 3 agent: một agent thêm plugin mới, một agent sửa README, một agent cập nhật manifest và marketplace",
+      "expected_output": "Notices shared registry files (manifests, marketplaces) and assigns them to exactly one owner or reserves them for integration; no two agents own the same file; the version/name sync across manifests is not split between agents.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "sửa typo trong 2 file README, chạy song song cho nhanh",
+      "expected_output": "Recognizes the task is too small to repay spawn and integration cost and does it directly with a single agent, creating no scope table and no subagents.",
+      "files": []
+    }
+  ]
+}
