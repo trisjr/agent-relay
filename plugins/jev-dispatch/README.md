@@ -21,7 +21,7 @@ Skill kèm `evals/evals.json`: bộ prompt mẫu kèm kỳ vọng hành vi, dùn
 
 ## Nguyên tắc dùng chung
 
-- **Shadow mode trước, auto-route sau.** Chưa chạy lại golden set với policy hiện tại thì `routing` chỉ để log và tham khảo; coordinator vẫn tự quyết. Ngoại lệ: user chủ động opt-in sớm hơn (skill `dag-build` của orca-workflows đã opt-in), khi đó outcome theo route vẫn được log vào golden set.
+- **Shadow mode trước, auto-route sau.** Chưa chạy lại golden set với policy hiện tại thì `routing` chỉ để log và tham khảo; coordinator vẫn tự quyết. Ngoại lệ: user chủ động opt-in sớm hơn (skill `dag-build` của dev-workflows đã opt-in), khi đó outcome theo route vẫn được log vào golden set.
 - **Fail-closed.** ESCALATE và error không bao giờ dẫn tới dispatch tự động. Task rủi ro cao luôn phải được user duyệt (`requires_approval`), kể cả khi Jev rất chắc.
 - **Không đổi battery khi chưa re-eval.** Wording câu hỏi, state builder, hay `TYPESAFE_JEV_MODEL` đổi thì phải chạy lại golden set trước khi dùng kết quả để route.
 - **Gửi đi tối thiểu.** `task` chỉ là mô tả ngắn, `context` chỉ có `repo`/`budget`, không có secret hay preamble (xem Data egress).

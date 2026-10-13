@@ -127,7 +127,7 @@ Symbols: `c` = `judgments.complexity`, `r` = `judgments.risk`, `tail` = `risk_ta
 
 A shorthand missing from this table means the table is stale: treat the routing as `act=false`.
 
-This policy differs from the measured prototype. Re-run the golden set in shadow mode before enabling auto-routing, unless the user knowingly opts in earlier (`dag-build` in orca-workflows has).
+This policy differs from the measured prototype. Re-run the golden set in shadow mode before enabling auto-routing, unless the user knowingly opts in earlier (`dag-build` in dev-workflows has).
 
 ## Reading the answers correctly
 
