@@ -1,7 +1,8 @@
 #!/bin/sh
 # Opt out: COMPOUND_RETROS_HOOK_OFF=1 or ${TMPDIR:-/tmp}/.compound-retros-off.
-# After capture, mark ${TMPDIR:-/tmp}/compound-retros-reminded-<session_id>;
-# session_id contains only [A-Za-z0-9._-].
+# Remind at most once per session: the marker
+# ${TMPDIR:-/tmp}/compound-retros-reminded-<session_id> is written when the
+# reminder is emitted (not after capture); session_id contains only [A-Za-z0-9._-].
 
 exec 2>/dev/null
 [ "${COMPOUND_RETROS_HOOK_OFF:-}" = 1 ] && exit 0
@@ -26,7 +27,7 @@ import json
 import re
 import sys
 
-cue = re.compile(r"đừng|sai rồi|không phải vậy|lần sau|don[\x27\u2019]?t do|stop doing|that[\x27\u2019]?s wrong|not what i (?:asked|meant)|please remember|nhớ (?:là|đi)|lưu bài học|rút kinh nghiệm|ghi chú lại|note this|remember this", re.I)
+cue = re.compile(r"\b(?:đừng|sai rồi|không phải vậy|lần sau|don[\x27\u2019]?t do|stop doing|that[\x27\u2019]?s wrong|not what i (?:asked|meant)|please remember|nhớ (?:là|đi)|lưu bài học|rút kinh nghiệm|ghi chú lại|note this|remember this)\b", re.I)
 reminder = re.compile(r"<system-reminder>.*?</system-reminder>", re.I | re.S)
 
 for line in sys.stdin:
