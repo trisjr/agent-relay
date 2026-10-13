@@ -5,6 +5,12 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-10-13
+
+### Plugins
+
+- `dev-workflows`: 0.1.0 → 0.2.0
+
 ### Added
 
 - **dev-workflows**: skill `parallel-scopes` chia một task nhiều phần độc lập (FE/BE/docs/test) thành các scope chạy song song bằng subagent thường, không cần Orca: chốt contract trước, ownership file không chồng, một working tree mặc định, tích hợp và verify ở main session.
@@ -364,7 +370,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/trisjr/agent-relay/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/trisjr/agent-relay/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/trisjr/agent-relay/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/trisjr/agent-relay/compare/v0.16.2...v0.17.0

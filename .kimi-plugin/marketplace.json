@@ -50,9 +50,9 @@
       "id": "dev-workflows",
       "name": "dev-workflows",
       "displayName": "Dev Workflows",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.19.0/dev-workflows-0.19.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.20.0/dev-workflows-0.20.0.zip"
     }
   ]
 }
