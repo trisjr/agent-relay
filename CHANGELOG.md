@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-10-15
+
+### Plugins
+
+- `launch-video`: 0.2.2 → 0.3.0
+
+### Added
+
+- **launch-video**: hỗ trợ thoại ElevenLabs bên cạnh Kokoro. Thêm option `--voice-provider kokoro|elevenlabs`, `--voice-id` và `--lang`; Kokoro vẫn là mặc định, còn video tiếng Việt (Kokoro không có giọng Việt) hoặc khi anh yêu cầu thì dùng ElevenLabs với giọng mặc định Giang. Quy trình mới ở `references/voice-elevenlabs.md`: kiểm tra `elevenlabs auth status`, thử `eleven_v4` rồi fallback `eleven_turbo_v2_5`, mỗi câu một file wav đo bằng `ffprobe`, mỗi câu một thẻ `<audio>` gắn đúng cảnh, nhạc nền tự hạ khi có thoại, và chỉ gửi đúng các câu thoại lên ElevenLabs. Thoại vẫn là opt-in qua `--voice`.
+
 ## [0.20.1] - 2026-10-13
 
 ### Plugins
@@ -384,7 +394,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.20.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.21.0...HEAD
+[0.21.0]: https://github.com/trisjr/agent-relay/compare/v0.20.1...v0.21.0
 [0.20.1]: https://github.com/trisjr/agent-relay/compare/v0.20.0...v0.20.1
 [0.20.0]: https://github.com/trisjr/agent-relay/compare/v0.19.0...v0.20.0
 [0.19.0]: https://github.com/trisjr/agent-relay/compare/v0.18.0...v0.19.0

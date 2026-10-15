@@ -42,9 +42,9 @@
       "id": "launch-video",
       "name": "launch-video",
       "displayName": "Launch Video",
-      "version": "0.2.2",
+      "version": "0.3.0",
       "description": "Turn the current project or a website URL into a short, polished, shareable launch video using HyperFrames.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.16.2/launch-video-0.16.2.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.21.0/launch-video-0.21.0.zip"
     },
     {
       "id": "dev-workflows",
