@@ -48,10 +48,18 @@ Parse these options:
 | `--no-sfx` | flag | sfx on |
 | `--title` | string | inferred from project |
 | `--voice` | flag | narration off |
+| `--voice-provider` | `kokoro`, `elevenlabs` | `kokoro`; `elevenlabs` when the video language is Vietnamese or the user asks for ElevenLabs |
+| `--voice-id` | ElevenLabs voice ID | Giang (`f5q6kePPoQAjCPYG6moa`) for Vietnamese; otherwise ask |
+| `--lang` | language code of the video text and narration (`vi`, `en`, …) | inferred from the source content |
 
-Voice is opt-in. If `--voice` is present, use Kokoro via Hyperframes and do
-not add any provider-selection logic. The voice workflow is intentionally
-single-provider.
+Voice is opt-in. Provider options only matter when `--voice` is present; setting
+`--voice-provider elevenlabs` or `--voice-id` alone does not enable narration.
+Set `voice.provider` once at the start of the run:
+
+- `kokoro` (default): `npx hyperframes tts`, English voices, no account needed. See `references/step-3-compose.md`.
+- `elevenlabs`: needs the `elevenlabs` CLI logged in; sends only the narration lines. Required for Vietnamese. See [references/voice-elevenlabs.md](references/voice-elevenlabs.md).
+
+When the video language is not English, all on-screen text, narration and share copy are in that language; keep product names, numbers and currency as in the source.
 
 Tone can be a preset (`default`, `polished`, `yc-parody`, `chaotic`, `deadpan`, `cinematic`, `app-store`) or a creative direction such as "fake Series A launch from 2016", "museum exhibit", or "overproduced mobile game ad".
 
@@ -114,6 +122,7 @@ When music is selected, include a compact `Music cue guidance` section: read the
 **Read:** The Hyperframes domain skills — `hyperframes-core`, `hyperframes-animation`, `hyperframes-creative`, `hyperframes-keyframes`, `hyperframes-cli`. This `/launch-video` skill is its own workflow: do not enter the `hyperframes` entry-point intent interview or route into Hyperframes' own generic promo / launch-video workflow.
 **Read:** [references/step-3-compose.md](references/step-3-compose.md)
 **Read:** [references/audio.md](references/audio.md)
+**Read (only if `voice.provider = elevenlabs`):** [references/voice-elevenlabs.md](references/voice-elevenlabs.md)
 
 Write the composition brief and use Hyperframes to create the video implementation in `<output-dir>/composition/`.
 

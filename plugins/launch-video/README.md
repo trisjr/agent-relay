@@ -15,9 +15,21 @@ Trigger: `/launch-video`, `/launch-video-slim`, "show off this project", "make a
 
 Output ghi vào `launch-video-output/` (hoặc `launch-video-output-<timestamp>/` nếu đã tồn tại): `launch-video.mp4`, `launch-video.jpg` (poster), `launch-video-plan.md`, `share-copy.txt`.
 
+## Thoại (voiceover)
+
+Thoại là opt-in, chỉ bật khi có `--voice`. Hai provider:
+
+| Provider | Khi nào dùng | Ghi chú |
+| --- | --- | --- |
+| `kokoro` (mặc định) | Video tiếng Anh | `npx hyperframes tts`, không cần tài khoản |
+| `elevenlabs` | Video tiếng Việt hoặc ngôn ngữ Kokoro không đọc được | Cần `elevenlabs` CLI đã đăng nhập (`elevenlabs auth status`); chỉ gửi đúng các câu thoại lên ElevenLabs |
+
+Ví dụ: `/launch-video --voice --voice-provider elevenlabs --lang vi`. Với tiếng Việt, giọng mặc định là Giang (`f5q6kePPoQAjCPYG6moa`); đổi bằng `--voice-id`. Mỗi câu thoại là một file wav riêng, đo bằng `ffprobe` rồi gắn vào đúng cảnh; nhạc nền tự hạ khi có thoại. Chi tiết quy trình ở `skills/launch-video/references/voice-elevenlabs.md`.
+
 ## Yêu cầu
 
 - Node.js (`npx hyperframes`), `ffmpeg` để cắt poster.
+- `elevenlabs` CLI (đã đăng nhập) nếu dùng thoại ElevenLabs.
 - `uv` nếu muốn chạy lại `skills/launch-video/scripts/analyze_music_cues.py` (phân tích beat nhạc).
 
 ## Cài đặt

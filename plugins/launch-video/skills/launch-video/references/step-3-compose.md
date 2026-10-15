@@ -118,7 +118,11 @@ transcribe audio, duck music, add a voice track, or merge narration into the
 video. The normal video export must remain entirely voice-agnostic.
 
 When voice is enabled, write the narration lines into `launch-video-plan.md` under a
-`## Voiceover script` section, then generate the audio through Kokoro:
+`## Voiceover script` section, then generate the audio with the provider chosen in `SKILL.md` (`voice.provider`).
+
+If `voice.provider = elevenlabs`, follow [voice-elevenlabs.md](voice-elevenlabs.md) instead of the Kokoro command below: it generates one wav per sentence and wires one `<audio>` per line.
+
+Otherwise (Kokoro, the default):
 
 ```bash
 npx hyperframes tts "<narration text or path to script>" \
