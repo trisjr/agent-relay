@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-10-17
+
+### Plugins
+
+- `dev-workflows`: 0.2.1 → 0.3.0
+
+### Changed
+
+- **dev-workflows**: `debug-root-cause` giờ chỉ chẩn đoán rồi dừng. Sau khi xác định root cause, skill post một diagnosis report ngắn trong chat (Symptom, Root cause, Evidence, Proposed fix, Proposed red test, Risks) và chờ user duyệt rồi mới sửa code hay thêm test (Rule 0). Sau khi duyệt, skill chạy fix theo test đỏ → xanh và chỉ báo lại 1–2 dòng. Lỗi hiển nhiên (typo, thiếu import) vẫn được sửa ngay; worker Orca có spec giao việc sửa thì spec đó tính là đã duyệt, còn worker hoặc headless run không có lệnh sửa thì kết thúc ở report. Phase "Aftermath" cũ được thay bằng phase Diagnosis report & gate; rule Cursor và `gemini-context.md` được cập nhật tương ứng.
+
 ## [0.21.0] - 2026-10-15
 
 ### Plugins
@@ -394,7 +404,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.21.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.22.0...HEAD
+[0.22.0]: https://github.com/trisjr/agent-relay/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/trisjr/agent-relay/compare/v0.20.1...v0.21.0
 [0.20.1]: https://github.com/trisjr/agent-relay/compare/v0.20.0...v0.20.1
 [0.20.0]: https://github.com/trisjr/agent-relay/compare/v0.19.0...v0.20.0
