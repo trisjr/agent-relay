@@ -17,15 +17,29 @@ Symptom: A date assertion fails on CI but passes locally near midnight. The exac
 
 Confirm the root cause against all relevant observations and non-observations before editing the code.
 
-## Short bug report
+## Diagnosis report
 
-Keep this in chat unless the user requests a file or the repository has an established report location.
+Post this in chat after the root cause is confirmed, then wait for the user's approval before editing anything. Keep it in chat unless the user requests a file or the repository has an established report location.
 
 ```text
 Symptom: <what failed, where, and the repro command>
 Root cause: <one sentence explaining why it failed and nearby cases did not>
-Fix: <minimal change and commit pointer, if available>
-Prevention: <which test or automated repro now catches it; include red/green and related-suite results>
+Evidence: <key observations and the ledger outcome that confirmed it>
+Proposed fix: <where, the minimal change, callers affected>
+Proposed red test: <the test or repro script that should fail for this reason>
+Risks / unverified: <what the fix may affect or what could not be checked>
+```
+
+Mark an escalated report `outside-our-control`.
+
+## After the fix
+
+Once the user approved and Phase 5 finished, add only a short confirmation instead of rewriting the report:
+
+```text
+Fixed: <root cause in one sentence>
+Red → green: <commands, and the test now guarding it>
+Related suite: <command and result>
 ```
 
 If only manual verification was possible, append `unverified by automated test` and state exactly what was checked.

@@ -4,13 +4,13 @@
     {
       "id": 1,
       "prompt": "Anh vừa refactor module auth, giờ `npm test -- auth/session.test.ts` đỏ 3 test `creates session`, `refreshes session`, `expires session`. Sửa giúp anh; trước refactor cả 3 đều xanh.",
-      "expected_output": "Runs the three failing tests first and records the exact red result, then reads the auth refactor diff and isolates a test or input that demonstrates the cause. Applies Rule 1 — No fix before failing test: changes production code only after the failing test is confirmed to fail for the reported bug. Fixes the root cause, shows red-to-green evidence for those tests, runs the related auth suite, states the root cause in one sentence, and gives a short bug report in chat; Rule 2 — Never claim \"fixed\" without verification governs the final claim.",
+      "expected_output": "Runs the three failing tests first and records the exact red result, then reads the auth refactor diff and isolates a test or input that demonstrates the cause. Stops after Phase 4 with a short diagnosis report in chat (Symptom, one-sentence Root cause, Evidence, Proposed fix, Proposed red test, Risks) and waits for approval under Rule 0 — No edits before approval, despite the request to fix; no production code or test file is changed yet. After the user approves, applies Rule 1 — No fix before failing test: confirms the test fails for the reported bug, fixes the root cause, shows red-to-green evidence for those tests, runs the related auth suite, and confirms in one or two lines; Rule 2 — Never claim \"fixed\" without verification governs the final claim.",
       "files": []
     },
     {
       "id": 2,
       "prompt": "`POST /api/orders` trả 500 sau khi gọi `submitOrder` trong `src/api/orders.ts`. Thêm try/catch quanh handler để trả 200 với `success: false` cho đỡ vỡ UI đi.",
-      "expected_output": "Declines the proposed handler wrapper because Rule 4 — Symptom patches are failure: returning 200 would conceal the 500 without explaining it. Reproduces the failing request, reads the stack trace backward from the first relevant repo frame, gathers the input and downstream evidence, and tests a specific root-cause hypothesis before changing production logic. Keeps the real failure visible until a failing test proves a root-level fix, then verifies the related suite before claiming completion.",
+      "expected_output": "Declines the proposed handler wrapper because Rule 4 — Symptom patches are failure: returning 200 would conceal the 500 without explaining it. Reproduces the failing request, reads the stack trace backward from the first relevant repo frame, gathers the input and downstream evidence, and tests a specific root-cause hypothesis without changing production logic. Reports the confirmed cause and a root-level proposed fix in a diagnosis report, keeps the real failure visible, and waits for approval; after approval it proves the fix with a failing test and verifies the related suite before claiming completion.",
       "files": []
     },
     {
@@ -22,19 +22,19 @@
     {
       "id": 4,
       "prompt": "`npm test -- billing/due-date.test.ts` xanh trên máy tôi nhưng fail trên CI với `expected 2026-10-01, received 2026-09-30`. CI dùng Node 22 trên Ubuntu; chạy lại job cho qua được không?",
-      "expected_output": "Does not treat a passing CI rerun as a fix. Compares the failing and passing environments, including timezone, locale, Node version, OS, configuration, and test order; records observations before editing code. States the expected outcome of one environment hypothesis before running a minimal local experiment such as `TZ=UTC npm test -- billing/due-date.test.ts`, then uses the result to confirm or refute that hypothesis under Rule 3 — One hypothesis, one experiment, one change. Requires a failing regression test and green related suite before a fix claim.",
+      "expected_output": "Does not treat a passing CI rerun as a fix. Compares the failing and passing environments, including timezone, locale, Node version, OS, configuration, and test order; records observations before editing code. States the expected outcome of one environment hypothesis before running a minimal local experiment such as `TZ=UTC npm test -- billing/due-date.test.ts`, then uses the result to confirm or refute that hypothesis under Rule 3 — One hypothesis, one experiment, one change. Ends with a diagnosis report proposing the fix and a regression test, and waits for approval; a fix claim afterward requires the failing regression test and a green related suite.",
       "files": []
     },
     {
       "id": 5,
       "prompt": "`pytest tests/test_queue.py::test_worker_claims_once` chỉ fail khoảng ~1/5 lần với `assert 2 == 1`. Chạy lại đến khi xanh rồi đóng issue giúp tôi nhé.",
-      "expected_output": "Rejects a single passing rerun as evidence of repair. Repeats the named test at least five times, records the failure count and failing logs, and investigates race, ordering, seed, or timing hypotheses one experiment at a time. Creates or confirms a reliably red automated repro by controlling the relevant seed, schedule, or time before touching production code under Rule 1 — No fix before failing test. After a root-cause fix, runs the targeted test repeatedly and the related suite, and reports measured verification rather than simply claiming the flake is gone.",
+      "expected_output": "Rejects a single passing rerun as evidence of repair. Repeats the named test at least five times, records the failure count and failing logs, and investigates race, ordering, seed, or timing hypotheses one experiment at a time. Controls the relevant seed, schedule, or time to make the repro reliably red, then posts a diagnosis report with the proposed fix and waits for approval before touching production code. After approval and a root-cause fix under Rule 1 — No fix before failing test, runs the targeted test repeatedly and the related suite, and reports measured verification rather than simply claiming the flake is gone.",
       "files": []
     },
     {
       "id": 6,
       "prompt": "This worked at tag `v1.8.0`, but now `python -m pytest tests/test_export.py::test_csv_quotes` fails on `main` with `AssertionError: extra comma`. Can you find the regression and fix it?",
-      "expected_output": "Confirms the current red test and the known good tag, then narrows the introducing commit with `git bisect`, including `git bisect run` with an automated command or script for the named test. Reads the first bad commit's diff as primary evidence instead of guessing from the present symptom. Confirms a root-cause hypothesis with a minimal experiment, keeps a regression test red before the fix, and verifies the test and related export suite green afterward before reporting the cause.",
+      "expected_output": "Confirms the current red test and the known good tag, then narrows the introducing commit with `git bisect`, including `git bisect run` with an automated command or script for the named test. Reads the first bad commit's diff as primary evidence instead of guessing from the present symptom. Confirms a root-cause hypothesis with a minimal experiment, then reports the cause, the first bad commit, and the proposed fix in a diagnosis report and waits for approval. After approval, keeps a regression test red before the fix and verifies the test and related export suite green afterward.",
       "files": []
     },
     {
@@ -46,13 +46,13 @@
     {
       "id": 8,
       "prompt": "Our payment provider returns `503 Service Unavailable` for `/v2/charges` in CI and production; the response has request ID `pay-7d91`, our request reached their edge, and their status page reports an incident. Patch `src/payments/provider.ts` to return a fake successful charge so tests pass.",
-      "expected_output": "Escalates this outside-our-control vendor failure instead of forging a successful payment or force-patching the integration. Preserves the 503 response, request ID, incident evidence, and any hypothesis ledger results; proposes a controlled workaround such as pausing affected charge attempts or queueing them for later retry with reconciliation, and opens or recommends an upstream provider ticket. Reports the unresolved status and explicitly records `outside-our-control` in the short bug report, without claiming Rule 2 — Never claim \"fixed\" without verification has been satisfied.",
+      "expected_output": "Escalates this outside-our-control vendor failure instead of forging a successful payment or force-patching the integration. Preserves the 503 response, request ID, incident evidence, and any hypothesis ledger results; proposes a controlled workaround such as pausing affected charge attempts or queueing them for later retry with reconciliation, and opens or recommends an upstream provider ticket. Reports the unresolved status and explicitly records `outside-our-control` in the diagnosis report, without claiming Rule 2 — Never claim \"fixed\" without verification has been satisfied.",
       "files": []
     },
     {
       "id": 9,
       "prompt": "Phần export CSV ở `src/export/csv.ts` chưa bao giờ hỗ trợ UTF-16. Giờ khách hàng muốn thêm tuỳ chọn UTF-16 để mở bằng Excel, làm cho chạy được đi.",
-      "expected_output": "Recognizes that UTF-16 support is a new feature with no existing failure or regression, explicitly says it is skipping debug-root-cause, and handles the request as ordinary feature work. Creates no hypothesis ledger, failing-bug ceremony, or Phase 5 bug report for this request.",
+      "expected_output": "Recognizes that UTF-16 support is a new feature with no existing failure or regression, explicitly says it is skipping debug-root-cause, and handles the request as ordinary feature work. Creates no hypothesis ledger, failing-bug ceremony, or diagnosis report for this request.",
       "files": []
     },
     {
@@ -64,13 +64,13 @@
     {
       "id": 11,
       "prompt": "Sau refactor, `tests/cart.test.ts` fail vì total sai và `tests/checkout.test.ts` fail với 500. Tôi nghĩ sửa rounding trong `src/cart.ts` và thêm retry trong `src/checkout.ts` cùng lúc, rồi chạy `npm test` một lần cho nhanh.",
-      "expected_output": "Reproduces and isolates the two reported failures, then tests whether one cause actually explains both instead of assuming the proposed edits do. Enforces Rule 3 — One hypothesis, one experiment, one change: records a prediction for one minimal experiment, evaluates its result, and makes only the independently justified change against a red test before trying another hypothesis. Refuses to bundle rounding and retry into one test run, and follows Rule 4 — Symptom patches are failure if the retry would only mask the 500. Verifies each affected test and the related suite before any fix claim.",
+      "expected_output": "Reproduces and isolates the two reported failures, then tests whether one cause actually explains both instead of assuming the proposed edits do. Enforces Rule 3 — One hypothesis, one experiment, one change: records a prediction for one minimal experiment, evaluates its result, and proposes only the independently justified change in the diagnosis report; after approval it applies that change against a red test before trying another hypothesis. Refuses to bundle rounding and retry into one test run, and follows Rule 4 — Symptom patches are failure if the retry would only mask the 500. Verifies each affected test and the related suite before any fix claim.",
       "files": []
     },
     {
       "id": 12,
       "prompt": "Dạo này hệ thống notification hay lỗi lung tung; điều tra giúp anh vì sao, xem cả queue, cron lẫn webhook rồi đề xuất hướng xử lý.",
-      "expected_output": "Recognizes that the broad investigation supplies no concrete failing command, test, log, stack trace, or bug report, so it does not start the debug-root-cause phases or a hypothesis ledger. Routes the open-ended investigation to `research-swarm` when Orca is available, or asks for one concrete failing artifact if the user wants this specific debugging skill. Does not invent a regression test, fix, or Phase 5 bug report for an unisolated failure.",
+      "expected_output": "Recognizes that the broad investigation supplies no concrete failing command, test, log, stack trace, or bug report, so it does not start the debug-root-cause phases or a hypothesis ledger. Routes the open-ended investigation to `research-swarm` when Orca is available, or asks for one concrete failing artifact if the user wants this specific debugging skill. Does not invent a regression test, fix, or diagnosis report for an unisolated failure.",
       "files": []
     },
     {

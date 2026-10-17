@@ -1,11 +1,11 @@
 ---
 name: debug-root-cause
-description: Debug a concrete, existing failure with method instead of guesses — reproduce and isolate it, gather evidence from logs, traces, diffs and environment, run a hypothesis ledger with the smallest possible experiments, fix the root cause only after a failing test proves it ("red"), verify the fix turns green without breaking the suite, and record a short bug report. Use this skill for any actual failure — a red test, a build or CI failure, a runtime error or stack trace, a flaky test, a "worked before, broken now" regression, "test đỏ", "lỗi chỉ fail trên CI", "sao lại lỗi" — before proposing or writing any fix. Skip it for net-new features, refactors without a failure, open-ended investigation or research breadth-first (that is research-swarm territory), code review of a healthy diff, and problems outside the codebase's control such as vendor or infrastructure outages, for which you escalate and stop.
+description: Debug a concrete, existing failure with method instead of guesses — reproduce and isolate it, gather evidence from logs, traces, diffs and environment, run a hypothesis ledger with the smallest possible experiments, report a short diagnosis in chat (root cause, proposed fix, proposed test), and change code only after the user approves — then fix the root cause only after a failing test proves it ("red") and verify the fix turns green without breaking the suite. Use this skill for any actual failure — a red test, a build or CI failure, a runtime error or stack trace, a flaky test, a "worked before, broken now" regression, "test đỏ", "lỗi chỉ fail trên CI", "sao lại lỗi" — before proposing or writing any fix. Skip it for net-new features, refactors without a failure, open-ended investigation or research breadth-first (that is research-swarm territory), code review of a healthy diff, and problems outside the codebase's control such as vendor or infrastructure outages, for which you escalate and stop.
 ---
 
 # Debug root cause
 
-Treat debugging as the scientific method applied to one failure. A fix-try loop changes the system before you know what failed, so each failed guess makes the next observation less trustworthy. Keep one agent on one concrete failure, pursue evidence depth-first, and preserve what each experiment taught you.
+Treat debugging as the scientific method applied to one failure. A fix-try loop changes the system before you know what failed, so each failed guess makes the next observation less trustworthy. Keep one agent on one concrete failure, pursue evidence depth-first, and preserve what each experiment taught you. Diagnose first and report; edit code only after the user approves the proposed fix.
 
 ## 0. Right-size first
 
@@ -21,7 +21,8 @@ Keep ceremony proportional to difficulty. If an error message points directly to
 
 ## The Iron Rules
 
-- **Rule 1 — No fix before failing test.** Before changing production logic, run a test or automated repro script that fails for the reported reason. The sole exception is a one-step-obvious correction named by the error itself, such as a missing import or typo; still rerun the command afterward.
+- **Rule 0 — No edits before approval.** Phases 1–3 change no production behavior, and Phase 4 ends with a diagnosis report and a wait. Edit production code or add tests only after the user approves the proposed fix, except the two exceptions named in Phase 4.
+- **Rule 1 — No fix before failing test.** Once approved, and before changing production logic, run a test or automated repro script that fails for the reported reason. The sole exception is a one-step-obvious correction named by the error itself, such as a missing import or typo; still rerun the command afterward.
 - **Rule 2 — Never claim "fixed" without verification.** Claim completion only after the original failing check turns green, the related suite passes, and you can state the root cause in one sentence. Otherwise name exactly what remains unverified.
 - **Rule 3 — One hypothesis, one experiment, one change.** Write the expected result before each experiment. Change one variable, inspect its outcome, and only then decide the next step. Never bundle speculative fixes.
 - **Rule 4 — Symptom patches are failure.** Trace the failure through its callers and boundaries. Repair the cause at the shared point that produces the wrong behavior; a workaround at the display point alone does not count as a fix.
@@ -68,9 +69,22 @@ Do not replace the ledger with “probably X” followed by a code edit. A confi
 
 **Exit:** Identify one confirmed root cause, or invoke the stop rules or escalation below. Do not promote an untested guess into a fix.
 
-## Phase 4 — Fix & regression
+## Phase 4 — Diagnosis report & gate
 
-**Entry:** One root cause is confirmed and the intended behavior is known.
+**Entry:** One root cause is confirmed and the intended behavior is known, or a stop rule or escalation applies.
+
+**Work:** Post a short diagnosis report in chat using [the report template](references/hypothesis-ledger.md): Symptom with the repro command; Root cause in one sentence; Evidence (key observations and the ledger outcome that confirmed it); Proposed fix (where, the minimal change, callers affected); Proposed red test; Risks or anything unverified. Then suggest the next step and **wait for the user**. Keep the report in chat; write a file only when the user asks or the repository already has a clear convention for one.
+
+Two exceptions skip the wait:
+
+- A one-step-obvious correction named by the error itself (missing import, typo): fix it, rerun the command, and report the actual result in a line or two.
+- A dispatched Orca worker whose spec orders a fix: the spec is the approval, so continue to Phase 5. Without a fix mandate, a headless run or worker ends with this report as its final status block.
+
+**Exit:** The user approves (possibly with changes) the proposed fix, or the report is the final output.
+
+## Phase 5 — Fix & regression
+
+**Entry:** The user approved the proposed fix, or an exception in Phase 4 applies.
 
 **Work:**
 
@@ -81,13 +95,13 @@ Do not replace the ledger with “probably X” followed by a code edit. A confi
 
 Use manual verification only as a last resort when no automated check can run. In that case, report **“unverified by automated test”** and do not imply the automated red → green proof exists.
 
-**Exit:** State the root cause in one sentence and show that the failing check and related suite are green. If verification cannot meet that bar, report the limit accurately rather than claiming an unqualified fix.
+**Exit:** Report in one or two lines, without rewriting the diagnosis: the root cause in one sentence, the red and green commands with the test now guarding it, and the related-suite result. If verification cannot meet that bar, report the limit accurately rather than claiming an unqualified fix.
 
 ## Stop rules & escalation
 
 Count refuted hypotheses and failed fixes separately. At **3 refuted hypotheses or 3 failed fixes**, stop before a fourth attempt. Summarize the ledger and question the current model of the system or its architecture; ask the user for direction when someone can answer. A silent fourth attempt is prohibited.
 
-Escalate without force-fixing when the cause is an unpatchable dependency bug; infrastructure, vendor, quota, DNS, or CI-runner trouble; a correct repair requires an unapproved public-contract change or data migration; or a race lives in a layer outside your control. Carry the observed failure, repro or collection plan, evidence, ledger outcomes, remaining uncertainty, and a proposed next step such as a controlled workaround plus an upstream issue or ticket. Mark the short bug report `outside-our-control`.
+Escalate without force-fixing when the cause is an unpatchable dependency bug; infrastructure, vendor, quota, DNS, or CI-runner trouble; a correct repair requires an unapproved public-contract change or data migration; or a race lives in a layer outside your control. Carry the observed failure, repro or collection plan, evidence, ledger outcomes, remaining uncertainty, and a proposed next step such as a controlled workaround plus an upstream issue or ticket. Mark the diagnosis report `outside-our-control`.
 
 “No root cause” is rare. Use it only after the ledger rules out software you control. Then propose bounded error handling and observability, such as a timeout, retry, or targeted log, with a way to verify whether the unexplained failure recurs. Do not label the problem mysterious and close it.
 
@@ -95,18 +109,9 @@ In a headless run or subagent with no one to answer, a stop or escalation ends i
 
 As a dispatched Orca worker (a live injected preamble with executable, handle, capability, Task ID, and Dispatch ID), the coordinator is the one who answers, so this replaces the headless ending above — never open a local question UI nobody can see. Put that same status block in a stop question sent through the preamble's `ask` command, copied verbatim (on timeout, resume the same message ID; never ask again), or in an `escalation` message built exactly as `<preamble executable> skills get orchestration --reference references/worker-contract.md` shows. Follow the coordinator's reply; if the work ends unresolved, send `worker_done` with `--outcome failed`, never `succeeded`.
 
-## Phase 5 — Aftermath
-
-**Entry:** The fix has been verified, or the verification limit has been stated explicitly.
-
-**Work:** Write a short bug report using [the report template](references/hypothesis-ledger.md): Symptom; Root cause in one sentence; Fix with a commit pointer when available; Prevention naming the test that now catches it. Include the red and green evidence and related-suite result. If verification was manual, include **“unverified by automated test”**.
-
-Keep the report in chat by default. Write a file only when the user asks or the repository already has a clear convention for one. Do not create a new solution ledger by habit.
-
-**Exit:** The user has the report in chat or in the requested conventional file, with any remaining limitation visible.
-
 ## Anti-patterns
 
+- Editing code or adding tests before the user approved the proposed fix.
 - Patching the visible symptom while the shared producer still emits wrong data.
 - “Try this and see” without a prediction or a single-variable experiment.
 - Bundling several changes, then running one test with no way to attribute the result.
@@ -123,5 +128,6 @@ Keep the report in chat by default. Write a file only when the user asks or the 
 | “Fix it quickly; investigate later.” | Phase 1: reproduce, then Phase 2: evidence. |
 | “It must be X; I'll change the code and see.” | Phase 3: write the prediction and smallest experiment. |
 | “The flaky test passed on rerun, so we're done.” | Phase 1: measure frequency and control seed, time, and ordering. |
-| “This patch seems fine; the suite can wait.” | Phase 4: run the original check and related suite. |
+| “The cause is clear; I'll just apply the fix.” | Phase 4: post the diagnosis report and wait for approval. |
+| “This patch seems fine; the suite can wait.” | Phase 5: run the original check and related suite. |
 | “Three attempts failed; one more might work.” | Stop rules & escalation: summarize and ask or escalate. |

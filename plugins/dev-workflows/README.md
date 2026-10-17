@@ -12,7 +12,7 @@ Plugin gom toàn bộ workflow chuẩn cho dev làm việc cùng coding agent v�
 | Điều phối | `parallel-review` | Review diff/branch/PR lớn hoặc rủi ro trước merge, review bảo mật | Fan-out reviewer theo "lens"; mỗi reviewer một context sạch, review-only; coordinator dedupe findings theo severity |
 | Điều phối | `parallel-scopes` | Một task nhiều phần độc lập (FE/BE/docs/test) muốn chạy song song bằng subagent thường, không cần Orca | Chốt contract trước → bảng scope với ownership file không chồng → spawn cả wave trong một lượt (một working tree, worktree chỉ khi đụng file chung) → tích hợp và verify ở main session |
 | Điều phối | `dag-build` | Build tính năng nhiều module, migration xuyên dịch vụ, cần duyệt spec trước | Clarify → plan → gate duyệt spec → task DAG → wave song song → integrate + verify |
-| Debug | `debug-root-cause` | Một test, build, CI hoặc runtime path đã fail, kể cả flaky hoặc chỉ fail trên CI | Reproduce & isolate → gather evidence → hypothesis ledger → fix sau test đỏ → aftermath |
+| Debug | `debug-root-cause` | Một test, build, CI hoặc runtime path đã fail, kể cả flaky hoặc chỉ fail trên CI | Reproduce & isolate → gather evidence → hypothesis ledger → diagnosis report (chờ user duyệt) → fix sau test đỏ |
 | Bài học | `retro-capture` | Sau việc có bài học khó thấy trong code, test hoặc docs; khi người dùng sửa agent hoặc yêu cầu ghi nhớ | Cân giá trị lâu dài, ghi một solution note có cấu trúc, cập nhật note cũ nếu trùng |
 | Bài học | `retro-recall` | Trước việc không tầm thường trong vùng đã có note, hoặc khi người dùng yêu cầu dọn kho | Lọc theo frontmatter, đọc vài note liên quan, áp dụng và dẫn nguồn; phân loại note khi dọn kho |
 
