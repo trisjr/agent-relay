@@ -5,6 +5,17 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.22.1] - 2026-10-17
+
+### Plugins
+
+- `dev-workflows`: 0.3.0 → 0.3.1
+
+### Changed
+
+- **dev-workflows**: tinh giản `debug-root-cause` cho các model hiện tại: `SKILL.md` từ 144 xuống 83 dòng, bỏ giọng ép buộc ("Iron Rules", bảng Red flags), bỏ Entry/Exit từng phase và bỏ `references/evidence-playbook.md` vì toàn kiến thức model đã biết. Approval gate, ngưỡng flaky, template report, stop rule và cơ chế Orca worker giữ nguyên.
+- **dev-workflows**: `debug-root-cause` cho phép scratch repro và log probe tạm khi điều tra (revert trước report, liệt kê trong Evidence); lỗi không reproduce được giờ đi tới diagnosis report với Root cause `unconfirmed` và kế hoạch instrumentation chờ duyệt; lỗi vendor/hạ tầng escalate ngay. Ngưỡng flaky đổi sang khoảng 3/p lần để reproduce và khoảng 20 lần xanh liên tiếp để verify; stop rule tính cả các lần user đã tự sửa. Evals viết lại thành gate check có `expectations`, thêm hai eval sau khi duyệt.
+
 ## [0.22.0] - 2026-10-17
 
 ### Plugins
@@ -404,7 +415,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.22.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.22.1...HEAD
+[0.22.1]: https://github.com/trisjr/agent-relay/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/trisjr/agent-relay/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/trisjr/agent-relay/compare/v0.20.1...v0.21.0
 [0.20.1]: https://github.com/trisjr/agent-relay/compare/v0.20.0...v0.20.1
