@@ -33,7 +33,7 @@ If you can't reproduce, decide what data would distinguish the hypotheses and pr
 
 ## Phase 2 — Gather evidence
 
-Collect observations that distinguish competing explanations, including what still works; [the evidence playbook](references/evidence-playbook.md) lists techniques by failure shape. Redact secrets from anything you share.
+Collect observations that distinguish competing explanations, including what still works. Redact secrets from anything you share.
 
 ## Phase 3 — Hypothesis ledger
 
