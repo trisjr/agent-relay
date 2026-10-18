@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.22.2] - 2026-10-18
+
+### Plugins
+
+- `dev-workflows`: 0.3.1 → 0.3.2
+
+### Changed
+
+- **dev-workflows**: tinh giản `clarify-requirements` cho các model hiện tại: `SKILL.md` từ 175 xuống 99 dòng, bỏ công thức nhân điểm impact × uncertainty × irreversibility (giờ chỉ cân nhắc ba yếu tố), bỏ bảng gap, danh sách Anti-patterns, coaching chọn model cho subagent và trần số từ của requirements brief (giờ brief chỉ gồm các trường mang quyết định). Kênh hỏi theo harness, cơ chế hỏi qua Orca worker, nhánh headless, template brief và giới hạn 3 câu mỗi vòng giữ nguyên. Rule Cursor và README đồng bộ theo; evals có thêm `expectations`.
+
 ## [0.22.1] - 2026-10-17
 
 ### Plugins
@@ -415,7 +425,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.22.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.22.2...HEAD
+[0.22.2]: https://github.com/trisjr/agent-relay/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/trisjr/agent-relay/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/trisjr/agent-relay/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/trisjr/agent-relay/compare/v0.20.1...v0.21.0
