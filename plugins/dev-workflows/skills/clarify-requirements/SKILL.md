@@ -1,80 +1,51 @@
 ---
 name: clarify-requirements
-description: Pin down what the user actually wants before building — explore the repo first, ask only the few questions whose answers change the work (each with a recommended option), log low-risk assumptions, and hand off a short requirements brief. Use this skill whenever a request is vague, underspecified, or high-stakes before implementation or planning starts — "build X", "add a feature", "làm tính năng", "làm rõ yêu cầu", "clarify this", a new project, PRD, or spec that will feed a plan or DAG — or whenever two plausible readings would lead to materially different work, data loss, or a changed public contract. The skill relies on asking the user. Skip it for well-specified tasks, changes whose diff fits in one sentence, questions the code or docs already answer, and pure explanations.
+description: Pin down what the user actually wants before building — explore the repo first, ask only the few questions whose answers change the work, each with a recommended option, and hand off a short requirements brief. Use this skill whenever a request is vague, underspecified, or high-stakes before implementation or planning starts — "build X", "add a feature", "làm tính năng", "làm rõ yêu cầu", "clarify this", a new project, PRD, or spec that will feed a plan or DAG — or whenever two plausible readings would lead to materially different work, data loss, or a changed public contract. The skill relies on asking the user. Skip it for well-specified tasks, changes whose diff fits in one sentence, questions the code or docs already answer, and pure explanations.
 ---
 
 # Clarify requirements
 
-A wrong guess about intent costs a rewrite; an interrogation costs the user's patience. This skill sits between the two: find what can be found, default what can safely be defaulted, ask only what is genuinely the user's call, then write it down so whoever implements — you, a fresh session, or a DAG worker — builds the right thing.
+A wrong guess about intent costs a rewrite; an interrogation costs the user's patience. Find what can be found, default what can safely be defaulted, ask only what is genuinely the user's call, then write it down so whoever implements — you, a fresh session, or a DAG worker — builds the right thing.
 
-## 1. Right-size first
+## Right-size first
 
-- **Skip** when the request is fully specified, the diff fits in one sentence, or every open point is a fact the repo, docs, `AGENTS.md`/`CLAUDE.md`, or the conversation already holds. At most say "requirements are clear — proceeding", then proceed.
-- **Clarify** when at least one decision has two or more plausible answers that lead to materially different user-visible behavior, effort, security/privacy, data retention, or public contract — and a wrong guess would be costly, hard to reverse, or unsafe.
-- **In between** (only reversible, low-impact choices are open): pick sensible defaults, list them as assumptions, and proceed without asking.
+- **Skip** when the request is fully specified, the diff fits in one sentence, or every open point is a fact the repo, docs, `AGENTS.md`/`CLAUDE.md`, or the conversation already holds. At most say "requirements are clear — proceeding".
+- **Default and proceed** when only reversible, low-impact choices are open: list them as assumptions and start.
+- **Clarify** when a decision has two or more plausible answers that change user-visible behavior, effort, security or privacy, data retention, or a public contract, and a wrong guess would be costly or hard to reverse.
 
-Ceremony must stay proportional: a bug fix never needs user stories, and a brief longer than the diff is a smell.
+Keep ceremony proportional: a bug fix never needs user stories, and a brief longer than the diff is a smell.
 
-## 2. Explore before asking
+## Explore, then sort the unknowns
 
-Read the relevant code, tests, docs, conventions, and earlier messages first. Sort every unknown into one of three buckets.
+Read the relevant code, tests, docs, conventions, and earlier messages before asking anything. Delegating wide reads to subagents is fine, but keep the deciding and the asking in the main conversation — question tools don't exist inside subagents. Sort each unknown:
 
-When the surface to read is wide, delegate the reading to subagents if the harness provides them: an explore agent on a cheap model (Haiku / GPT-mini class) digests code, tests, and docs and returns conclusions with `file:line` references, keeping raw dumps out of the main context — run several in parallel over independent areas. Size the fan-out to the unknowns, never a fixed count: zero agents when the answer is one or two known files away, otherwise one agent per independent area (the feature's module, docs/conventions, prior art) — usually 1–4. Needing more means the request has outgrown clarification; exploration at that scale belongs to the planning step, not to asking cheaper questions. Keep the bucketing decisions below, and especially the asking (section 6), in the main conversation: question tools do not exist inside subagents.
+- **Discoverable fact** (which module owns X, what format existing exports use): find it yourself. If it is still ambiguous, show the candidates you found and recommend one rather than handing the user your research.
+- **Preference or trade-off** (scope, priority, UX, data policy, who gets access): the user's call, so a candidate question.
+- **Expert parameter** (retry budget, page size, cache TTL): choose from convention and log it; ask only when it is user-visible and consequential.
 
-- **Discoverable fact** (which module owns X, what format existing exports use): find it yourself. If it is still ambiguous after looking, present the concrete candidates you found and recommend one — never hand the user your research.
-- **Preference or trade-off** (scope, priority, UX, data policy, who gets access): the user's call, so it is a candidate question.
-- **Expert parameter** (retry budget, page size, cache TTL): choose a value from convention and log it; ask only when it is user-visible and consequential.
+A gap is worth raising only when two plausible answers would change the implementation or how it is accepted — typically the goal, which users, scope, rules, data lifecycle, failure paths, non-functional targets, integrations, or the acceptance condition.
 
-## 3. Scan for gaps
+## Ask, assume, or block
 
-Use this list to detect what is missing, not as a questionnaire. A gap is worth raising only when two plausible answers would change the implementation or how it is accepted.
+Weigh each candidate by impact if wrong, uncertainty, and irreversibility. Safety, privacy, money, permissions, destructive or data-losing actions, and public API changes are always top impact.
 
-| Dimension | Cue in the request |
-| --- | --- |
-| Goal / why | an action with no outcome ("improve onboarding") |
-| Users | "users" could mean customers, admins, or API clients |
-| Scope in / out | "add export" without which records or surfaces |
-| Behavior / rules | trigger, cadence, or ordering unstated |
-| Data / lifecycle | source, ownership, or retention unstated |
-| Edge cases / errors | invalid input, duplicates, dependency down |
-| Non-functional | "fast", "secure", "accessible" without a target that matters |
-| Constraints | compatibility, platform, deadline, compliance |
-| Integration | "sync with the CRM" without system or direction |
-| Acceptance | "make it work" with no observable pass condition |
-| Priority | goals that conflict or cannot all fit |
+- **Ask** the few decisions that would change what you do next.
+- **Assume and log** the reversible, low-impact ones, one line each, naming the source: `Assumption: export = current filtered view, matching the table's existing actions.` Write `agent default` when there is no precedent. An assumption is never phrased as if the user approved it.
+- **Block** an irreversible, high-impact action whose decision you cannot get: keep doing the independent work, and leave that action undone rather than inventing a default.
 
-## 4. Decide: ask, assume, or block
+Ask at most **3 questions per round**, usually one round; a second round only when an answer opens a new blocking choice. Independent questions share a round; one that depends on another open answer waits. Whatever remains becomes an assumption or an `Open` item.
 
-Rate each candidate on impact-if-wrong, uncertainty, and irreversibility (1–3 each) and multiply. The score only orders the list; the rules decide:
+## Write questions that are cheap to answer
 
-- Safety, privacy, money, permissions, destructive or data-losing actions, and public API changes are always maximum impact.
-- **Ask** the highest-scoring decisions that would change what you do next.
-- **Assume and log** the reversible, local, low-impact ones, one line each, naming where the default came from: `Assumption: export = current filtered view, matching the table's existing actions.` Write `agent default` when there is no precedent. Never phrase an assumption as if the user approved it.
-- **Block** an irreversible, high-impact action whose decision you cannot get: keep doing the independent work, but do not invent a default for it.
+Each question restates its decision with one line of context, because some harnesses render only the options. It covers one decision, offers 2–3 concrete, mutually exclusive options (4 only where the channel allows) with a one-line consequence each, and puts the recommended option first with a label ending in `(Recommended)` — the default when unanswered. Leave out filler and "Other"; every channel already accepts free text. Ask about outcomes and constraints, not implementation details you can decide, and write in the user's language. Use an open question only when no sensible option set exists.
 
-Budget: at most **3 questions per round**, usually a single round. A second round exists only when an answer opens a new blocking choice. Whatever remains becomes an assumption or an `Open` item — the user can always ask for another round. Put independent questions in the same round; hold a question that depends on another open answer for the next round.
+If the user asks for context, explain and re-ask the same question. "Whatever you think" / "cứ làm đi" means adopt your recommendations, recorded as delegated decisions. "done", "stop", or "proceed" means stop asking and default the rest.
 
-## 5. Write questions that are cheap to answer
-
-- **Self-contained.** Restate the decision every time, with one line of context or trade-off above the options, so the user can answer without scrolling back. Some harnesses have rendered only the options; a question that carries its own context survives that.
-- **One decision per question.** No compound "should it sync, notify, and retry?".
-- **2–3 concrete, mutually exclusive options** (4 only when the channel allows it), each with a one-line consequence. No filler options, and no "Other" option — every channel already accepts free text.
-- **Recommended option first**, label ending in `(Recommended)`, with the reason. It is the default when unanswered.
-- Ask about outcomes and constraints, not implementation details you can decide yourself.
-- Use an open question only when you cannot infer a sensible option set (an unknown legal retention rule, say).
-- Write in the user's language.
-
-Handling replies:
-
-- The user asks for context on a question → explain, then re-ask that same question. A request for context is not an answer.
-- "Whatever you think" / "cứ làm đi" → adopt your recommendations and record them as decisions the user delegated.
-- "done", "stop", "proceed" → stop asking, default the rest, and log them.
-
-## 6. Ask through the right channel
+## Ask through the right channel
 
 Take the first case that applies.
 
-1. **Dispatched Orca worker** (a live injected preamble with executable, handle, capability, Task ID, and Dispatch ID): ask only through the preamble's `orca orchestration ask` command, copied verbatim — never a local question UI, which nobody can answer. Ask only when the coordinator must decide; default the rest and list them in the report and `worker_done`. One question maps to `--question "<header>: <question>" --options "<label a> (Recommended),<label b>"` (labels must not contain commas). On timeout, use `--resume <message_id>` instead of asking again.
+1. **Dispatched Orca worker** (a live injected preamble with executable, handle, capability, Task ID, and Dispatch ID): ask only through the preamble's `orca orchestration ask` command, copied verbatim — a local question UI would go unanswered. Ask only what the coordinator must decide; default the rest and list them in the report and `worker_done`. One question maps to `--question "<header>: <question>" --options "<label a> (Recommended),<label b>"` (labels must not contain commas). On timeout, use `--resume <message_id>` instead of asking again.
 2. **A native question tool and a person to answer it:**
 
    | Harness | Tool | Limits |
@@ -84,13 +55,10 @@ Take the first case that applies.
    | Gemini CLI | `ask_user` | 1–4 questions, `type` choice / text / yesno, `multiSelect` |
    | Cursor, Qoder IDE | built-in ask tool | limits undocumented: stay within 3 questions and 2–3 options; Cursor's tool does not block, so end the turn after asking |
 
-   These tools do not exist inside subagents (Claude Code, Codex), so run this skill in the main conversation.
-3. **Interactive but no tool:** print the plain-text block below and end your turn. Do not start work that depends on the answers.
-4. **Headless — nobody can answer** (CI, `-p` / `exec`, the tool was denied or removed, a dialog timed out and auto-submitted, answers came back empty): never wait, and never retry a denied question.
+3. **Interactive but no tool:** print the plain-text block below and end your turn before starting work that depends on the answers.
+4. **Headless — nobody can answer** (CI, `-p` / `exec`, the tool was denied or removed, a dialog timed out, answers came back empty): don't wait, and don't retry a denied question.
    - Reversible, low-risk gaps → apply the recommended defaults, continue, and end the output with an `Assumptions (headless)` list.
    - Blocking or irreversible gaps (deleting data, migrations, public API, cost, security) → stop before acting and make the question block your final output so the caller can re-run with answers. If the caller supplied an output schema, emit the questions in it.
-
-Plain-text format:
 
 ```text
 [clarify] 2 decisions before I start. Reply in one line, e.g. "1a 2b". Anything you skip uses its default.
@@ -108,20 +76,9 @@ Plain-text format:
 Free text works too, e.g. "2: finance team only".
 ```
 
-## 7. Stop when it is clear enough
+## Hand off a requirements brief
 
-Stop asking and write the brief once all four hold:
-
-1. You can state the user, the outcome, and the in-scope change in one or two sentences.
-2. Every material behavior and failure path has an observable acceptance check, or inherits existing behavior you can point to.
-3. No open choice could change safety, data loss, permissions, the public contract, or the main deliverable; everything else is a logged assumption.
-4. The implementer could start and verify the work without asking another question.
-
-Do not chase certainty on every edge case.
-
-## 8. Hand off a requirements brief
-
-Write only fields that carry a decision — 120–200 words, never more than 250. Do not paste the interview.
+Stop asking once you can state the user, outcome, and scope in a sentence or two; every material behavior and failure path has an observable check; no open choice touches safety, data loss, permissions, the public contract, or the main deliverable; and the implementer could start without another question. Then write a brief with only the fields that carry a decision — short enough to read at a glance, never the interview:
 
 ```markdown
 ## Requirements brief
@@ -135,41 +92,8 @@ Approach: <inline | subagents | workflow | DAG> — <one-line reason>; recommend
 Open: <none | non-blocking item | BLOCKED: decision + affected action>
 ```
 
-Pick the lightest acceptance format that makes the result observable:
+Write acceptance in the lightest format that makes the result observable: a checklist for small edits, Given/When/Then for a user journey, EARS for one precise system rule.
 
-- **Checklist** for small edits and deliverables: `CSV has UTF-8 headers id,total; respects current filters; 0 rows → header-only file`.
-- **Given / When / Then** for a user journey or rule: `Given two selected orders / When the user exports / Then the file contains exactly those two orders`.
-- **EARS** for one precise system rule: `If the payment provider times out, the checkout service shall leave the order unpaid`.
+For **Approach**, default to inline. Recommend subagents when a few independent areas or a large read would flood one context, a workflow for many similar items that get the same check, and a supervised DAG for a multi-part feature across modules that needs decision gates. Workflows and DAGs multiply cost and coordination, so put the user's go-ahead for them in `Open` unless they already approved it.
 
-Then:
-
-- Keep the brief in chat unless the user or a downstream plan needs a file. If you write one, update it in place rather than appending copies — the brief is the single source of truth, and duplicates get re-implemented.
-- For large or irreversible work, show the brief and get a yes before acting. For small work, show it and proceed.
-- When the work is planned as a DAG or split across workers, each task receives only its own decisions and acceptance checks, not the whole brief.
-
-## 9. Recommend how to implement
-
-Choose the approach from the brief's size and shape, not from habit. Recommend one, give its reason, and let the user override.
-
-| Approach | Use when | Cost and risk |
-| --- | --- | --- |
-| Inline (one agent) | One or two files, steps depend on judgment, or the answer is a short explanation | Lowest; everything stays in one context |
-| Subagents | A few independent areas, or a large read that would flood the main context; the main agent reconciles the results | Moderate; each step is coordinated by hand |
-| Workflow (scripted fan-out) | Many similar items (files, modules, findings) that get the same check, plus loops or adversarial verification | Highest token spend; define the verify step before running |
-| Supervised DAG of workers | A multi-part feature across modules or services, with decision gates and parallel waves | Highest coordination overhead; only with a gate the user approves |
-
-Rules:
-
-- Default to inline. Escalate only when the brief names a reason from the right-hand column.
-- Mark the recommendation and give one reason: `Approach: subagents — three independent modules (api, ui, db) with no shared state.`
-- Workflow and DAG multiply cost and coordination. Ask the user before running either; put that ask in `Open`, unless the user already approved it.
-- Match the model to the step: a cheaper model for reading and fan-out, the strongest available model for verification and synthesis.
-
-## Anti-patterns
-
-- Walking the gap table as a questionnaire.
-- Asking what the repo, docs, or earlier messages already answer.
-- "Any other requirements?" — it gives the user nothing to decide.
-- Asking which library, schema, or widget before the outcome is clear.
-- Making a consequential choice silently, or presenting a default as approved.
-- Another round after the decisions are already actionable.
+Keep the brief in chat unless the user or a downstream plan needs a file; if you write one, update it in place so it stays the single source of truth. For large or irreversible work, get a yes on the brief before acting; for small work, show it and proceed. When the work is split across workers, each task receives only its own decisions and acceptance checks.

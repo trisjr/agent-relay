@@ -6,7 +6,7 @@ Plugin gom toàn bộ workflow chuẩn cho dev làm việc cùng coding agent v�
 
 | Nhóm | Skill | Dùng khi | Làm gì |
 | --- | --- | --- | --- |
-| Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu mơ hồ, thiếu thông tin hoặc rủi ro cao trước khi implement/plan: "build X", "làm tính năng", "làm rõ yêu cầu", PRD/spec sẽ feed vào plan hay DAG | Right-size → tìm hiểu repo → quét gap → hỏi tối đa 3 câu mỗi vòng (mỗi câu có option đề xuất) → xuất requirements brief 120–250 từ |
+| Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu mơ hồ, thiếu thông tin hoặc rủi ro cao trước khi implement/plan: "build X", "làm tính năng", "làm rõ yêu cầu", PRD/spec sẽ feed vào plan hay DAG | Right-size → tìm hiểu repo → quét gap → hỏi tối đa 3 câu mỗi vòng (mỗi câu có option đề xuất) → xuất requirements brief ngắn, chỉ gồm các trường mang quyết định |
 | Điều phối | `orca-router` | Mọi request chạm vào multi-agent Orca (điều phối, handoff, theo dõi worker, DAG) | Phân loại request, chọn đúng hệ thống (orchestration / orca-cli / worker / agent thường), load guide từ binary, rẽ vào workflow có sẵn |
 | Điều phối | `research-swarm` | Câu hỏi nghiên cứu/phân tích rộng, so sánh nhiều phương án, khảo sát codebase theo nhiều hướng | Fan-out worker theo góc độc lập, mỗi worker ghi findings ra file; coordinator tổng hợp từ file |
 | Điều phối | `parallel-review` | Review diff/branch/PR lớn hoặc rủi ro trước merge, review bảo mật | Fan-out reviewer theo "lens"; mỗi reviewer một context sạch, review-only; coordinator dedupe findings theo severity |
@@ -29,7 +29,7 @@ Mỗi skill kèm `evals/evals.json` (bộ prompt mẫu kèm kỳ vọng hành vi
 ### Làm rõ yêu cầu
 
 - Right-size trước: yêu cầu đã rõ hoặc tra được trong repo thì không hỏi.
-- Fact thì tự tìm, preference mới hỏi; ưu tiên theo impact × uncertainty × irreversibility; hành động không đảo ngược mà thiếu quyết định thì block.
+- Fact thì tự tìm, preference mới hỏi; cân nhắc theo impact, uncertainty và irreversibility; hành động không đảo ngược mà thiếu quyết định thì block.
 - Kênh hỏi chọn theo harness: lệnh `ask` của preamble (worker Orca), `AskUserQuestion` (Claude Code, Kimi, Qoder CLI), `request_user_input` (Codex Plan mode), `ask_user` (Gemini), tool hỏi built-in (Cursor, Qoder IDE), block plain-text đánh số (interactive không có tool), hoặc default + assumptions (headless).
 
 ### Điều phối với Orca
