@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-10-19
+
+### Plugins
+
+- `compact-nudge`: 0.1.0 → 0.2.0
+
+### Added
+
+- **compact-nudge**: nhắc `/compact` được trên Code tab của desktop app, IDE và SDK. Các surface này không vẽ band, toast hay gợi ý prompt của function hooks, nên giờ có thêm command hook `hooks/nudge.py` chạy ở `UserPromptSubmit`. Hook đọc số token context từ usage của assistant message cuối trong transcript; khi chạm mốc (mặc định 200K, rồi mỗi +100K) thì hiện `systemMessage` và nhờ Claude kết câu trả lời bằng lệnh `/compact giữ lại: …; bỏ: …` soạn sẵn để copy. Mốc reset khi `SessionStart` báo compact/clear. Hook bỏ qua entrypoint `cli` để terminal không bị nhắc hai lần; tắt bằng `COMPACT_NUDGE_HOOK_OFF=1`.
+
 ## [0.22.2] - 2026-10-18
 
 ### Plugins
@@ -425,7 +435,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.22.2...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/trisjr/agent-relay/compare/v0.22.2...v0.23.0
 [0.22.2]: https://github.com/trisjr/agent-relay/compare/v0.22.1...v0.22.2
 [0.22.1]: https://github.com/trisjr/agent-relay/compare/v0.22.0...v0.22.1
 [0.22.0]: https://github.com/trisjr/agent-relay/compare/v0.21.0...v0.22.0
