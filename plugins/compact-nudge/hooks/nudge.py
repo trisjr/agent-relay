@@ -51,8 +51,14 @@ def tail_rows(path):
 
 
 def context_tokens(rows):
-    """Context of the last real main-chain assistant call; None when unknown."""
+    """Context of the last real main-chain assistant call; None when unknown.
+
+    Stops at a compact boundary with 0: rows before it measure the pre-compact context,
+    and 0 also clears the milestone if the SessionStart reset did not run.
+    """
     for row in reversed(rows):
+        if row.get("type") == "system" and row.get("subtype") == "compact_boundary":
+            return 0
         if row.get("type") != "assistant" or row.get("isSidechain"):
             continue
         message = row.get("message")
@@ -152,11 +158,14 @@ def main():
             "hookEventName": "UserPromptSubmit",
             "additionalContext": (
                 "compact-nudge: the session context is about %s tokens. Handle the user's request "
-                "normally, then end your reply with one short line in Vietnamese saying the context "
-                "is %s and suggesting they run /compact, followed by ONE ready-to-copy command in a "
-                "code block, at most 60 words: `/compact giữ lại: <current task, key files/functions, "
-                "decisions made, open bugs or unfinished work>; bỏ: <long logs/outputs already handled, "
-                "abandoned approaches>`. Never run /compact yourself."
+                "normally. In the LAST text you output this turn (after every tool call, so it is "
+                "not buried; if a tool such as a wrap-up or next-step box ends your turn, put it in "
+                "the text right before that call and mention it in the recap), add one short line in "
+                "Vietnamese saying the context is %s and suggesting they run /compact, followed by "
+                "ONE ready-to-copy command in a code block, at most 60 words: `/compact giữ lại: "
+                "<current task, key files/functions, decisions made, open bugs or unfinished work>; "
+                "bỏ: <long logs/outputs already handled, abandoned approaches>`. Never run /compact "
+                "yourself."
             ) % (size, size),
         },
     }, ensure_ascii=False))
