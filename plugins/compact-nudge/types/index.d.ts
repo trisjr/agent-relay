@@ -5,6 +5,6 @@ export type Nudge = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'compact-nudge': { nudge: Nudge | null; nextAt: number | null }
+    'compact-nudge': { nudge: Nudge | null; nextAt: number | null; isPaneUp: boolean }
   }
 }

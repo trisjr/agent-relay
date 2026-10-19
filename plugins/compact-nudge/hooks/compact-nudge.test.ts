@@ -11,8 +11,16 @@ const SUGGESTED = '/compact giữ lại: task fix pricing EUR, file pricing.serv
 const NO_USAGE = { input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }
 
 function fakeSession(on: On, tokens: { value: number }) {
-  const seen = { forks: 0, suggested: [] as string[], toasts: [] as string[] }
+  const seen = { forks: 0, suggested: [] as string[], toasts: [] as string[], opened: [] as string[], closed: [] as string[] }
   on('turn.complete', (_$, e) => ({ text: e.answer }))
+  on('ui.open', (_$, e) => {
+    seen.opened.push(e.id)
+    return { value: { isPlaced: true } } as never
+  })
+  on('ui.close', (_$, e) => {
+    seen.closed.push(e.id)
+    return { value: undefined } as never
+  })
   on('prompt.suggest', (_$, e) => {
     seen.suggested.push(e.text)
     return { isShown: true } as never
@@ -59,6 +67,7 @@ describe('nudge', () => {
     await endTurn($)
     expect(seen.forks).toBe(1)
     expect(seen.suggested).toEqual([SUGGESTED])
+    expect(seen.opened).toEqual(['compact-nudge'])
 
     tokens.value = 370_000
     await endTurn($)
@@ -86,6 +95,7 @@ describe('nudge', () => {
     expect(seen.forks).toBe(1)
 
     await $.session.compact({ trigger: 'manual', messages } as never)
+    expect(seen.closed).toEqual(['compact-nudge'])
     await endTurn($)
     expect(seen.forks).toBe(2)
   })
