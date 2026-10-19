@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-10-19
+
+### Plugins
+
+- `compact-nudge`: 0.2.2 → 0.3.0
+
+### Added
+
+- **compact-nudge**: trên terminal, lời nhắc giờ mở thành **panel** `Compact` (dock cạnh transcript khi fullscreen từ 110 cột, còn lại nằm phía trên ô prompt) thay vì chỉ một band. Panel hiện số token, lệnh `/compact` gợi ý và hai nút **[Điền lệnh]**/**[Bỏ qua]**; đóng panel bằng tay hoặc Esc tính là bỏ qua. Terminal hẹp không vẽ được panel thì tự rơi về band như trước. Thêm lệnh `/compact-nudge` để mở lại panel khi đang có lời nhắc.
+
 ## [0.23.2] - 2026-10-19
 
 ### Plugins
