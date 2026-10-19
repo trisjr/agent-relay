@@ -28,13 +28,24 @@ Code tab của desktop app tự vẽ ô prompt và transcript, nên không có b
 
 | Bước | Làm gì |
 | --- | --- |
-| 1 | Mỗi lần user gửi prompt (`UserPromptSubmit`), đọc usage của assistant message cuối trong transcript `.jsonl` (bỏ qua subagent, row có usage bằng 0) để lấy số token context |
-| 2 | Context chạm mốc thì hiện `systemMessage` cho user và gửi `additionalContext` để Claude trả lời xong thì kết bằng một dòng nhắc kèm lệnh `/compact giữ lại: …; bỏ: …` soạn sẵn, anh copy vào ô prompt. Không tốn thêm API call: lệnh được soạn ngay trong lượt trả lời |
+| 1 | Khi turn của session chính kết thúc (`Stop`), đọc usage của assistant message cuối trong transcript `.jsonl` để lấy số token context. Bỏ qua subagent, row có usage bằng 0, và không đọc lùi qua `compact_boundary` |
+| 2 | Context chạm mốc thì hiện **một `systemMessage`** ("Claude Code notice") kèm lệnh `/compact giữ lại: …; bỏ: …` soạn theo luật. Anh copy lệnh, sửa nếu cần, rồi Enter |
 | 3 | Mốc giống bản terminal; reset bằng `SessionStart` (matcher `compact\|clear`), hoặc khi context tụt dưới ngưỡng |
+
+Lệnh được soạn **không qua model** (không tốn token), từ những gì có trong transcript kể từ lần compact gần nhất:
+
+| Phần | Nguồn |
+| --- | --- |
+| Tình trạng | `recap` của lần `wrap_up` gần nhất (do model viết sẵn) |
+| Task còn dở | Mục `in_progress`/`pending` của task list (`update_plan` hoặc `TodoWrite`) sau lần `wrap_up` gần nhất |
+| File chính | Tối đa 5 file được Edit/Write nhiều nhất |
+| Bối cảnh | Message của 2 `git commit` gần nhất, `gitBranch` |
+
+Hook không `block` và không gửi `additionalContext`, nên không chen message vào transcript, không đổi câu trả lời hay next-step box của Claude. Turn do side agent hay CI event kích hoạt cũng chỉ được nhắc khi đã dừng hẳn.
 
 Script bỏ qua entrypoint `cli` (terminal đã có function hooks nhắc), nên không bị nhắc hai lần. Nó đọc `threshold`/`step` qua biến `CLAUDE_PLUGIN_OPTION_THRESHOLD`/`CLAUDE_PLUGIN_OPTION_STEP`, nếu không có thì dùng mặc định. Tắt bằng `COMPACT_NUDGE_HOOK_OFF=1`.
 
-Khác bản terminal: lời nhắc hiện ở **đầu lượt kế tiếp**, không phải ngay sau khi turn kết thúc. Lệnh `/compact` không tự điền vào ô prompt được, anh phải copy.
+Khác bản terminal: lệnh soạn theo luật nên không biết các quyết định chỉ nói trong chat (không có trong recap hay task list), và không tự điền vào ô prompt được.
 
 ## Cấu hình
 
@@ -59,7 +70,8 @@ Với task cần giữ nhiều chi tiết (debug dài, refactor nhiều file), n
 - Chỉ chạy trên **Claude Code**. Bản terminal dùng function hooks (early access, API có thể đổi giữa các bản). Các manifest Codex/Gemini/Qoder/Kimi chỉ có để marketplace hợp lệ, không có hành vi.
 - Band, toast và gợi ý trong ô prompt chỉ hiện trên terminal (`claude`). Desktop app không vẽ chúng; ở đó dùng bản command hook ở trên.
 - Nếu desktop vẫn nạp function hooks, `$.model.fork` có thể vẫn chạy ngầm ở mỗi mốc (khoảng $0.05) dù không ai thấy kết quả.
-- `nudge.py` cần `python3` trong `PATH`. Thiếu `python3` thì hook bỏ qua, không chặn prompt.
+- `nudge.py` cần `python3` trong `PATH`. Thiếu `python3` thì hook bỏ qua, không chặn turn.
+- Phần soạn lệnh dựa vào format transcript và tên tool của desktop (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`). App đổi format thì lệnh nghèo đi (rơi về mẫu chung) chứ không lỗi.
 - **Lỗi im lặng:** nếu API function hooks đổi, hook lỗi chỉ bị bỏ qua (một dòng mờ trong transcript), session vẫn chạy bình thường nhưng lời nhắc sẽ không hiện nữa. Đã test trên Claude Code **2.1.292**; sau mỗi lần cập nhật Claude Code, hoặc khi thấy context vượt ngưỡng mà không được nhắc, chạy lại `claude plugin validate` và `claude plugin test` (mục Phát triển).
 
 ## Phát triển

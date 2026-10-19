@@ -1,7 +1,7 @@
 {
-  "description": "register.tsx nudges on the terminal (function hooks). nudge.py is the command-hook fallback for surfaces that do not draw the function-hook UI (desktop Code tab, IDE, SDK); it skips the 'cli' entrypoint. '|| true' keeps a launcher failure from ever blocking a prompt.",
+  "description": "register.tsx nudges on the terminal (function hooks). nudge.py is the command-hook fallback for surfaces that do not draw the function-hook UI (desktop Code tab, IDE, SDK); it skips the 'cli' entrypoint and only emits a systemMessage at Stop. '|| true' keeps a launcher failure from ever blocking a turn.",
   "hooks": {
-    "UserPromptSubmit": [
+    "Stop": [
       {
         "hooks": [
           { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" || true", "timeout": 5 }
