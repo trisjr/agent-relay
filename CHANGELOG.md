@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.23.2] - 2026-10-19
+
+### Plugins
+
+- `compact-nudge`: 0.2.1 → 0.2.2
+
+### Fixed
+
+- **compact-nudge**: trên desktop, lời nhắc giờ hiện **khi turn dừng hẳn** (hook `Stop`) thay vì đầu turn (`UserPromptSubmit`). Trước đây note của side agent hay CI event cũng kích hoạt lời nhắc giữa lúc agent đang làm. Hook chỉ trả về một `systemMessage` ("Claude Code notice"), không `block`, không `additionalContext`, nên không chen vào câu trả lời hay next-step box của Claude. Lệnh `/compact giữ lại: …; bỏ: …` đi kèm được soạn theo luật, không tốn token, từ recap `wrap_up` gần nhất, task còn dở, các file đã sửa, commit gần đây và branch, tính từ lần compact gần nhất.
+
 ## [0.23.1] - 2026-10-19
 
 ### Plugins
@@ -445,7 +455,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.23.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.23.2...HEAD
+[0.23.2]: https://github.com/trisjr/agent-relay/compare/v0.23.1...v0.23.2
 [0.23.1]: https://github.com/trisjr/agent-relay/compare/v0.23.0...v0.23.1
 [0.23.0]: https://github.com/trisjr/agent-relay/compare/v0.22.2...v0.23.0
 [0.22.2]: https://github.com/trisjr/agent-relay/compare/v0.22.1...v0.22.2
