@@ -5,6 +5,22 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.25.1] - 2026-10-20
+
+### Plugins
+
+- `dev-workflows`: 0.4.0 → 0.4.1
+
+### Changed
+
+- **dev-workflows**: `clarify-requirements` dùng độc lập, bỏ phụ thuộc workflow điều phối khỏi brief và chọn kênh hỏi theo khả năng thực tế của phiên. Subagent chỉ là lựa chọn khi có sẵn và được phép. Đồng bộ rule Cursor, hướng dẫn Gemini và README.
+- **dev-workflows**: `debug-root-cause` dùng độc lập, bỏ phụ thuộc điều phối và tự chuyển skill; phân biệt chỉ chẩn đoán với tìm và sửa, tái sử dụng quyền đã giao. Rút quy trình theo độ khó, đồng bộ rule Cursor, hướng dẫn Gemini và README.
+
+### Fixed
+
+- **dev-workflows**: phân biệt câu hỏi bắt buộc với lựa chọn có thể mặc định; bỏ trống, timeout, trả lời "proceed" hoặc hết 3 vòng không tự chốt quyền truy cập, dữ liệu hay quyết định ảnh hưởng đầu ra chính. Bỏ tiêu chí skip theo độ ngắn của diff, tái sử dụng phê duyệt đã có và giữ đúng phạm vi khi người dùng chỉ yêu cầu làm rõ. Bổ sung eval cho các tình huống này và cho phiên không có subagent hoặc tool hỏi.
+- **dev-workflows**: debug tách giả thuyết bị bác bỏ, thí nghiệm chưa kết luận và bản sửa thất bại; thay ngưỡng dừng cứng bằng bằng chứng và ngân sách. Làm rõ giới hạn thống kê của flaky test, ưu tiên coverage hiện hữu, phân biệt mitigation với che giấu lỗi, bảo toàn working tree và báo đúng phần chưa verify. Cập nhật eval hành vi cùng fixture cục bộ.
+
 ## [0.25.0] - 2026-10-20
 
 ### Plugins
@@ -475,7 +491,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.25.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.25.1...HEAD
+[0.25.1]: https://github.com/trisjr/agent-relay/compare/v0.25.0...v0.25.1
 [0.25.0]: https://github.com/trisjr/agent-relay/compare/v0.24.0...v0.25.0
 [0.24.0]: https://github.com/trisjr/agent-relay/compare/v0.23.2...v0.24.0
 [0.23.2]: https://github.com/trisjr/agent-relay/compare/v0.23.1...v0.23.2
