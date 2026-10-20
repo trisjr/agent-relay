@@ -1,29 +1,22 @@
 ---
-description: Apply to one concrete, existing test, build, CI, or runtime failure; skip new features, healthy-diff review, vague requirements, and open-ended research.
+description: Investigate or fix a concrete test, build, CI, runtime, or performance failure using evidence; includes regressions and flaky tests, excludes new features and healthy-diff review.
 globs:
 alwaysApply: false
 ---
 
 # debug-root-cause
 
-Debug one failure with evidence, one agent, and depth-first experiments.
+Work inline on a concrete test, build, CI, runtime, or performance failure, including regressions and flakes. No subagent or special question tool is required. Handle features and healthy-diff review normally; do not automatically route to another skill.
 
-1. Right-size first: skip when there is no existing failure; route broad research to `research-swarm`, healthy-diff review to `parallel-review`, and unclear intent to `clarify-requirements`; without that rule/skill, handle it as a single agent.
-2. Keep ceremony proportional: confirm and rerun a one-step-obvious typo or missing import quickly; keep a written ledger when the cause is uncertain.
-3. Phase 1 — Reproduce & isolate: rerun the exact failing path and reduce its input while preserving the failure.
-4. For CI-only failures compare environments; for flaky failures run about 3/p repeats for failure rate p (never fewer than five) and record failures/N; if no repro is possible, propose targeted boundary instrumentation without changing behavior.
-5. Phase 2 — Gather evidence: read the trace backward from the failure, inspect recent diffs and history, and compare config, versions, and dependencies.
-6. Check component input and output to find the first boundary where correct data becomes wrong; record observations and non-observations.
-7. Phase 3 — Hypothesis ledger: rank testable causes by likelihood × cost-to-test and write the expected result before each smallest experiment.
-8. Record each outcome as `confirmed`, `refuted`, or `inconclusive`; confirm a root cause only when it explains the relevant failures and nearby passes.
-9. Rule 3 — One hypothesis, one experiment, one change: vary one thing, inspect the result, and update the ledger before the next attempt.
-10. Phase 4 — Diagnosis report & gate: post a short report in chat (Symptom, Root cause, Evidence, Proposed fix, Proposed red test, Risks) and wait for the user's approval before editing; skip the wait only for a one-step-obvious typo or missing import, or when a dispatched worker's spec orders the fix. Rule 0 — No edits before approval: scratch repros outside the committed tree and local probes reverted before the report are allowed; list them under Evidence.
-11. Phase 5 — Fix & regression: after approval, run the smallest test or automated repro script red for the reported reason, repair the confirmed root cause, then run it green and run the related suite; for a flaky failure, require about 20 consecutive passes for a 1-in-5 flake and report N. Rule 1 — No fix before failing test: do not change production logic before a red check, except a one-step-obvious correction named by the error; rerun its command afterward.
-12. Rule 4 — Symptom patches are failure: trace callers and repair the shared cause, not only the point where the error appears.
-13. Rule 2 — Never claim "fixed" without verification: require the original check and related suite green and a one-sentence root cause; state any verification limit.
-14. Stop at 3 refuted hypotheses or 3 failed fixes, counting attempts the user already made: summarize the ledger, question the system model or architecture, and ask the user before another attempt.
-15. Escalate without force-fixing unpatchable dependency bugs; infra, vendor, quota, DNS, or CI-runner trouble; an unapproved public-contract change or data migration; or a race outside your control.
-16. After the fix, confirm in one or two lines (root cause, red → green commands, related suite) and keep reports in chat by default; label manual-only verification `unverified by automated test`.
-17. In a headless run, a stop, escalation, or diagnosis without a fix mandate ends with a final status block: ledger summary, evidence, unresolved cause, and proposal.
-
-Never silently make a fourth attempt or call a passing rerun of a flaky check a fix.
+- Respect scope: diagnosis-only means findings and proposals without repairs, even for a typo; keep scratch repros outside the tree and tracked files unchanged. A find-and-fix request or prior approval authorizes repair within scope; discovering the cause does not require approval again. Ask only about material unresolved decisions or actions beyond authorization.
+- Inspect status and relevant diffs before edits. Preserve pre-existing changes, including in the same file; isolate bisect or destructive experiments instead of resetting, stashing, or checking out over them.
+- Keep effort proportional: obvious cause → check, authorized correction, rerun. Use a ledger only for uncertain or repeated investigations.
+- Reproduce when feasible; record actual input, command, environment, and result. Trace the failure through callers and boundaries; compare recent changes and relevant environment differences. Before an experiment, predict an observation that distinguishes explanations; vary one factor when practical.
+- A refuted hypothesis needs contradictory evidence from a valid experiment. A failed setup or non-discriminating result is inconclusive. A failed fix is a separate outcome, not automatic refutation. A suspicious commit or green rerun alone does not confirm a cause.
+- Missing repro or environment means limited evidence: state unconfirmed causes and blocked checks; propose the smallest missing input or privacy-safe instrumentation. Supported, authorized local repairs may proceed with verification limits. Check repairable config/code before escalating infrastructure or dependency trouble; deployment and production probes need their own authorization.
+- Prefer an existing red check, then rerun after the causal repair and run relevant nearby tests. Add coverage only when missing and practical. Do not weaken assertions, skip failing paths, silently change contracts, or fake success. A test can be wrong; changing it requires evidence from the intended behavior.
+- Bounded retries, timeouts, error handling, and fallbacks can be valid repairs or mitigations: check idempotency, cost, visible terminal failures, residual risk, and recurrence detection. Label mitigation when the underlying cause remains.
+- For flakes, prefer controlled timing/seed/order, then a bounded representative sample. Set a run/time/cost budget and report all failures/N and conditions. For independent runs at stable rate `p`, no failures in `n` has probability `(1-p)^n`; `3/p` only approximates 95% detection for small `p`. Unknown/correlated rates limit that estimate; no fixed green streak proves a fix.
+- After repeated failed attempts, including earlier ones, pause patching and reassess. Continue only with new evidence and a distinct affordable experiment. Stop the affected path at budget exhaustion, no information gain, missing access, or a required decision; there is no three-attempt cutoff.
+- Use an available, permitted question tool or interactive plain text. Async return/preselection, timeout, empty answers, and missing tools are not approval or proof of headless mode. Do not retry a denied tool. Only explicit no-reply-channel context means headless: complete authorized independent work, report required decisions and affected actions as BLOCKED, and do not wait. A clear repair mandate still permits a headless fix.
+- Report cause confidence separately from verification: actual checks and results, manual steps if applicable, or "changed, verification blocked" with the blocker and next step. Diagnosis-only ends with findings; authorized repair continues through verification. Keep reports short unless complexity warrants detail.

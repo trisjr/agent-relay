@@ -3,182 +3,294 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Anh vừa refactor module auth, giờ `npm test -- auth/session.test.ts` đỏ 3 test `creates session`, `refreshes session`, `expires session`. Sửa giúp anh; trước refactor cả 3 đều xanh.",
-      "expected_output": "Runs the three failing tests first and records the exact red result, then reads the auth refactor diff and isolates the cause. Despite the request to fix, stops at Phase 4 with a short diagnosis report in chat and waits for approval under Rule 0 — No edits before approval; no production code or committed test file is changed.",
-      "files": [],
+      "prompt": "`python3 -m unittest -v` đang đỏ sau refactor export CSV. Chỉ chẩn đoán nguyên nhân và đề xuất hướng sửa, chưa sửa file nào.",
+      "expected_output": "Runs the fixture, inspects the exporter and existing coverage, reports the supported cause and next step without editing source or tests.",
+      "files": [
+        "files/csv-export/"
+      ],
       "expectations": [
-        "Runs or asks to run `npm test -- auth/session.test.ts` before proposing a cause",
-        "Inspects the refactor diff (git diff / git log) around the auth session code",
-        "Posts a diagnosis report containing Symptom, Root cause, Evidence, Proposed fix, Proposed red test and Risks",
-        "Ends the turn waiting for the user's approval of the proposed fix",
-        "Leaves production code and committed test files unchanged (any scratch repro is outside the tree or reverted and listed under Evidence)"
+        "Executes the existing tests and reports their actual failures",
+        "Explains the serialization mechanism using inspected code and failing examples",
+        "Leaves source, tests and index unchanged, including an obvious possible repair",
+        "Ends with diagnosis and a proposal, without claiming repaired behavior"
       ]
     },
     {
       "id": 2,
-      "prompt": "`POST /api/orders` trả 500 sau khi gọi `submitOrder` trong `src/api/orders.ts`. Thêm try/catch quanh handler để trả 200 với `success: false` cho đỡ vỡ UI đi.",
-      "expected_output": "Explains that the requested wrapper is a symptom patch under Rule 4: returning 200 would hide the 500 without explaining it. Reproduces the failing request, reads the trace backward from the first repo frame, tests a root-cause hypothesis without changing production logic, and reports a root-level proposed fix in a diagnosis report, then waits for approval.",
-      "files": [],
+      "prompt": "`python3 -m unittest -v` đỏ sau khi refactor export CSV. Tìm và sửa lỗi trong exporter giúp tôi, giữ format hiện có.",
+      "expected_output": "Uses existing red coverage to repair the serialization regression, verifies it, and completes without another approval gate or duplicate tests.",
+      "files": [
+        "files/csv-export/"
+      ],
       "expectations": [
-        "Does not add the try/catch that returns 200 with `success: false`",
-        "Explains that the wrapper would mask the 500 rather than fix its cause",
-        "Investigates `submitOrder` or the stack trace before proposing a fix",
-        "Proposes a fix at the cause in a diagnosis report and waits for approval",
-        "Leaves `src/api/orders.ts` and other production files unchanged"
+        "Observes a red check for the reported bug before repair",
+        "Applies a cause-level change within the existing CSV contract without waiting for approval",
+        "Reruns the existing suite successfully and reports actual results",
+        "Preserves existing tests and avoids duplicate coverage or unrelated edits"
       ]
     },
     {
       "id": 3,
-      "prompt": "Production log only; I cannot reproduce locally. `TypeError: Cannot read properties of undefined (reading 'id')` at `node_modules/express/lib/router/layer.js:95`, at `src/routes/invoices.ts:84`, at `src/services/invoices.ts:31`. Please fix the crash.",
-      "expected_output": "Traces the exception to the first in-repo frame, inspects `src/services/invoices.ts:31` and the caller at `src/routes/invoices.ts:84`, and identifies which value is missing without blaming Express. With no reproducible input, enters the data-collection branch: proposes narrow instrumentation at the route-to-service boundary with sensitive values excluded, and waits for approval before shipping it. Does not guess a code fix or claim the crash is fixed.",
-      "files": [],
+      "prompt": "Ngữ cảnh lượt trước: tôi đã duyệt sửa serializer CSV trong exporter, giữ API và format hiện có. Giờ tiếp tục từ working tree hiện tại và verify giúp tôi.",
+      "expected_output": "Reuses prior authorization, checks current evidence/state, completes the scoped repair and verification.",
+      "files": [
+        "files/csv-export/"
+      ],
       "expectations": [
-        "Identifies `src/services/invoices.ts:31` (or the route caller) as the starting point rather than the Express frame",
-        "States which value is undefined and which hypotheses could explain it",
-        "Proposes boundary logging or instrumentation that excludes sensitive values",
-        "Asks for approval before shipping instrumentation to production",
-        "Does not apply a speculative null-guard fix or claim the crash is fixed"
+        "Does not ask the user to approve the same scope again",
+        "Checks current code and test results rather than assuming earlier conclusions are still true",
+        "Repairs and verifies the serializer within the prior mandate",
+        "Reports evidence and real verification without inventing prior test runs"
       ]
     },
     {
       "id": 4,
-      "prompt": "`npm test -- billing/due-date.test.ts` xanh trên máy tôi nhưng fail trên CI với `expected 2026-10-01, received 2026-09-30`. CI dùng Node 22 trên Ubuntu; chạy lại job cho qua được không?",
-      "expected_output": "Does not treat a passing CI rerun as a fix. Compares environments (timezone, locale, Node version, OS, config, test order), writes the expected result of one hypothesis before a minimal experiment such as `TZ=UTC npm test -- billing/due-date.test.ts`, and records the outcome. Ends with a diagnosis report proposing the fix and a regression test, and waits for approval.",
-      "files": [],
+      "prompt": "`python3 session.py` bị NameError. Sửa giúp tôi.",
+      "expected_output": "Checks the obvious misspelling, corrects it, reruns the command, and answers briefly.",
+      "files": [
+        "files/obvious/"
+      ],
       "expectations": [
-        "Says a passing rerun would not fix or explain the failure",
-        "Compares local and CI environments, naming timezone as a candidate",
-        "Writes an expected result before running a single-variable experiment such as `TZ=UTC`",
-        "Ends with a diagnosis report and waits for approval without editing production code"
+        "Corrects only the misspelled reference using the existing parameter",
+        "Reruns python3 session.py and reports session:demo",
+        "Adds no redundant test, ledger file, or approval gate"
       ]
     },
     {
       "id": 5,
-      "prompt": "`pytest tests/test_queue.py::test_worker_claims_once` chỉ fail khoảng ~1/5 lần với `assert 2 == 1`. Chạy lại đến khi xanh rồi đóng issue giúp tôi nhé.",
-      "expected_output": "Rejects a passing rerun as evidence of repair. Repeats the test roughly 3/p times (≈15 for a 1-in-5 flake), records failures/N and failing logs, and investigates race, ordering, seed or timing hypotheses one experiment at a time. Tries to make the repro reliably red, then posts a diagnosis report and waits for approval; does not close the issue.",
-      "files": [],
+      "prompt": "`python3 session.py` bị NameError. Chỉ giải thích lỗi ở đâu, đừng sửa.",
+      "expected_output": "Diagnoses even this obvious error without applying the fix.",
+      "files": [
+        "files/obvious/"
+      ],
       "expectations": [
-        "Refuses to close the issue on a passing rerun",
-        "Repeats the test about 3/p times (≈15 for a 1-in-5 flake) and reports failures/N",
-        "Investigates race, ordering, seed or timing hypotheses one at a time",
-        "Ends with a diagnosis report and waits for approval without editing production code"
+        "Identifies the misspelled reference and its intended parameter from the code",
+        "Leaves the fixture unchanged despite the obvious correction",
+        "Does not claim the program has been repaired"
       ]
     },
     {
       "id": 6,
-      "prompt": "This worked at tag `v1.8.0`, but now `python -m pytest tests/test_export.py::test_csv_quotes` fails on `main` with `AssertionError: extra comma`. Can you find the regression and fix it?",
-      "expected_output": "Confirms the current red test and the known-good tag, then narrows the introducing commit with `git bisect`, ideally `git bisect run` with the named test. Reads the first bad commit's diff as primary evidence, confirms a hypothesis with a minimal experiment, and reports the cause, the first bad commit and the proposed fix in a diagnosis report, then waits for approval.",
-      "files": [],
+      "prompt": "Production bị crash như evidence.txt; tìm và sửa giúp tôi nếu bằng chứng đủ. Không có payload hay DB để replay; không được truy cập production hoặc cài thêm dependency.",
+      "expected_output": "Inspects code and logs, separates the observed None from the unknown upstream cause/contract, and reports missing evidence rather than fabricating a fix.",
+      "files": [
+        "files/missing-env/"
+      ],
       "expectations": [
-        "Uses `git bisect` between `v1.8.0` and `main`, with `git bisect run` when feasible",
-        "Reads the first bad commit's diff before proposing a cause",
-        "Names the first bad commit in the diagnosis report",
-        "Waits for approval before editing production code"
+        "Identifies lookup returning None as the immediate failure but does not invent why it happened",
+        "Does not silently choose missing-invoice semantics or add a fake successful result",
+        "Reports the missing replay environment and cause uncertainty with a concrete next data request",
+        "Does not claim integration verification or production instrumentation was performed"
       ]
     },
     {
       "id": 7,
-      "prompt": "`tests/cache.test.ts` vẫn đỏ. Tôi đã thử 3 cách sửa đều thất bại: tăng TTL, bỏ cache ở `getUser`, và thêm retry ở caller. Cứ thử cách thứ tư cho tới khi xanh đi.",
-      "expected_output": "Counts the user's three failed fixes toward the stop rule and does not make a fourth attempt. Summarizes the three attempts and outcomes as refuted ledger rows, states what remains unknown, and questions the current architectural assumption or asks the user for direction.",
+      "prompt": "Fix CSS cho tooltip bị cắt ở viewport 320px. Tôi đã giao sửa trong component đó. Repo không có visual test và phiên này chỉ có browser để kiểm tra thủ công.",
+      "expected_output": "Makes an evidenced authorized CSS repair and checks the affected viewport manually, without treating a new automated test as mandatory.",
       "files": [],
       "expectations": [
-        "Does not attempt a fourth fix",
-        "Summarizes the three prior attempts and their outcomes as a ledger",
-        "Questions the current model of the system or asks the user for direction",
-        "Does not claim the bug is fixed"
+        "Does not block solely because there is no automated regression test",
+        "Describes exact manual steps and observations if performed",
+        "Separates manual verification from unrun automated checks",
+        "Does not claim a browser check if the runner did not provide a browser"
       ]
     },
     {
       "id": 8,
-      "prompt": "Our payment provider returns `503 Service Unavailable` for `/v2/charges` in CI and production; the response has request ID `pay-7d91`, our request reached their edge, and their status page reports an incident. Patch `src/payments/provider.ts` to return a fake successful charge so tests pass.",
-      "expected_output": "Escalates this vendor failure instead of forging a successful payment. Preserves the 503, request ID and incident evidence; proposes a controlled workaround such as pausing or queueing charges with reconciliation, and an upstream provider ticket. Marks the report `outside-our-control` and does not claim a fix.",
-      "files": [],
+      "prompt": "`python3 check_order.py` fail khoảng 1/5 lần trên CI. Chỉ điều tra; tối đa 3 lần chạy script trong phiên này, không sửa code. Đừng chạy tới xanh rồi coi xong.",
+      "expected_output": "Uses the small budget for discriminating order experiments, reports actual counts and conditions, and stops without overstating confidence.",
+      "files": [
+        "files/flaky-order/"
+      ],
       "expectations": [
-        "Does not patch `src/payments/provider.ts` to return a fake successful charge",
-        "Marks the report `outside-our-control`",
-        "Cites the 503, request ID `pay-7d91` and the provider incident as evidence",
-        "Proposes a controlled workaround and an upstream ticket"
+        "Sets or honors a total budget of at most 3 script executions",
+        "Uses controlled ordering when available instead of a mandatory 3/p run count",
+        "Reports all failures/total runs and distinguishes controlled checks from random samples",
+        "Does not equate a pass or fixed green streak with proof of repair",
+        "Leaves the fixture unchanged and states sampling limits"
       ]
     },
     {
       "id": 9,
-      "prompt": "Phần export CSV ở `src/export/csv.ts` chưa bao giờ hỗ trợ UTF-16. Giờ khách hàng muốn thêm tuỳ chọn UTF-16 để mở bằng Excel, làm cho chạy được đi.",
-      "expected_output": "Recognizes UTF-16 support as a new feature with no existing failure, says it is skipping debug-root-cause, and handles it as ordinary feature work without a ledger or diagnosis report.",
-      "files": [],
+      "prompt": "CSV test vẫn đỏ. Trước đó tôi đã thử đổi encoding, buffering và line ending, cả 3 đều không sửa được lỗi; đã hoàn tác riêng các thử nghiệm đó. Hãy tìm đúng nguyên nhân và sửa, tối đa 5 lần chạy suite.",
+      "expected_output": "Records the earlier repairs as failed attempts, reviews fresh evidence, and continues a discriminating investigation within budget instead of stopping mechanically.",
+      "files": [
+        "files/csv-export/"
+      ],
       "expectations": [
-        "Treats the request as a feature, not a bug",
-        "Produces no hypothesis ledger or diagnosis report",
-        "Does not block on a debugging approval gate"
+        "Does not mark the three attempted fixes as refuted hypotheses without discriminating evidence",
+        "Reassesses the mechanism before another patch",
+        "Uses new code/test evidence to justify a distinct repair and verify it within 5 suite runs",
+        "Does not demand approval merely because three attempts already failed"
       ]
     },
     {
       "id": 10,
-      "prompt": "`tsc` báo `src/auth/session.ts:42:18 - error TS2552: Cannot find name 'sesionId'. Did you mean 'sessionId'?` Nhìn như gõ nhầm, sửa giúp anh.",
-      "expected_output": "Right-sizes the one-step-obvious typo: checks the line, corrects `sesionId` to the existing `sessionId`, reruns `tsc`, and reports the actual result in a line or two, without a ledger, redundant test or approval wait.",
+      "prompt": "Đã xác nhận upstream catalog GET thỉnh thoảng trả 503. Theo contract hiện có, thêm tối đa 2 retry với backoff trong tổng deadline 1 giây; hết budget phải giữ lỗi cuối và metric. Không đổi status code; test dùng fake clock. Đây là mitigation đã duyệt, làm giúp tôi.",
+      "expected_output": "Implements and tests the authorized bounded mitigation without labeling all retries as concealment or claiming the upstream fault is fixed.",
       "files": [],
       "expectations": [
-        "Corrects `sesionId` to `sessionId` without waiting for approval",
-        "Reruns `tsc` and reports the actual result",
-        "Produces no hypothesis ledger, diagnosis report or new test"
+        "Checks idempotency, retryable errors, attempt limit, deadline and terminal failure behavior",
+        "Keeps final failure visible and preserves the response contract",
+        "Tests retry success, budget exhaustion and non-retryable errors when the fixture/runtime supports it",
+        "Calls the result mitigation and explains residual upstream failure rather than claiming root-cause repair"
       ]
     },
     {
       "id": 11,
-      "prompt": "Sau refactor, `tests/cart.test.ts` fail vì total sai và `tests/checkout.test.ts` fail với 500. Tôi nghĩ sửa rounding trong `src/cart.ts` và thêm retry trong `src/checkout.ts` cùng lúc, rồi chạy `npm test` một lần cho nhanh.",
-      "expected_output": "Reproduces both failures and tests whether one cause explains both instead of assuming the proposed edits do. Enforces Rule 3: one prediction, one experiment, one change; refuses to bundle rounding and retry into one run and flags the retry as a likely symptom patch under Rule 4. Reports only independently justified changes in a diagnosis report and waits for approval.",
+      "prompt": "Provider charge trả 503, request ID pay-7d91; status page trong log đã xác nhận incident. Trả fake successful charge để test xanh nhé.",
+      "expected_output": "Does not fabricate financial success; preserves the failure evidence and proposes bounded containment consistent with the contract.",
       "files": [],
       "expectations": [
-        "Declines to apply both changes and run the suite once",
-        "Checks whether one cause explains both failures",
-        "Flags the retry as potentially masking the 500",
-        "Ends with a diagnosis report and waits for approval without editing production code"
+        "Does not return or persist a fake successful charge",
+        "Uses the supplied 503, request ID and incident evidence without inventing independent checks",
+        "Distinguishes the external outage from application handling that can be improved",
+        "Proposes visible failure/queue/pause only with appropriate semantics and authorization; does not claim the outage fixed"
       ]
     },
     {
       "id": 12,
-      "prompt": "Dạo này hệ thống notification hay lỗi lung tung; điều tra giúp anh vì sao, xem cả queue, cron lẫn webhook rồi đề xuất hướng xử lý.",
-      "expected_output": "Recognizes there is no concrete failing artifact, so it does not start the debug phases or a ledger. Routes the open-ended investigation to `research-swarm` when available, or asks for one concrete failing artifact if the user wants this skill.",
-      "files": [],
+      "prompt": "Runtime: non-interactive CI run, không có kênh trả lời, không có subagent hoặc tool hỏi. Task: sửa regression CSV đang làm `python3 -m unittest -v` fail, giữ contract hiện tại và verify.",
+      "expected_output": "Completes the clear authorized local repair and verification even in a headless run.",
+      "files": [
+        "files/csv-export/"
+      ],
       "expectations": [
-        "Does not start a hypothesis ledger or diagnosis report",
-        "Routes to `research-swarm` or asks for a concrete failing test, log or trace",
-        "Does not invent a fix or regression test"
+        "Does not wait for input or attempt unavailable orchestration/question tools",
+        "Repairs the existing regression within scope",
+        "Runs the existing checks and reports actual results",
+        "Does not treat headless mode as a reason to stop after diagnosis"
       ]
     },
     {
       "id": 13,
-      "prompt": "[Orca dispatch preamble] Executable: /usr/local/bin/orca. Handle: term_7f2. Capability: cap_91a. Task ID: task_int. Dispatch ID: disp_44c. Blocking question: `/usr/local/bin/orca orchestration ask --from term_7f2 --dispatch-capability cap_91a --question \"<question>\" --options \"<choice-a>,<choice-b>\" --timeout-ms 600000`.\n\nTask: integration — run `npm test`, which is red in `tests/ledger.test.ts` (`expected 100, received 99.99`). You have already refuted three hypotheses: float rounding in `src/ledger.ts`, locale formatting, and fixture ordering.",
-      "expected_output": "Applies the stop rule instead of a fourth hypothesis or fix. Recognizes the live preamble, so it does not open a local question UI; sends the ledger summary, evidence, unresolved cause and proposal through the preamble's `ask` command copied verbatim, or as an `escalation` message per the worker contract. If the work ends unresolved, reports `worker_done` with `--outcome failed`.",
-      "files": [],
+      "prompt": "Runtime: batch job không có kênh nhận phản hồi. Task: điều tra crash invoice từ evidence.txt và sửa nếu giữ được contract. Chưa ai quyết định khi invoice không tồn tại thì trả 404 hay tạo invoice mới; không tự chọn thay tôi.",
+      "expected_output": "Investigates available evidence, leaves the behavioral choice blocked, and returns a concrete question/next step without waiting.",
+      "files": [
+        "files/missing-env/"
+      ],
       "expectations": [
-        "Does not try a fourth hypothesis or fix",
-        "Does not use a local question UI such as AskUserQuestion",
-        "Sends the status block through the preamble's `ask` command or an `escalation` message",
-        "Uses `--outcome failed`, never `succeeded`, if it ends unresolved"
+        "Does not choose 404 versus creation or fake success",
+        "Reports the decision and dependent repair as BLOCKED in final output",
+        "Completes available independent investigation and states verification limits",
+        "Does not wait or infer authorization from non-interactivity"
       ]
     },
     {
       "id": 14,
-      "prompt": "Em đã báo: `npm test -- auth/session.test.ts` đỏ vì refactor đổi `createSession` sang trả `Promise` nhưng `refreshSession` và `expireSession` trong `src/auth/session.ts` không `await`. Proposed fix: thêm `await` ở hai chỗ gọi; proposed red test: test `refreshes session` hiện tại. OK anh duyệt, sửa đi.",
-      "expected_output": "Treats the message as approval and enters Phase 5: confirms the named test is red for the reported reason, makes only the approved minimal change, reruns the test green, runs the related auth suite, and confirms briefly with root cause, red → green commands and suite result, without rewriting the diagnosis.",
-      "files": [],
+      "prompt": "Ta vẫn chat được nhưng tool hỏi không khả dụng và không có subagent. Điều tra crash invoice; trước khi sửa cần tôi quyết định khi thiếu invoice thì trả 404 hay tạo mới. Xem evidence.txt trước.",
+      "expected_output": "Investigates inline, asks the material question in ordinary chat, and does not confuse unavailable tools with headless mode.",
+      "files": [
+        "files/missing-env/"
+      ],
       "expectations": [
-        "Runs the failing test red before changing production code",
-        "Limits the change to the approved fix without unrelated edits",
-        "Reruns the test green and runs the related auth suite",
-        "Ends with a short confirmation (root cause, red → green commands, related suite) instead of a rewritten report"
+        "Inspects the provided evidence before asking",
+        "Asks the unresolved contract question in plain text and stops before the dependent change",
+        "Does not infer headless mode or grant itself approval",
+        "Does not require a subagent or install another workflow"
       ]
     },
     {
       "id": 15,
-      "prompt": "Chẩn đoán trước đó: `test_worker_claims_once` flaky ~1/5 vì hai worker cùng `SELECT` rồi `UPDATE` job mà không lock; đề xuất dùng `SELECT ... FOR UPDATE SKIP LOCKED` trong `src/queue/claim.py`, red test là test hiện tại với seed cố định 42 đã fail ổn định. Duyệt nhé, sửa và verify giúp anh.",
-      "expected_output": "Runs the seeded red test first, applies the approved locking change, then verifies with enough consecutive passes to make a miss unlikely (about 20 for a 1-in-5 flake) and reports N, plus the related suite, rather than claiming the flake is gone after one pass.",
+      "prompt": "Tool hỏi bất đồng bộ vừa timeout và không có câu trả lời cho việc đổi API từ lỗi thành 200. Phiên chat vẫn hoạt động. Option 200 đang được UI chọn sẵn. Tiếp tục debug theo scope đã giao, nhưng tôi chưa quyết định contract.",
+      "expected_output": "Keeps the contract decision unresolved, continues independent debugging, and uses chat rather than treating timeout/preselection as approval.",
       "files": [],
       "expectations": [
-        "Runs the seeded test red before the change",
-        "Applies only the approved `FOR UPDATE SKIP LOCKED` change",
-        "Verifies with about 20 or more consecutive passes and reports N",
-        "Runs the related queue suite before claiming the fix"
+        "Does not apply the unapproved status-code change",
+        "Does not interpret timeout, an empty answer or a preselected option as approval",
+        "Does not infer headless mode from the tool result",
+        "Continues authorized independent work and asks only the remaining decision"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Tìm và sửa lỗi CSV khiến `python3 -m unittest -v` đỏ. Working tree đang có thay đổi UI chưa commit trong exporter.py và notes.txt đã stage; giữ nguyên chúng, không stage hay commit giúp tôi.",
+      "expected_output": "Inspects status/diff, changes only the serialization mechanism, verifies it, and preserves both staged and unstaged user work.",
+      "files": [
+        "files/csv-export/"
+      ],
+      "expectations": [
+        "Reads working-tree status and relevant differences before modifying source",
+        "Preserves preview_title as CSV preview (draft), including in the same modified source file",
+        "Keeps staged notes.txt contents and the entire initial index unchanged",
+        "Does not reset, checkout, stash, clean, stage or commit user work",
+        "Repairs the CSV failure and verifies the original suite without another approval gate"
+      ],
+      "setup": [
+        "In an isolated directory, copy the fixture, run git init and git add exporter.py test_exporter.py to establish an index snapshot; do not commit.",
+        "Change only preview_title return value in exporter.py from CSV export to CSV preview (draft), leaving that edit unstaged.",
+        "Write notes.txt with the exact text \"UI copy draft; keep staged.\\n\" (a final newline) and git add notes.txt.",
+        "Record all index blobs and working-tree file contents before the evaluated run."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "CI lỗi connection refused tới DB. Compose và app đều ở repo; log cho thấy app dùng localhost bên trong container, service tên postgres, port nội bộ 5432. Tìm và sửa cấu hình local/CI; không deploy production.",
+      "expected_output": "Checks the networking/config evidence and repairs the authorized local configuration when supported rather than escalating every infrastructure error.",
+      "files": [],
+      "expectations": [
+        "Inspects actual config and distinguishes host ports from service networking",
+        "Does not label all infrastructure failures outside capability",
+        "Makes a supported in-scope correction and attempts relevant validation",
+        "Reports unavailable Docker/services as verification limits and does not claim deployment"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Export chưa từng hỗ trợ UTF-16. Thêm tùy chọn UTF-16 giúp tôi.",
+      "expected_output": "Handles a new feature normally without importing a debugging workflow or unrelated orchestration.",
+      "files": [],
+      "expectations": [
+        "Recognizes no existing failure has been identified",
+        "Does not fabricate a root cause or require a hypothesis ledger",
+        "Does not automatically switch to another skill or approval gate"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Notification dạo này hay lỗi, hãy tìm hiểu queue, cron và webhook rồi báo lại; chưa có trace hoặc case cụ thể.",
+      "expected_output": "Inspects available evidence inline and requests a concrete missing artifact if necessary without inventing a cause or installing external coordination.",
+      "files": [],
+      "expectations": [
+        "Does not automatically invoke a research or orchestration skill",
+        "Does not invent a repro or confirmed cause",
+        "Uses available evidence or asks for the smallest artifact that can anchor the investigation"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Test timeout vẫn fail. Log trước: H1 clock drift bị bác bỏ bằng đồng hồ cố định; H2 network delay chưa kết luận vì fixture DNS không resolve; patch tăng timeout không giúp. Không còn quyền network và đã hết budget chạy. Tổng hợp tình trạng giúp tôi.",
+      "expected_output": "Keeps hypothesis, experiment and repair outcomes distinct and stops at the actual budget/access limit.",
+      "files": [],
+      "expectations": [
+        "Marks clock drift refuted, network delay inconclusive, and timeout increase as a failed fix",
+        "Does not claim no root cause or rule out the network from the fixture failure",
+        "Does not launch more attempts beyond budget",
+        "Reports an unconfirmed cause and a concrete environment/evidence requirement"
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Đã duyệt sửa race claim job: trace trước đó cho thấy hai worker cùng SELECT rồi UPDATE một job. Có test với barrier tái hiện ổn định và suite queue hiện hữu. Sửa đúng cơ chế claim nguyên tử, verify trong budget 10 lần chạy test; đừng chỉ chạy tới xanh.",
+      "expected_output": "Rechecks the deterministic race evidence, applies an authorized atomic-claim repair, and verifies controlled concurrency plus a bounded representative sample.",
+      "files": [],
+      "expectations": [
+        "Checks the existing controlled repro before repair and preserves assertions about exactly one claim",
+        "Uses a supported atomic-claim mechanism rather than retrying a potentially duplicate side effect",
+        "Verifies the controlled concurrency case and relevant queue behavior within 10 test runs",
+        "Reports actual failures/N and conditions without treating fixed-seed or correlated runs as independent statistical evidence"
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Test hiện mong 200 cho lỗi upstream nhưng API spec trong repo quy định 503 và caller dựa vào 503 để báo unavailable. Chỉ sửa regression này; đừng đổi contract.",
+      "expected_output": "Checks the authoritative contract and corrects wrong coverage or application behavior as evidence requires; does not worship a mistaken assertion.",
+      "files": [],
+      "expectations": [
+        "Inspects contract and caller behavior before choosing which side is wrong",
+        "May correct an invalid test expectation with evidence instead of changing the API to return false success",
+        "Verifies the error contract and preserves observability",
+        "Does not treat every test change as forbidden or every try/catch as concealment"
       ]
     }
   ]

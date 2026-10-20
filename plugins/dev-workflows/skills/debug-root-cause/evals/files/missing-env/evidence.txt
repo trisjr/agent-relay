@@ -1,0 +1,8 @@
+Production incident, request ID inv-204:
+  File "invoices.py", line 3, in invoice_id
+    return invoice["id"]
+TypeError: 'NoneType' object is not subscriptable
+
+The request payload, lookup implementation, database snapshot, and replay
+environment were not retained. No local integration runner is provided.
+The contract for a missing invoice is not documented in this fixture.

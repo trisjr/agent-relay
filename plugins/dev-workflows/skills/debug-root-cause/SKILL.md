@@ -1,83 +1,56 @@
 ---
 name: debug-root-cause
-description: Debug a concrete, existing failure by evidence instead of guesses — reproduce it, test hypotheses one at a time, report a diagnosis with a proposed fix and wait for the user's approval, then fix only behind a failing test. Use this skill for any actual failure — a red test, a build or CI failure, a runtime error or stack trace, a flaky test, a "worked before, broken now" regression, "test đỏ", "lỗi chỉ fail trên CI", "sao lại lỗi" — before proposing or writing any fix. Skip it for net-new features, refactors without a failure, breadth-first investigation (research-swarm territory), review of a healthy diff, and vendor or infrastructure outages, which you escalate instead.
+description: Investigate or fix a concrete test, build, CI, runtime, or performance failure using evidence and discriminating experiments. Use for regressions, stack traces, flaky tests, "test đỏ", or "lỗi chỉ fail trên CI". Respect diagnosis-only requests; when repair is authorized, carry it through verification. Skip new features and reviews without an existing failure.
 ---
 
 # Debug root cause
 
-Treat debugging as the scientific method applied to one failure. Each speculative fix changes the system before you know what failed and makes the next observation less trustworthy, so keep one agent on one failure, gather evidence depth-first, and record what each experiment taught you. The investigation ends in a diagnosis the user approves; code changes come after.
+Find what causes the observed failure, make only authorized changes, and report what the checks actually establish. Work inline; no subagent or special question tool is required.
 
-## Right-size first
+## Scope and effort
 
-- No existing failure — "export never supported UTF-16; make it work" — is feature work. Handle it normally, without this skill.
-- Broad investigation with no concrete failing artifact goes to `research-swarm`, a healthy diff to `parallel-review`, unclear intended behavior to `clarify-requirements`. When that skill isn't installed, handle it as a single agent.
-- A one-step cause named by the error itself (a typo, a missing import) skips the ledger, Rule 0, and Rule 1: fix it, rerun the failing command, and report the result in a line or two.
-- A failure the evidence already places outside your control — a vendor incident, an infrastructure outage — goes straight to Stop rules & escalation.
-- A concrete performance regression is in scope, with a repeatable benchmark as the repro.
+- **Diagnosis only:** investigate and report evidence, uncertainty, and a proposed next step. Do not apply a repair, even an obvious typo. Keep scratch repros outside the working tree; do not modify tracked code or tests without authorization.
+- **Find and fix:** the request authorizes investigation and repair within its stated scope. Reuse approval from earlier turns. Discovering the cause is not a new approval gate.
+- Ask only for an unresolved decision that materially changes behavior, a public contract, data, risk, or scope, or an action lacking authorization. Prepare the concrete options and finish independent work first. A local fix mandate does not by itself authorize deployment, destructive operations, or production access.
+- If there is no concrete failure yet, inspect available evidence or request the missing artifact. Handle features and healthy-diff reviews normally; do not automatically route to another skill.
+- An obvious cause needs a short check → authorized correction → rerun, not a ledger or formal report. Add detail only when uncertainty, interacting causes, or repeated failed attempts make it useful.
 
-Everything else follows the phases below, with a written ledger proportional to how uncertain the cause is.
+Before changing files, inspect working-tree status and the relevant diff. Preserve pre-existing edits, including edits in the file being debugged. Avoid reset, checkout, stash, or cleanup that moves or discards others' work. Use an isolated scratch copy/worktree for destructive experiments or bisect; history inspection alone is often sufficient.
 
-## Rules
+## Investigate with evidence
 
-- **Rule 0 — No edits before approval.** The user owns the choice of fix, its scope, and any contract it touches, and a confirmed diagnosis often changes what they want. So Phases 1–3 change no production code or committed tests, and Phase 4 ends with a report and a wait unless a Phase 4 Orca fix mandate applies. Investigation aids are fine — a scratch repro kept outside the committed tree, or a local log probe reverted before the report — as long as you list them under Evidence.
-- **Rule 1 — No fix before failing test.** After approval, run a test or automated repro that fails for the reported reason before changing production logic; without it you can't show the fix addressed this bug.
-- **Rule 2 — Never claim "fixed" without verification.** "Fixed" means the original check is green, the related suite passes, and you can state the root cause in one sentence. Short of that, say exactly what is unverified.
-- **Rule 3 — One hypothesis, one experiment, one change.** Write the expected result first and change one variable, so the outcome can be attributed.
-- **Rule 4 — Symptom patches are failure.** A try/catch, retry, or display-side workaround hides the failure without explaining it. Trace through callers to the shared point that produces the wrong behavior and fix it there.
+1. Run the reported failing path when feasible; record the command, input, environment, and actual result. Distinguish the reported failure from a broken test setup. Inspect relevant traces, callers, diffs, and boundaries to narrow where expected behavior first diverges.
+2. Choose a plausible cause and a small experiment that distinguishes it from alternatives. State the predicted observation before running it; vary one factor when practical. Several edits in one causal repair are fine, but do not bundle unrelated guesses into one experiment.
+3. Update the explanation from the result. Use [references/hypothesis-ledger.md](references/hypothesis-ledger.md) for uncertain or repeated investigations, and for flaky-test sampling. Keep the ledger in chat or scratch space unless a repo convention requires a file.
 
-## Phase 1 — Reproduce & isolate
+Confirm a cause only when evidence supports the causal mechanism and accounts for the relevant failures and nearby passes. A suspicious commit, a green rerun, or a failed patch alone does not establish a cause.
 
-Run the exact failing command, record what you ran and saw, and narrow it to the smallest case that still fails. For an intermittent failure, a passing rerun doesn't erase it: repeat about 3/p times for failure rate p (≈15 for a 1-in-5 flake, never fewer than five), report failures/N, and pin seed, time, and ordering until it fails reliably.
+If reproduction is unavailable, use the evidence you have and label hypotheses as such. Logs or a deterministic local repro may still establish a mechanism; otherwise report the cause as **unconfirmed**. Missing services, credentials, or tools are verification limits, not proof about application behavior. Propose the smallest missing input, environment check, or privacy-safe instrumentation. Prepare or apply supported local changes when authorized; deployment and production probes still follow their own authorization.
 
-If you can't reproduce, decide what data would distinguish the hypotheses and propose narrow instrumentation at the suspected boundary, with sensitive values excluded. Shipping it to the failing environment is an edit, so it goes through the Phase 4 report.
+Infrastructure and dependency failures are not automatically outside scope. Check whether the fault is in configuration, versions, or code you can repair. Escalate only the part requiring unavailable access, an external owner, or an unapproved change.
 
-## Phase 2 — Gather evidence
+## Repair and verify
 
-Collect observations that distinguish competing explanations, including what still works. Redact secrets from anything you share.
+- Prefer an existing failing test or repro that exercises the actual bug; run it before and after the change when feasible. Add a regression test when coverage is missing and automation is practical. Do not duplicate coverage or require a new test for every fix.
+- Fix the evidenced mechanism with the smallest coherent change. Preserve the intended contract; do not weaken assertions, skip the failing path, or simulate success to obtain green tests. A test may itself be wrong, but changing it needs evidence from the intended behavior.
+- Retry, timeout, error handling, or a fallback can be a valid repair or **mitigation**. Check bounded cost, idempotency, terminal failure behavior, and visibility. Label containment as mitigation when the underlying cause remains; explain residual risk and how to detect recurrence. Do not silently turn failure into success.
+- Rerun the original check and relevant nearby tests, scaled to the affected behavior. For flaky failures, prefer controlled timing/seed/order that exposes the mechanism, then a bounded representative sample. One green run is insufficient; record all failures/N, conditions, budget, and limits. See the reference for sampling assumptions; no fixed pass count proves absence of a flake.
+- If only manual checking is possible, describe the exact steps and observed result. If checks cannot run, say **changed, verification blocked**, with the blocker and next command. Separate cause confidence from verification status; never claim results you did not observe.
 
-## Phase 3 — Hypothesis ledger
+## Reassess and stop
 
-Track testable causes and their experiments in [the hypothesis ledger](references/hypothesis-ledger.md). A root cause is confirmed when it explains every relevant observation and non-observation: why this case fails, why nearby cases pass, why the environment or timing matters. A correlated commit is evidence, not yet a cause.
+Keep three things distinct, including attempts from earlier turns or the user:
 
-## Phase 4 — Diagnosis report & gate
+- **Refuted hypothesis:** a valid discriminating experiment contradicted its prediction.
+- **Inconclusive experiment:** setup failed, evidence was insufficient, or the check could not distinguish explanations. It does not refute the hypothesis.
+- **Failed fix:** the proposed repair did not resolve the original failure or introduced another. Reassess the mechanism and the implementation separately.
 
-When a cause is confirmed, a stop rule or escalation applies, or Phase 1 ended without a repro, post this report in chat, suggest the next step, and wait for the user:
+After repeated failures, pause patching and review the evidence and assumptions; do not simply stack another guess. Continue if a new observation supports a distinct, affordable experiment. There is no universal three-attempt cutoff. For expensive or repetitive work, set a time/run/cost budget before starting and honor explicit user limits. Stop the affected path when the budget is exhausted, experiments cease adding information, or a missing decision/access blocks progress. Report what remains unknown and the next useful step; an unknown cause is a valid outcome.
 
-```text
-Symptom: <what failed, where, and the repro command>
-Root cause: <one sentence explaining why it failed and nearby cases did not>
-Evidence: <key observations, the ledger outcome that confirmed it, scratch repros/probes used>
-Proposed fix: <where, the minimal change, callers affected>
-Proposed red test: <the test or repro script that should fail for this reason>
-Risks / unverified: <what the fix may affect or what could not be checked>
-```
+## Questions and handoff
 
-Without a repro, Root cause reads `unconfirmed` plus the leading hypotheses, Proposed fix is the instrumentation plan, and Proposed red test is what the collected data would decide. If the cause is clear but the correct behavior isn't, ask in the report (or use `clarify-requirements`) rather than choosing one. Keep the report in chat unless the user asks for a file or the repository has a convention for one.
+Use a question tool only when available and allowed in the current mode; follow its schema. If it is asynchronous, a returned call or preselected option is not a reply. If no usable tool exists but chat is interactive, ask in plain text and end the turn before dependent work. Do not retry a denied tool. Timeout, empty answers, and missing tools grant no approval and do not establish headless mode.
 
-A dispatched Orca worker whose spec orders a fix treats the spec as approval and continues to Phase 5. Without a fix mandate, a headless run or worker ends with this report as its final status block.
+Only an explicit caller/runtime indication of no reply channel makes the run non-interactive. Then finish authorized, independent work and report unresolved required decisions with affected actions **BLOCKED**; do not wait or choose a high-impact default. A headless run with a clear repair mandate can still fix and verify.
 
-## Phase 5 — Fix & regression
-
-After approval, go **red** (failing because of the bug, not the test setup), make the approved change and nothing beyond it, then go **green** and run the related suite. For a flake, green means about 20 consecutive passes for a 1-in-5 flake (0.8²⁰ ≈ 1%); report N. If the fix fails, count a failed fix and return to Phase 3 rather than stacking another patch.
-
-Confirm briefly, without rewriting the diagnosis:
-
-```text
-Fixed: <root cause in one sentence>
-Red → green: <commands, and the test now guarding it>
-Related suite: <command and result>
-```
-
-If only manual verification was possible, say "unverified by automated test" and what you checked.
-
-## Stop rules & escalation
-
-Count refuted hypotheses and failed fixes separately, including attempts the user or an earlier session already made. At three of either, stop before a fourth: summarize the ledger, question your model of the system or its architecture, and ask for direction — more attempts on a wrong model only add noise.
-
-Escalate rather than force a fix when the cause is an unpatchable dependency bug; infrastructure, vendor, quota, DNS, or CI-runner trouble; a repair that needs an unapproved public-contract change or data migration; or a race outside your control. Mark the report `outside-our-control` and carry the evidence, ledger outcomes, remaining uncertainty, and a next step such as a controlled workaround plus an upstream ticket. Faking a success to make tests pass hides the outage; it is not a workaround.
-
-"No root cause" is a conclusion only after the ledger rules out software you control. Then propose containment, not a fix: a bounded timeout or retry plus a targeted log, with a way to tell whether the failure recurs.
-
-With no one to answer — a headless run or subagent — a stop or escalation ends in a final status block: ledger summary, evidence, unresolved cause, and proposal.
-
-As a dispatched Orca worker (a live injected preamble with executable, handle, capability, Task ID, and Dispatch ID), the coordinator answers instead, and a local question UI would go unseen. Send the same status block as a stop question through the preamble's `ask` command copied verbatim (on timeout, resume the same message ID rather than asking again), or as an `escalation` message built exactly as `<preamble executable> skills get orchestration --reference references/worker-contract.md` shows. Follow the coordinator's reply; if the work ends unresolved, send `worker_done` with `--outcome failed`, not `succeeded`.
+Report in proportion to the task: observed failure and cause (or uncertainty), evidence, change or proposal, actual verification, and remaining limits/next step. Keep it in chat by default. A simple verified fix can be a few lines; diagnosis-only work ends with findings, while authorized repair continues through verification.
