@@ -4,42 +4,44 @@ Three independent rule sets follow, each with its own scope. Apply only the sect
 
 ## clarify-requirements
 
-Applies only to a request that is vague, underspecified, or high-stakes **before building or planning** — where two plausible readings would lead to materially different work, data loss, or a changed public contract. Ignore it for well-specified tasks, changes whose diff fits in one sentence, questions the code or docs already answer, and pure explanations.
+Applies to material ambiguities **before building or planning** — where competing answers change the main deliverable, scope, permissions, data handling, or a public contract. Ignore it for fully specified tasks, questions the code or docs already answer, and pure explanations. Judge ambiguity and impact, not request or diff length.
 
 - If `activate_skill` is available, activate the `clarify-requirements` skill and follow it.
-- If only `ask_user` is available: explore the repo first, then ask at most 3 questions — each self-contained, one decision, 2–3 options with the recommended option first and labeled `(Recommended)` — and log low-risk defaults as assumptions. If an answer is vague or conflicts with another answer or the repo, ask another, narrower round with fresh options; stop after 3 rounds.
-- If `ask_user` is not available, you are headless (`-p`, CI, no TTY): nobody can answer, so never wait and never retry a denied question.
-  - Reversible, low-risk gaps → apply the recommended defaults, continue, and end the output with an `Assumptions (headless)` list.
-  - Blocking or irreversible gaps (deleting data, migrations, public API, cost, security) → stop before acting and make this question block your final output so the caller can re-run with answers:
+- Otherwise explore the repo first. Ask at most 3 questions per round, each with context and required/optional status in the user's language. Offer 2–3 options with consequences and the recommended option first labeled `(Recommended)`, or ask for free text when no sensible choices exist. Narrow vague or conflicting answers with fresh options; stop after 3 rounds.
+- Required decisions materially change the main deliverable or have high impact (safety, privacy, money, permissions, destructive actions, public contracts). Until answered or explicitly delegated within stated bounds, keep affected actions `BLOCKED` and continue independent, authorized work. Only reversible, low-impact choices may default as logged assumptions. Skipped, empty, timed-out answers and "done"/"proceed" alone leave required decisions open; reaching 3 rounds does not change that.
+- Use an available question tool when the mode permits it, following its schema. If it is asynchronous, a returned call or preselected option is not an answer; continue only independent work while awaiting a reply. If no usable tool exists but chat remains available, print a numbered block and end the turn before dependent work. Do not retry a denied tool. A missing tool, timeout, or empty answer alone does not establish headless mode.
+- Only when the caller or runtime explicitly establishes a non-interactive run with no reply channel, never wait: apply optional defaults and list `Assumptions (headless)`; report required decisions and affected actions as `BLOCKED` in the final output. Use any caller-supplied output schema. A required-question block can be:
 
 ```text
-[clarify] <N> decisions before I start. Re-run with answers, e.g. "1a 2b". Anything skipped uses its default.
+[clarify] <N> required decisions remain. Re-run with answers, e.g. "1a 2b", or free text. Unanswered required decisions stay blocked.
 
-1. [Header] <self-contained question, with one line of context>
+1. [Header — required] <self-contained question, with one line of context>
    a) <option> (Recommended) — <consequence>
    b) <option> — <consequence>
-   default: a
+   if unanswered: BLOCKED — <affected action>; no automatic default
 ```
+
+When ready, hand off a short brief with only decision-bearing fields: Goal / user, Scope, Decisions, Assumptions, Acceptance (observable checks including the key failure path), Constraints, Approach (inline by default), Open. If required decisions remain, label it a draft and name the blocked actions. Reuse prior answers and approvals; ask only for missing authorization or a material scope change after independent preparation, not because a task is large. Continue authorized work once ready; a clarification-only request ends with the brief.
 
 Never ask what the repo already answers, and never present a default as if the user approved it.
 
 ## debug-root-cause
 
-Apply to one concrete, existing test, build, CI, or runtime failure; keep one agent on the failure and investigate depth-first.
-Ignore for new features, healthy-diff review, vague requirements, and open-ended research; route those to ordinary work, `parallel-review`, `clarify-requirements`, or `research-swarm` as appropriate, or handle them as a single agent when that skill is missing.
+Work inline on a concrete test, build, CI, runtime, or performance failure, including regressions and flakes. No subagent or special question tool is required. Handle features and healthy-diff review normally; do not automatically route to another skill.
 
-- If `activate_skill` is available, activate the `debug-root-cause` skill and follow it.
-- Right-size first: an obvious error can take minutes; uncertain failures need recorded evidence and a hypothesis ledger.
-- Phase 1 — Reproduce & isolate: run the failing path, minimize it, or propose targeted boundary instrumentation when it cannot be reproduced.
-- Phase 2 — Gather evidence: inspect traces backward, recent changes, environment, dependencies, and component boundaries before changing behavior.
-- Phase 3 — Hypothesis ledger: rank testable causes; predict and run the smallest one-variable experiment, then record `confirmed`, `refuted`, or `inconclusive`.
-- Phase 4 — Diagnosis report & gate: post a short report in chat (Symptom, Root cause, Evidence, Proposed fix, Proposed red test, Risks) and wait for the user's approval before editing; skip the wait only for a one-step-obvious typo or missing import, or when a dispatched worker's spec orders the fix. Scratch repros outside the committed tree and local probes reverted before the report are allowed; list them under Evidence.
-- Phase 5 — Fix & regression: after approval, prove the bug with a failing test or automated repro script, repair the root cause, then run it green and run the related suite; flag `unverified by automated test` if only manual verification was possible.
-- Rule 1 — No fix before failing test: do not change production logic before a red check, except a one-step-obvious error named by its message; rerun that command afterward.
-- Rule 2 — Never claim "fixed" without verification: require the original check and related suite green, plus a one-sentence root cause.
-- Stop at 3 refuted hypotheses or 3 failed fixes, counting attempts the user already made: summarize the ledger and ask the user or question the architecture; never silently try a fourth.
-- Escalate without force-fixing unpatchable dependency bugs; infra, vendor, quota, DNS, or CI-runner trouble; unapproved public-contract changes or data migrations; or races outside your control.
-- In a headless run, a stop, escalation, or diagnosis without a fix mandate ends with a final status block containing the ledger summary, evidence, unresolved cause, and proposal.
+- If `activate_skill` is available and permitted, activate `debug-root-cause`; otherwise follow this section.
+- Respect scope: diagnosis-only means findings and proposals without repairs, even for a typo; keep scratch repros outside the tree and tracked files unchanged. A find-and-fix request or prior approval authorizes repair within scope; discovering the cause does not require approval again. Ask only about material unresolved decisions or actions beyond authorization.
+- Inspect status and relevant diffs before edits. Preserve pre-existing changes, including in the same file; isolate bisect or destructive experiments instead of resetting, stashing, or checking out over them.
+- Keep effort proportional: obvious cause → check, authorized correction, rerun. Use a ledger only for uncertain or repeated investigations.
+- Reproduce when feasible; record actual input, command, environment, and result. Trace the failure through callers and boundaries; compare recent changes and relevant environment differences. Before an experiment, predict an observation that distinguishes explanations; vary one factor when practical.
+- A refuted hypothesis needs contradictory evidence from a valid experiment. A failed setup or non-discriminating result is inconclusive. A failed fix is a separate outcome, not automatic refutation. A suspicious commit or green rerun alone does not confirm a cause.
+- Missing repro or environment means limited evidence: state unconfirmed causes and blocked checks; propose the smallest missing input or privacy-safe instrumentation. Supported, authorized local repairs may proceed with verification limits. Check repairable config/code before escalating infrastructure or dependency trouble; deployment and production probes need their own authorization.
+- Prefer an existing red check, then rerun after the causal repair and run relevant nearby tests. Add coverage only when missing and practical. Do not weaken assertions, skip failing paths, silently change contracts, or fake success. A test can be wrong; changing it requires evidence from the intended behavior.
+- Bounded retries, timeouts, error handling, and fallbacks can be valid repairs or mitigations: check idempotency, cost, visible terminal failures, residual risk, and recurrence detection. Label mitigation when the underlying cause remains.
+- For flakes, prefer controlled timing/seed/order, then a bounded representative sample. Set a run/time/cost budget and report all failures/N and conditions. For independent runs at stable rate `p`, no failures in `n` has probability `(1-p)^n`; `3/p` only approximates 95% detection for small `p`. Unknown/correlated rates limit that estimate; no fixed green streak proves a fix.
+- After repeated failed attempts, including earlier ones, pause patching and reassess. Continue only with new evidence and a distinct affordable experiment. Stop the affected path at budget exhaustion, no information gain, missing access, or a required decision; there is no three-attempt cutoff.
+- Use an available, permitted question tool or interactive plain text. Async return/preselection, timeout, empty answers, and missing tools are not approval or proof of headless mode. Do not retry a denied tool. Only explicit no-reply-channel context means headless: complete authorized independent work, report required decisions and affected actions as BLOCKED, and do not wait. A clear repair mandate still permits a headless fix.
+- Report cause confidence separately from verification: actual checks and results, manual steps if applicable, or "changed, verification blocked" with the blocker and next step. Diagnosis-only ends with findings; authorized repair continues through verification. Keep reports short unless complexity warrants detail.
 
 ## compound-retros
 

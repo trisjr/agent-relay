@@ -6,13 +6,13 @@ Plugin gom toàn bộ workflow chuẩn cho dev làm việc cùng coding agent v�
 
 | Nhóm | Skill | Dùng khi | Làm gì |
 | --- | --- | --- | --- |
-| Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu mơ hồ, thiếu thông tin hoặc rủi ro cao trước khi implement/plan: "build X", "làm tính năng", "làm rõ yêu cầu", PRD/spec sẽ feed vào plan hay DAG | Right-size → tìm hiểu repo (chỉ fan-out subagent rẻ khi còn ≥2 câu hỏi độc lập ở vùng tách biệt) → quét gap → hỏi tối đa 3 câu mỗi vòng, hỏi lại hẹp hơn khi câu trả lời còn mơ hồ, tối đa 3 vòng → xuất requirements brief ngắn, chỉ gồm các trường mang quyết định |
+| Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu còn nhiều cách hiểu ảnh hưởng scope, quyền, dữ liệu hoặc public contract trước khi implement/plan; "làm rõ yêu cầu", feature hoặc spec chưa đủ rõ | Tra repo trước → phân biệt câu hỏi bắt buộc và lựa chọn có thể mặc định → tối đa 3 câu mỗi vòng, 3 vòng → brief ngắn hoặc draft ghi rõ phần bị chặn. Mặc định làm inline; chỉ dùng subagent có sẵn khi cần tra nhiều câu hỏi độc lập |
 | Điều phối | `orca-router` | Mọi request chạm vào multi-agent Orca (điều phối, handoff, theo dõi worker, DAG) | Phân loại request, chọn đúng hệ thống (orchestration / orca-cli / worker / agent thường), load guide từ binary, rẽ vào workflow có sẵn |
 | Điều phối | `research-swarm` | Câu hỏi nghiên cứu/phân tích rộng, so sánh nhiều phương án, khảo sát codebase theo nhiều hướng | Fan-out worker theo góc độc lập, mỗi worker ghi findings ra file; coordinator tổng hợp từ file |
 | Điều phối | `parallel-review` | Review diff/branch/PR lớn hoặc rủi ro trước merge, review bảo mật | Fan-out reviewer theo "lens"; mỗi reviewer một context sạch, review-only; coordinator dedupe findings theo severity |
 | Điều phối | `parallel-scopes` | Một task nhiều phần độc lập (FE/BE/docs/test) muốn chạy song song bằng subagent thường, không cần Orca | Chốt contract trước → bảng scope với ownership file không chồng → spawn cả wave trong một lượt (một working tree, worktree chỉ khi đụng file chung) → tích hợp và verify ở main session |
 | Điều phối | `dag-build` | Build tính năng nhiều module, migration xuyên dịch vụ, cần duyệt spec trước | Clarify → plan → gate duyệt spec → task DAG → wave song song → integrate + verify |
-| Debug | `debug-root-cause` | Một test, build, CI hoặc runtime path đã fail, kể cả flaky hoặc chỉ fail trên CI | Reproduce & isolate → gather evidence → hypothesis ledger → diagnosis report (chờ user duyệt) → fix sau test đỏ |
+| Debug | `debug-root-cause` | Một test, build, CI, runtime hoặc benchmark đã fail, kể cả flaky hoặc chỉ fail trên CI | Thu bằng chứng → kiểm tra giả thuyết → chẩn đoán hoặc sửa và verify theo phạm vi đã giao; ledger chỉ khi cần |
 | Bài học | `retro-capture` | Sau việc có bài học khó thấy trong code, test hoặc docs; khi người dùng sửa agent hoặc yêu cầu ghi nhớ | Cân giá trị lâu dài, ghi một solution note có cấu trúc, cập nhật note cũ nếu trùng |
 | Bài học | `retro-recall` | Trước việc không tầm thường trong vùng đã có note, hoặc khi người dùng yêu cầu dọn kho | Lọc theo frontmatter, đọc vài note liên quan, áp dụng và dẫn nguồn; phân loại note khi dọn kho |
 
@@ -21,16 +21,18 @@ Mỗi skill kèm `evals/evals.json` (bộ prompt mẫu kèm kỳ vọng hành vi
 ## Các skill phối hợp với nhau
 
 - `dag-build` làm rõ yêu cầu bằng `clarify-requirements` ngay trong conversation của coordinator, rồi viết spec từ brief; worker nhận việc sửa lỗi cụ thể được dặn theo `debug-root-cause`.
-- `debug-root-cause` chuyển câu hỏi nghiên cứu rộng sang `research-swarm`, review diff sang `parallel-review`, yêu cầu mơ hồ sang `clarify-requirements`.
+- `debug-root-cause` dùng độc lập trong một phiên agent; không tự chuyển sang skill khác. Việc chưa có lỗi cụ thể được xử lý theo yêu cầu gốc hoặc bổ sung bằng chứng trước.
 - `retro-capture` và `retro-recall` khép vòng: bài học từ debug hoặc quyết định khó được ghi lại, rồi được tra lại trước việc tương tự.
 
 ## Nguyên tắc chính theo nhóm
 
 ### Làm rõ yêu cầu
 
-- Right-size trước: yêu cầu đã rõ hoặc tra được trong repo thì không hỏi.
-- Fact thì tự tìm, preference mới hỏi; cân nhắc theo impact, uncertainty và irreversibility; hành động không đảo ngược mà thiếu quyết định thì block.
-- Kênh hỏi chọn theo harness: lệnh `ask` của preamble (worker Orca), `AskUserQuestion` (Claude Code, Kimi, Qoder CLI), `request_user_input` (Codex Plan mode), `ask_user` (Gemini), tool hỏi built-in (Cursor, Qoder IDE), block plain-text đánh số (interactive không có tool), hoặc default + assumptions (headless).
+- Right-size theo độ mơ hồ và tác động: yêu cầu đã rõ hoặc tra được trong repo thì không hỏi; một câu ngắn vẫn có thể chứa quyết định rủi ro cao.
+- Fact thì tự tìm, preference mới hỏi. Chỉ mặc định lựa chọn ít rủi ro và đảo ngược được; câu hỏi bắt buộc chưa trả lời giữ phần việc liên quan ở `BLOCKED`, kể cả khi user bỏ qua câu hỏi hoặc đã hết 3 vòng.
+- Skill dùng độc lập, không cần cài công cụ điều phối. Tra cứu inline là mặc định; subagent có sẵn chỉ dùng khi được phép và có nhiều câu hỏi factual độc lập.
+- Chọn kênh hỏi theo công cụ và mode thực sự khả dụng, tuân thủ schema của tool. Không có tool phù hợp nhưng còn chat thì dùng block đánh số; chỉ coi là headless khi caller/runtime xác nhận không có kênh trả lời. Timeout hoặc câu trả lời rỗng không phải phê duyệt.
+- Tái sử dụng câu trả lời và phê duyệt đã có; không xin duyệt lại chỉ vì task lớn. Nếu chỉ được yêu cầu làm rõ thì dừng ở brief; nếu đã được giao triển khai thì tiếp tục phần đủ điều kiện.
 
 ### Điều phối với Orca
 
@@ -41,8 +43,12 @@ Mỗi skill kèm `evals/evals.json` (bộ prompt mẫu kèm kỳ vọng hành vi
 
 ### Debug theo bằng chứng
 
-- **Iron Rules:** không fix trước khi có test đỏ; không báo "fixed" khi chưa verify; một giả thuyết, một thí nghiệm, một thay đổi; vá triệu chứng là thất bại.
-- Dừng sau 3 giả thuyết bị bác bỏ hoặc 3 lần fix hỏng; escalate khi gặp lỗi hạ tầng/vendor, dependency bug không patch được, hoặc fix cần đổi public contract chưa duyệt.
+- Chỉ yêu cầu chẩn đoán thì không sửa, kể cả typo. Đã giao tìm và sửa hoặc đã duyệt ở lượt trước thì tiếp tục trong phạm vi đó; chỉ hỏi khi thiếu quyết định quan trọng hoặc quyền thực hiện.
+- Lỗi hiển nhiên xử lý gọn; lỗi chưa rõ mới dùng ledger. Tách giả thuyết bị bác bỏ, thí nghiệm chưa kết luận và bản sửa thất bại; nhiều lần thất bại thì xét lại mô hình, tiếp tục khi có bằng chứng mới trong ngân sách, không dừng máy móc ở lần thứ ba.
+- Ưu tiên test/repro hiện hữu; thêm coverage khi còn thiếu và thực tế. Giữ nguyên thay đổi sẵn có trong working tree; không sửa assertion, bỏ qua đường lỗi hay giả lập thành công để lấy kết quả xanh.
+- Flaky cần repro có kiểm soát và mẫu chạy phù hợp chi phí, ghi toàn bộ failures/N. `3/p` phụ thuộc giả định độc lập và tỷ lệ ổn định; một lần xanh hay chuỗi xanh cố định không chứng minh đã hết lỗi.
+- Retry, timeout và fallback có thể là sửa đúng hoặc mitigation có chủ đích khi có giới hạn, giữ contract và quan sát được lỗi. Kiểm tra cấu hình/code có thể sửa trước khi kết luận lỗi hạ tầng cần bên ngoài xử lý.
+- Báo đúng bằng chứng và giới hạn khi không tái hiện được, thiếu môi trường hoặc chỉ verify thủ công. Không có tool hỏi thì dùng chat; chỉ coi là headless khi xác nhận không có kênh trả lời. Timeout/câu trả lời rỗng không cấp quyền; headless vẫn sửa được nếu đã có chỉ định rõ.
 
 ### Ghi và tái dùng bài học
 
