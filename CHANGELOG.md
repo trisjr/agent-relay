@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.25.2] - 2026-10-20
+
+### Plugins
+
+- `dev-workflows`: 0.4.1 → 0.4.2
+
+### Changed
+
+- **dev-workflows**: `debug-root-cause` mặc định chỉ tìm root cause rồi kết thúc bằng diagnosis report (symptom, cause confirmed/unconfirmed, evidence, proposed fix, verification plan, open item) và hỏi user có áp dụng fix không, kể cả lỗi hiển nhiên như typo. Chỉ sửa và verify khi request, lượt trước hoặc spec giao việc đã yêu cầu sửa, và chỉ trong phạm vi đó. Fix vượt phạm vi hoặc đụng contract thì dừng ở report và nêu quyết định cần user chốt. Đồng bộ rule Cursor, hướng dẫn Gemini và README; thêm eval cho request không kèm lệnh sửa và lệnh sửa bị giới hạn phạm vi.
+
 ## [0.25.1] - 2026-10-20
 
 ### Plugins
@@ -491,7 +501,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.25.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.25.2...HEAD
+[0.25.2]: https://github.com/trisjr/agent-relay/compare/v0.25.1...v0.25.2
 [0.25.1]: https://github.com/trisjr/agent-relay/compare/v0.25.0...v0.25.1
 [0.25.0]: https://github.com/trisjr/agent-relay/compare/v0.24.0...v0.25.0
 [0.24.0]: https://github.com/trisjr/agent-relay/compare/v0.23.2...v0.24.0
