@@ -6,7 +6,7 @@ Plugin gom toàn bộ workflow chuẩn cho dev làm việc cùng coding agent v�
 
 | Nhóm | Skill | Dùng khi | Làm gì |
 | --- | --- | --- | --- |
-| Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu mơ hồ, thiếu thông tin hoặc rủi ro cao trước khi implement/plan: "build X", "làm tính năng", "làm rõ yêu cầu", PRD/spec sẽ feed vào plan hay DAG | Right-size → tìm hiểu repo → quét gap → hỏi tối đa 3 câu mỗi vòng (mỗi câu có option đề xuất) → xuất requirements brief ngắn, chỉ gồm các trường mang quyết định |
+| Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu mơ hồ, thiếu thông tin hoặc rủi ro cao trước khi implement/plan: "build X", "làm tính năng", "làm rõ yêu cầu", PRD/spec sẽ feed vào plan hay DAG | Right-size → tìm hiểu repo (chỉ fan-out subagent rẻ khi còn ≥2 câu hỏi độc lập ở vùng tách biệt) → quét gap → hỏi tối đa 3 câu mỗi vòng, hỏi lại hẹp hơn khi câu trả lời còn mơ hồ, tối đa 3 vòng → xuất requirements brief ngắn, chỉ gồm các trường mang quyết định |
 | Điều phối | `orca-router` | Mọi request chạm vào multi-agent Orca (điều phối, handoff, theo dõi worker, DAG) | Phân loại request, chọn đúng hệ thống (orchestration / orca-cli / worker / agent thường), load guide từ binary, rẽ vào workflow có sẵn |
 | Điều phối | `research-swarm` | Câu hỏi nghiên cứu/phân tích rộng, so sánh nhiều phương án, khảo sát codebase theo nhiều hướng | Fan-out worker theo góc độc lập, mỗi worker ghi findings ra file; coordinator tổng hợp từ file |
 | Điều phối | `parallel-review` | Review diff/branch/PR lớn hoặc rủi ro trước merge, review bảo mật | Fan-out reviewer theo "lens"; mỗi reviewer một context sạch, review-only; coordinator dedupe findings theo severity |

@@ -22,7 +22,8 @@
       "expectations": [
         "Asks no clarifying questions",
         "Updates or names all five manifest files for dev-workflows",
-        "Produces no requirements brief"
+        "Produces no requirements brief",
+        "Spawns no explore subagent"
       ]
     },
     {
@@ -47,7 +48,8 @@
         "Does not ask where the log lives or what format it uses",
         "Asks at most two questions, or none with logged assumptions",
         "Produces a requirements brief whose Acceptance is a checklist rather than Given/When/Then",
-        "The brief includes an Approach line recommending inline work"
+        "The brief includes an Approach line recommending inline work",
+        "Spawns no explore subagent: the log shape is one area settled by reading inline"
       ]
     },
     {
@@ -59,6 +61,33 @@
         "Answers from plugins/dev-workflows/skills/dag-build/SKILL.md",
         "Asks no clarifying questions",
         "Produces no assumptions list or requirements brief"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "anh muốn marketplace hỗ trợ thêm một harness mới là Windsurf cho tất cả plugin, làm rõ yêu cầu giúp anh trước khi làm",
+      "expected_output": "Starts with a few targeted searches, finds that several independent factual questions remain in separate areas (how each existing harness is wired into plugin manifests, how scripts/new-plugin.sh and scripts/validate.sh enumerate harnesses, how the marketplace files register plugins, how hooks/MCP config reference plugin-root variables), and fans them out in parallel to read-only explore subagents on a cheap tier, one question each, at most 4. Subagents return file:line evidence, not decisions. The main agent re-opens only the evidence that decides what to ask, then asks at most 3 preference questions (e.g. which plugin features must work on Windsurf, whether to add a sixth manifest) with a recommended option first, in Vietnamese. Mentions no Orca commands.",
+      "files": [],
+      "expectations": [
+        "Runs a few targeted searches before spawning anything",
+        "Spawns between 2 and 4 read-only explore subagents in parallel, each with a single factual question",
+        "Specifies a cheap model tier (e.g. haiku or the Explore agent) with low effort for those subagents",
+        "Asks the user questions from the main conversation, not from a subagent",
+        "Asks at most 3 questions in the first round, each with the first option labeled (Recommended)",
+        "Does not mention or run any orca command"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Bối cảnh: em đã hỏi anh 'Plugin quản lý secret lưu secret ở đâu? a) OS keychain (Recommended) b) file .env trên từng máy, đã gitignore' và anh trả lời: 'tuỳ, chỗ nào cũng được, nhưng phải share được cho cả team'. Tiếp tục làm rõ yêu cầu.",
+      "expected_output": "Recognizes the answer as vague and in conflict with both original options (an OS keychain and a gitignored per-machine .env are each local to one machine and cannot be shared with a team), so the stop condition fails. Asks a second, narrower round that names the answer it follows up and offers fresh options about how the team shares secrets (e.g. a team secret manager such as 1Password or Vault, an encrypted file committed to the repo, or per-member keychains seeded from a shared source) with a recommended option first, instead of repeating the original question. Does not exceed 3 questions, writes in Vietnamese, and produces no requirements brief until the secret-sharing decision is settled.",
+      "files": [],
+      "expectations": [
+        "Identifies that neither original option (keychain, gitignored per-machine .env) can be shared with a team",
+        "Asks a follow-up round rather than defaulting the storage decision",
+        "The follow-up offers new options instead of repeating the original question",
+        "Asks at most 3 questions in the round, with the first option labeled (Recommended)",
+        "Produces no requirements brief before the storage decision is settled"
       ]
     }
   ]
