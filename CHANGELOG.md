@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-10-20
+
+### Plugins
+
+- `dev-workflows`: 0.3.2 → 0.4.0
+
+### Added
+
+- **dev-workflows**: skill `clarify-requirements` giờ chỉ fan-out tối đa 4 subagent đọc-only (tier rẻ) khi còn nhiều câu hỏi factual độc lập ở các vùng tách biệt, mỗi subagent trả về evidence dạng `file:line`; còn lại explore inline. Khi câu trả lời còn mơ hồ hoặc mâu thuẫn với repo, skill hỏi lại một vòng hẹp hơn với option mới, tối đa 3 vòng. Thêm `references/channels.md` mô tả cách hỏi theo từng harness (Claude Code, Kimi, Qoder, Codex, Gemini, Cursor) và cách xử lý khi chạy headless; rule Cursor và `gemini-context.md` được cập nhật tương ứng.
+
 ## [0.24.0] - 2026-10-19
 
 ### Plugins
@@ -465,7 +475,9 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.23.2...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.25.0...HEAD
+[0.25.0]: https://github.com/trisjr/agent-relay/compare/v0.24.0...v0.25.0
+[0.24.0]: https://github.com/trisjr/agent-relay/compare/v0.23.2...v0.24.0
 [0.23.2]: https://github.com/trisjr/agent-relay/compare/v0.23.1...v0.23.2
 [0.23.1]: https://github.com/trisjr/agent-relay/compare/v0.23.0...v0.23.1
 [0.23.0]: https://github.com/trisjr/agent-relay/compare/v0.22.2...v0.23.0
