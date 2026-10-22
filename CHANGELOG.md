@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-10-22
+
+### Plugins
+
+- `ba-workflows`: 0.1.0 (ra mắt)
+
+### Added
+
+- **ba-workflows**: plugin mới cho IT Business Analyst & Product Owner — 21 core skills theo quy trình BA xương sống: làm rõ ý tưởng (`brainstorm`, `prd`, `meet`), đặc tả (`srs`, `usecase`, `userstory`, `ac`), sơ đồ (`sequence`, `activity`, `state`, `erd`, `user-flow`), prototype (`wireframe-html`), tích hợp API (`api-design`, `api-map`), kiểm thử (`test-checklist`, `test-cases`) và quản lý chất lượng & thay đổi (`gap`, `doc-drift`, `kg`, `cr`). Kèm 20 rules nghiệp vụ (quy ước mã FR/BR/ERR/US/AC/FEAT..., IEEE 830, use case Cockburn, INVEST, Gherkin, lọc từ ngữ mơ hồ, versioning...) và 21 template tiếng Việt có ví dụ hoàn chỉnh; mỗi skill khai báo rõ input kỳ vọng, điều kiện kích hoạt và checklist nghiệm thu.
+
 ## [0.25.2] - 2026-10-20
 
 ### Plugins
@@ -501,7 +511,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.25.2...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.26.0...HEAD
+[0.26.0]: https://github.com/trisjr/agent-relay/compare/v0.25.2...v0.26.0
 [0.25.2]: https://github.com/trisjr/agent-relay/compare/v0.25.1...v0.25.2
 [0.25.1]: https://github.com/trisjr/agent-relay/compare/v0.25.0...v0.25.1
 [0.25.0]: https://github.com/trisjr/agent-relay/compare/v0.24.0...v0.25.0
