@@ -1,11 +1,11 @@
 ---
 name: activity
-description: Activity diagrams with branching decision logic. Use when mapping a business flow that branches on conditions (decision points, guards, retries, parallel steps) for a use case; pick /state instead when modeling an entity's lifecycle states and transitions.
+description: "Activity diagrams with branching decision logic. Use when mapping a business flow that branches on conditions (decision points, guards, retries, parallel steps) for a use case; pick /state instead when modeling an entity's lifecycle states and transitions."
 metadata:
   phase: 03-diagrams
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /activity — Activity Diagram 🌟 [CORE WORKFLOW]

@@ -1,11 +1,11 @@
 ---
 name: srs
-description: Software requirements specification: FR, NFR, business rules, error matrix. Use when elicited scope needs to be formalized into an engineering-ready SRS with standard FR/BR/ERR/NFR identifiers; not for exploratory ideation or scope discovery — that is `/brainstorm`, the other phase-02 skill.
+description: "Software requirements specification: FR, NFR, business rules, error matrix. Use when elicited scope needs to be formalized into an engineering-ready SRS with standard FR/BR/ERR/NFR identifiers; not for exploratory ideation or scope discovery — that is `/brainstorm`, the other phase-02 skill."
 metadata:
   phase: 02-elicit-spec
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /srs — Software Requirements Specification (IEEE 830) 🌟 [CORE WORKFLOW]

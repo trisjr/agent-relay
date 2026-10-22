@@ -1,11 +1,11 @@
 ---
 name: cr
-description: Analyze change impact and synchronize affected specifications. Use when a client or Product Owner submits a change request and you must assess its impact across specs, DB schema, and APIs before any document is modified — not for auditing drift between existing docs and code (use doc-drift for that).
+description: "Analyze change impact and synchronize affected specifications. Use when a client or Product Owner submits a change request and you must assess its impact across specs, DB schema, and APIs before any document is modified — not for auditing drift between existing docs and code (use doc-drift for that)."
 metadata:
   phase: 08-quality-change
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /cr — Change Request (CR) Impact Analysis 🌟 [CORE WORKFLOW]

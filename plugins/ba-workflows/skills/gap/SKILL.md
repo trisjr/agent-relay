@@ -1,11 +1,11 @@
 ---
 name: gap
-description: Identify missing business branches, edge cases, and security gaps. Use when auditing requirement artifacts (SRS, use cases, wireframes, test cases) for unhandled branches before engineering handoff — for drift between implemented code and specs, use `/doc-drift` instead.
+description: "Identify missing business branches, edge cases, and security gaps. Use when auditing requirement artifacts (SRS, use cases, wireframes, test cases) for unhandled branches before engineering handoff — for drift between implemented code and specs, use `/doc-drift` instead."
 metadata:
   phase: 08-quality-change
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /gap — Business Logic Gap Analysis 🌟 [CORE WORKFLOW]

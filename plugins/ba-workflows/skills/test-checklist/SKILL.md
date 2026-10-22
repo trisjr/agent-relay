@@ -1,11 +1,11 @@
 ---
 name: test-checklist
-description: High-level test outline and scenario checklist for early review. Use when you need to align on verification scope early — business branches and scenario coverage across the 5 test dimensions — before writing granular executable test cases with /test-cases.
+description: "High-level test outline and scenario checklist for early review. Use when you need to align on verification scope early — business branches and scenario coverage across the 5 test dimensions — before writing granular executable test cases with /test-cases."
 metadata:
   phase: 07-testing
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /test-checklist — Test Scenario Outline & Checklist 🌟 [CORE WORKFLOW]

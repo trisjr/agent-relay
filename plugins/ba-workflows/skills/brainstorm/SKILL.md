@@ -1,11 +1,11 @@
 ---
 name: brainstorm
-description: Capture raw ideas and conduct clarifying interviews before documenting. Use when a stakeholder brings a rough, unstructured business idea and scope or edge cases are still ambiguous — run this before /srs or any formal spec writing; not for requirements that are already clarified and agreed.
+description: "Capture raw ideas and conduct clarifying interviews before documenting. Use when a stakeholder brings a rough, unstructured business idea and scope or edge cases are still ambiguous — run this before /srs or any formal spec writing; not for requirements that are already clarified and agreed."
 metadata:
   phase: 02-elicit-spec
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /brainstorm — Raw Business Idea Elicitation & Clarification 🌟 [CORE WORKFLOW]

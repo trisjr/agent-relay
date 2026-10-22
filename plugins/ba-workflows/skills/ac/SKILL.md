@@ -1,11 +1,11 @@
 ---
 name: ac
-description: Write Given / When / Then acceptance criteria for user stories. Use when user stories already exist (e.g. in `docs/{feature}/userstories/backlog.md` from the `userstory` skill) and need testable Gherkin scenarios — not for writing or refining the stories themselves (use `userstory`).
+description: "Write Given / When / Then acceptance criteria for user stories. Use when user stories already exist (e.g. in `docs/{feature}/userstories/backlog.md` from the `userstory` skill) and need testable Gherkin scenarios — not for writing or refining the stories themselves (use `userstory`)."
 metadata:
   phase: 04-usecase-story
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /ac — Acceptance Criteria (Gherkin BDD) 🌟 [CORE WORKFLOW]

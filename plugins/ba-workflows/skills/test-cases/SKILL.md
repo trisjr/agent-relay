@@ -1,11 +1,11 @@
 ---
 name: test-cases
-description: Detailed executable test cases generated from checklist and specs. Use when turning an existing test checklist and acceptance criteria into step-by-step executable test cases with preconditions, test data and expected results — not for drafting the high-level test outline itself (use `/test-checklist` for that).
+description: "Detailed executable test cases generated from checklist and specs. Use when turning an existing test checklist and acceptance criteria into step-by-step executable test cases with preconditions, test data and expected results — not for drafting the high-level test outline itself (use `/test-checklist` for that)."
 metadata:
   phase: 07-testing
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /test-cases — Detailed Test Cases Specification 🌟 [CORE WORKFLOW]

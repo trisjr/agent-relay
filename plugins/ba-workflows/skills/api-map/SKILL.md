@@ -1,11 +1,11 @@
 ---
 name: api-map
-description: 3-layer field mapping: partner API, database schema, and UI. Use when the API contract already exists and every field must be reconciled across UI inputs, DB columns, and partner API payloads — unlike api-design, which authors the contract itself; run api-map after api-design.
+description: "3-layer field mapping: partner API, database schema, and UI. Use when the API contract already exists and every field must be reconciled across UI inputs, DB columns, and partner API payloads — unlike api-design, which authors the contract itself; run api-map after api-design."
 metadata:
   phase: 06-api-integration
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /api-map — 3-Layer Data Mapping Matrix 🌟 [CORE WORKFLOW]

@@ -1,11 +1,11 @@
 ---
 name: state
-description: State transition diagrams for lifecycles (orders, accounts, items). Use when you need to model how a single business entity moves through its lifecycle — states, triggers, guards, and a transition matrix — rather than branching process logic (use /activity), time-ordered participant interactions (use /sequence), or screen-level navigation journeys (use /user-flow).
+description: "State transition diagrams for lifecycles (orders, accounts, items). Use when you need to model how a single business entity moves through its lifecycle — states, triggers, guards, and a transition matrix — rather than branching process logic (use /activity), time-ordered participant interactions (use /sequence), or screen-level navigation journeys (use /user-flow)."
 metadata:
   phase: 03-diagrams
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /state — State Machine Diagram (Mermaid) 🌟 [CORE WORKFLOW]

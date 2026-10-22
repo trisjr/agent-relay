@@ -1,11 +1,11 @@
 ---
 name: user-flow
-description: User journey flow analysis covering happy, error, and edge cases. Use when wireframes or a screen inventory already exist and you need to map how screens connect — entry-to-completion sequences, transitions with triggers/guards, and per-screen UI states — not for designing static screen layouts (use /wireframe-html) or modeling a business object's lifecycle states (use /state).
+description: "User journey flow analysis covering happy, error, and edge cases. Use when wireframes or a screen inventory already exist and you need to map how screens connect — entry-to-completion sequences, transitions with triggers/guards, and per-screen UI states — not for designing static screen layouts (use /wireframe-html) or modeling a business object's lifecycle states (use /state)."
 metadata:
   phase: 05-screen-design
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /user-flow — User Flow & Journey Analysis 🌟 [CORE WORKFLOW]

@@ -1,11 +1,11 @@
 ---
 name: wireframe-html
-description: Interactive grayscale HTML wireframes rendering real DOM elements. Use when you need clickable single-file HTML mockups of individual screens to validate layout and interaction with stakeholders — not for mapping screen-to-screen journeys (use /user-flow for that).
+description: "Interactive grayscale HTML wireframes rendering real DOM elements. Use when you need clickable single-file HTML mockups of individual screens to validate layout and interaction with stakeholders — not for mapping screen-to-screen journeys (use /user-flow for that)."
 metadata:
   phase: 05-screen-design
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /wireframe-html — Interactive Grayscale HTML Wireframe 🌟 [CORE WORKFLOW]

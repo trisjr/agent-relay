@@ -1,11 +1,11 @@
 ---
 name: api-design
-description: Integration design: how systems cooperate and contract schemas. Use when you need to design a RESTful/webhook API contract — endpoint catalog, request/response schemas, error codes, signature verification — as opposed to field-level mapping across UI, database, and partner payloads, which is handled by /api-map.
+description: "Integration design: how systems cooperate and contract schemas. Use when you need to design a RESTful/webhook API contract — endpoint catalog, request/response schemas, error codes, signature verification — as opposed to field-level mapping across UI, database, and partner payloads, which is handled by /api-map."
 metadata:
   phase: 06-api-integration
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /api-design — Integration API Contract Design 🌟 [CORE WORKFLOW]

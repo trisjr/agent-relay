@@ -1,11 +1,11 @@
 ---
 name: kg
-description: Generate structured artifact dependency graphs and cross-reference maps across project documentation. Use when you need a machine-readable map of how documents, requirements, diagrams, errors, and test cases interlink across `docs/` — for impact analysis, change scoping, or cross-reference lookup; not for reconciling documentation against the codebase (use `/doc-drift`) or finding missing requirements (use `/gap`).
+description: "Generate structured artifact dependency graphs and cross-reference maps across project documentation. Use when you need a machine-readable map of how documents, requirements, diagrams, errors, and test cases interlink across `docs/` — for impact analysis, change scoping, or cross-reference lookup; not for reconciling documentation against the codebase (use `/doc-drift`) or finding missing requirements (use `/gap`)."
 metadata:
   phase: 08-quality-change
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /kg — Documentation Knowledge Graph 🌟 [CORE WORKFLOW]

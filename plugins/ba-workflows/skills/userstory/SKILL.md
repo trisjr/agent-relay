@@ -1,11 +1,11 @@
 ---
 name: userstory
-description: Generate INVEST-compliant user stories ready for sprint backlog. Use when use cases or functional requirements are already specified and need to be decomposed into sprint-ready user stories with story points and priorities — pick this over `usecase` (which writes detailed use case specs and flows upstream) and over acceptance-criteria detailing when the goal is backlog planning, not test design
+description: "Generate INVEST-compliant user stories ready for sprint backlog. Use when use cases or functional requirements are already specified and need to be decomposed into sprint-ready user stories with story points and priorities — pick this over `usecase` (which writes detailed use case specs and flows upstream) and over acceptance-criteria detailing when the goal is backlog planning, not test design"
 metadata:
   phase: 04-usecase-story
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /userstory — Backlog User Story Breakdown 🌟 [CORE WORKFLOW]

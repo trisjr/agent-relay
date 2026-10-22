@@ -1,11 +1,11 @@
 ---
 name: meet
-description: Turn meeting transcripts and notes into formal decisions and action items. Use when you have a meeting transcript or raw notes to distill into structured minutes with decisions, action items, and open questions — not for analyzing the impact of a scope change agreed in a meeting (use cr for that).
+description: "Turn meeting transcripts and notes into formal decisions and action items. Use when you have a meeting transcript or raw notes to distill into structured minutes with decisions, action items, and open questions — not for analyzing the impact of a scope change agreed in a meeting (use cr for that)."
 metadata:
   phase: 09-handoff-ops
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /meet — Meeting Minutes, Decisions & Action Items 🌟 [CORE WORKFLOW]

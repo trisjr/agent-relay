@@ -1,11 +1,11 @@
 ---
 name: prd
-description: Product-wide PRD: vision, personas, and feature breakdown. Use when kicking off a new product and you need the product-wide PRD — vision, PER-xx personas, and FEAT-xxx feature breakdown — before any feature-level specification; for raw idea elicitation use /brainstorm, and for feature-level specs use /srs.
+description: "Product-wide PRD: vision, personas, and feature breakdown. Use when kicking off a new product and you need the product-wide PRD — vision, PER-xx personas, and FEAT-xxx feature breakdown — before any feature-level specification; for raw idea elicitation use /brainstorm, and for feature-level specs use /srs."
 metadata:
   phase: 01-planning
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /prd — Product Requirements Document (PRD) 🌟 [CORE WORKFLOW]

@@ -1,11 +1,11 @@
 ---
 name: usecase
-description: Cockburn-style detailed use cases: actor, conditions, main, exception. Use when detailing one end-to-end system interaction (primary actor, pre/post-conditions, main success scenario, extensions citing ERR codes) for a specific use case; use `userstory` instead when decomposing requirements into INVEST backlog stories.
+description: "Cockburn-style detailed use cases: actor, conditions, main, exception. Use when detailing one end-to-end system interaction (primary actor, pre/post-conditions, main success scenario, extensions citing ERR codes) for a specific use case; use `userstory` instead when decomposing requirements into INVEST backlog stories."
 metadata:
   phase: 04-usecase-story
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /usecase — Cockburn Detailed Use Case Specification 🌟 [CORE WORKFLOW]

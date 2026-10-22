@@ -1,11 +1,11 @@
 ---
 name: doc-drift
-description: Audit codebase against specifications: spot missing or drifted features. Use when implementation already exists and you must reconcile it against the SRS and user-story backlog — classifying behavioral drift, unbuilt features, and out-of-spec code with severity; not for finding gaps inside requirement artifacts before handoff (use `/gap`) or assessing a requested change (use `/cr`).
+description: "Audit codebase against specifications: spot missing or drifted features. Use when implementation already exists and you must reconcile it against the SRS and user-story backlog — classifying behavioral drift, unbuilt features, and out-of-spec code with severity; not for finding gaps inside requirement artifacts before handoff (use `/gap`) or assessing a requested change (use `/cr`)."
 metadata:
   phase: 08-quality-change
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /doc-drift — Document vs Source Code Drift Audit 🌟 [CORE WORKFLOW]

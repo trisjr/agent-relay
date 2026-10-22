@@ -1,11 +1,11 @@
 ---
 name: sequence
-description: Sequence diagrams: participant interactions, order, and error branches. Use when you need to model time-ordered message exchanges between actors and systems for a specific use case flow or API endpoint, including failure branches — rather than a business-process flow (use /activity) or an entity lifecycle (use /state).
+description: "Sequence diagrams: participant interactions, order, and error branches. Use when you need to model time-ordered message exchanges between actors and systems for a specific use case flow or API endpoint, including failure branches — rather than a business-process flow (use /activity) or an entity lifecycle (use /state)."
 metadata:
   phase: 03-diagrams
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /sequence — Sequence Diagram (Mermaid) 🌟 [CORE WORKFLOW]

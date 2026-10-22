@@ -1,11 +1,11 @@
 ---
 name: erd
-description: Data entity relationship diagrams (Mermaid ERD) and dictionary. Use when a feature needs its persistent data modeled — entities, attributes, primary/foreign keys, and explicit cardinalities — together with a Data Dictionary; for behavioral flows (interactions, processes, lifecycles) use /sequence, /activity, or /state instead.
+description: "Data entity relationship diagrams (Mermaid ERD) and dictionary. Use when a feature needs its persistent data modeled — entities, attributes, primary/foreign keys, and explicit cardinalities — together with a Data Dictionary; for behavioral flows (interactions, processes, lifecycles) use /sequence, /activity, or /state instead."
 metadata:
   phase: 03-diagrams
   category: business-analysis
   version: 1.0.0
-  is_core: true
+  is_core: "true"
 ---
 
 # /erd — Entity Relationship Diagram (Mermaid ERD) 🌟 [CORE WORKFLOW]
