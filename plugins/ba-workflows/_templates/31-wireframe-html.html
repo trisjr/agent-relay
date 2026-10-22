@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe: Đăng nhập Hệ thống (Low-Fi)</title>
+  <style>
+    :root {
+      --bg: #F9FAFB;
+      --card-bg: #FFFFFF;
+      --border: #D1D5DB;
+      --border-focus: #111827;
+      --text-main: #111827;
+      --text-sub: #6B7280;
+      --btn-bg: #111827;
+      --btn-text: #FFFFFF;
+      --error-border: #EF4444;
+      --error-text: #B91C1C;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .wireframe-container {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 420px;
+      padding: 32px 24px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      background: #E5E7EB;
+      border: 2px dashed #9CA3AF;
+      border-radius: 8px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    h1 { font-size: 20px; text-align: center; margin-bottom: 8px; }
+    p.sub { font-size: 14px; color: var(--text-sub); text-align: center; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      background: #FAFAFA;
+    }
+    input:focus { outline: none; border-color: var(--border-focus); background: #FFF; }
+    .error-msg { font-size: 12px; color: var(--error-text); margin-top: 4px; display: none; }
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+      color: var(--text-sub);
+      font-size: 12px;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+    .divider:not(:empty)::before { margin-right: .5em; }
+    .divider:not(:empty)::after { margin-left: .5em; }
+    .btn-sso {
+      width: 100%;
+      padding: 10px;
+      background: #FFF;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wireframe-container">
+    <div class="brand-logo">[Logo]</div>
+    <h1>Đăng nhập</h1>
+    <p class="sub">Nhập thông tin tài khoản để tiếp tục</p>
+
+    <form onsubmit="event.preventDefault(); alert('Submit đăng nhập thử nghiệm');">
+      <div class="form-group">
+        <label for="email">Địa chỉ Email</label>
+        <input type="email" id="email" placeholder="name@company.com" required>
+        <span class="error-msg">Email không hợp lệ</span>
+      </div>
+
+      <div class="form-group">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <label for="pass">Mật khẩu</label>
+          <a href="#" style="font-size:12px; color:var(--text-sub);">Quên mật khẩu?</a>
+        </div>
+        <input type="password" id="pass" placeholder="••••••••" required>
+        <span class="error-msg">Mật khẩu không được để trống</span>
+      </div>
+
+      <button type="submit" class="btn-primary">Đăng nhập</button>
+    </form>
+
+    <div class="divider">HOẶC</div>
+
+    <button type="button" class="btn-sso" onclick="alert('Mở luồng Google SSO')">
+      <span>G</span> Đăng nhập với tài khoản Google
+    </button>
+  </div>
+</body>
+</html>

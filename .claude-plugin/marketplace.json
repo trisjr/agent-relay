@@ -34,6 +34,11 @@
       "name": "dev-workflows",
       "source": "./plugins/dev-workflows",
       "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI."
+    },
+    {
+      "name": "ba-workflows",
+      "source": "./plugins/ba-workflows",
+      "description": "Essential IT Business Analyst & Product Owner Core Workflows: 21 core AI skills covering requirements elicitation, SRS/PRD specification, diagrams (Sequence, ERD, Activity, State), UI/wireframe prototyping, API integration, QA test cases, and change management."
     }
   ]
 }

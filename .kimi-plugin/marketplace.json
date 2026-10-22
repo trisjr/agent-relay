@@ -53,6 +53,14 @@
       "version": "0.4.2",
       "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.25.2/dev-workflows-0.25.2.zip"
+    },
+    {
+      "id": "ba-workflows",
+      "name": "ba-workflows",
+      "displayName": "BA Workflows",
+      "version": "0.1.0",
+      "description": "Essential IT Business Analyst & Product Owner Core Workflows: 21 core AI skills covering requirements elicitation, SRS/PRD specification, diagrams (Sequence, ERD, Activity, State), UI/wireframe prototyping, API integration, QA test cases, and change management.",
+      "source": "./plugins/ba-workflows"
     }
   ]
 }

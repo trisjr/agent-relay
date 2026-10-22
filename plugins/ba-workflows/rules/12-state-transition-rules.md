@@ -1,0 +1,17 @@
+# Quy tắc Thiết kế Máy Trạng thái Hữu hạn (Finite State Machine - FSM)
+
+## 1. Các thành phần bắt buộc
+- **Trạng thái ban đầu (Initial State)**: Điểm bắt đầu của vòng đời đối tượng.
+- **Trạng thái kết thúc (Terminal / Final States)**: Các trạng thái kết thúc (vd: `COMPLETED`, `CANCELLED`, `REFUNDED`).
+- **Sự kiện kích hoạt (Event / Trigger)**: Hành động từ người dùng, đối tác hoặc hệ thống.
+- **Điều kiện bảo vệ (Guard Condition)**: Ràng buộc logic kiểm tra trước khi chuyển trạng thái.
+
+## 2. Ma trận chuyển dịch trạng thái
+Bắt buộc có ma trận đối chiếu gồm đủ 6 cột: Trạng thái hiện tại | Sự kiện kích hoạt (Trigger) | Điều kiện bảo vệ (Guard) | Trạng thái đích | Vai trò thực hiện | Hành động kèm theo (Side effects).
+
+- **Trạng thái hiện tại (Current State)**: Trạng thái của đối tượng ngay trước khi chuyển dịch; viết hoa theo convention (vd: `DRAFT`, `PENDING_PAYMENT`).
+- **Sự kiện kích hoạt (Trigger)**: Hành động từ người dùng, đối tác hoặc hệ thống gây ra chuyển dịch; đặt tên dạng snake_case (vd: `checkout_submit`, `payment_success`).
+- **Điều kiện bảo vệ (Guard)**: Ràng buộc logic phải đúng thì chuyển dịch mới xảy ra; ghi `—` nếu không có điều kiện.
+- **Trạng thái đích (Target State)**: Trạng thái của đối tượng sau khi chuyển dịch thành công.
+- **Vai trò thực hiện**: Actor chịu trách nhiệm kích hoạt sự kiện (vd: Khách hàng, Nhân viên kho, Cổng thanh toán, Hệ thống tự động).
+- **Hành động kèm theo (Side effects)**: Các tác động phát sinh khi chuyển dịch thành công (gửi email, trừ tồn kho, ghi log, bắn sự kiện...); ghi `—` nếu không có.

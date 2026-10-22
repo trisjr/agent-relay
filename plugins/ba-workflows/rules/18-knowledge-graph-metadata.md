@@ -1,0 +1,87 @@
+# Quy chuẩn Metadata cho Tài liệu & Knowledge Graph
+
+Để AI Agent tra cứu chéo tài liệu mà không cần đọc lại toàn bộ thư mục, mọi file tài liệu `.md` trong dự án bắt buộc phải có Frontmatter header:
+
+```yaml
+---
+id: DOC-SRS-AUTH-001
+title: Đặc tả Kỹ thuật Phân hệ Xác thực & Đăng nhập
+version: 1.2.0
+phase: Specification
+domain: Authentication
+tags: [auth, srs, oauth, security]
+depends_on:
+  - DOC-BRD-CORE-001
+  - BR-SEC-001
+related_diagrams:
+  - DIAG-SEQ-AUTH-001
+author: BA Agent
+last_updated: 2026-10-15
+---
+```
+
+## 2. Cấu trúc chuẩn của `docs/knowledge-graph.json`
+
+File `docs/knowledge-graph.json` (sinh bởi skill `/kg`) là đồ thị tri thức của toàn bộ tài liệu dự án, gồm 2 khối chính: `nodes` (các thực thể) và `edges` (các quan hệ). Cấu trúc JSON Schema bắt buộc:
+
+```json
+{
+  "version": "1.0.0",
+  "generated_at": "YYYY-MM-DD",
+  "source_root": "docs/",
+  "nodes": [
+    {
+      "id": "FR-AUTH-LGN-001",
+      "type": "FR",
+      "label": "Đăng nhập bằng Email/Password",
+      "domain": "AUTH",
+      "path": "docs/auth/srs/spec.md",
+      "status": "Approved"
+    }
+  ],
+  "edges": [
+    {
+      "from": "FR-AUTH-LGN-001",
+      "to": "BR-AUTH-SEC-001",
+      "relation": "governed_by",
+      "note": "Giới hạn 5 lần đăng nhập sai"
+    }
+  ]
+}
+```
+
+### Các field bắt buộc
+
+| Cấp | Field | Bắt buộc | Mô tả |
+| :--- | :--- | :--- | :--- |
+| Root | `version` | Có | Phiên bản schema của file graph (semver). |
+| Root | `generated_at` | Có | Ngày sinh file, định dạng `YYYY-MM-DD`. |
+| Root | `nodes` | Có | Mảng các node; được phép rỗng nhưng không được thiếu. |
+| Root | `edges` | Có | Mảng các cạnh; được phép rỗng nhưng không được thiếu. |
+| Node | `id` | Có | Định danh duy nhất trong toàn graph; tuân thủ quy ước mã hoá tương ứng (FR/BR/ERR/TC/DIAG...) hoặc đường dẫn file đối với node tài liệu. |
+| Node | `type` | Có | Một trong: `DOCUMENT`, `FR`, `BR`, `ERR`, `UC`, `US`, `TC`, `DIAGRAM`, `ERD_ENTITY`, `API`. |
+| Node | `label` | Có | Tên/tiêu đề ngắn gọn của node. |
+| Node | `path` | Có với `DOCUMENT` | Đường dẫn tương đối tới file `.md` nguồn. |
+| Node | `domain` | Không | Phân hệ/lĩnh vực nghiệp vụ (vd: `AUTH`, `ORD`). |
+| Node | `status` | Không | Trạng thái vòng đời (Draft / In Review / Approved). |
+| Edge | `from` | Có | `id` của node nguồn; phải tồn tại trong `nodes`. |
+| Edge | `to` | Có | `id` của node đích; phải tồn tại trong `nodes`. |
+| Edge | `relation` | Có | Một trong 5 loại quan hệ chuẩn ở mục 3. |
+| Edge | `note` | Không | Ghi chú ngắn giải thích ý nghĩa liên kết. |
+
+## 3. Năm loại quan hệ chuẩn (Relation Types)
+
+Mọi cạnh trong graph chỉ được dùng một trong 5 giá trị `relation` sau, đồng bộ với template `_templates/49-knowledge-graph-index.md`:
+
+| `relation` | Node nguồn (`from`) | Node đích (`to`) | Ý nghĩa |
+| :--- | :--- | :--- | :--- |
+| `depends_on` | `DOCUMENT` | `DOCUMENT`, `BR`, `FR` | Tài liệu phụ thuộc nội dung của tài liệu/quy tắc/yêu cầu khác; khi đích thay đổi thì nguồn bắt buộc phải rà soát lại. Trích xuất từ frontmatter `depends_on`. |
+| `related_diagrams` | `DOCUMENT` | `DIAGRAM` (`DIAG-*`) | Tài liệu có sơ đồ minh hoạ đi kèm (sequence, activity, state, ERD). Trích xuất từ frontmatter `related_diagrams`. |
+| `governed_by` | `FR` (hoặc `UC`, `US`) | `BR` | Yêu cầu chức năng bị ràng buộc bởi quy tắc nghiệp vụ. Ví dụ: `FR-AUTH-LGN-001` → `BR-AUTH-SEC-001` (giới hạn 5 lần đăng nhập sai). |
+| `emits_error` | `FR` | `ERR` | Luồng xử lý của yêu cầu có thể phát sinh mã lỗi tương ứng. Ví dụ: `FR-AUTH-LGN-001` → `ERR-AUTH-401-001`. |
+| `tested_by` | `FR` | `TC` | Yêu cầu được kiểm thử bởi test case; phải đồng bộ với Ma trận Truy vết (Rule 14). Ví dụ: `FR-AUTH-LGN-001` → `TC-AUTH-001`. |
+
+**Nguyên tắc bổ sung:**
+- `depends_on` và `related_diagrams` được trích xuất tự động từ frontmatter của từng file `.md`; ba quan hệ `governed_by`, `emits_error`, `tested_by` được suy ra từ nội dung tài liệu (SRS, error matrix, RTM).
+- Không tự ý tạo loại `relation` mới; nếu phát sinh nhu cầu quan hệ khác, phải cập nhật rule này và template index cùng lúc.
+- Mọi `id` xuất hiện trong `edges` bắt buộc phải có node tương ứng trong `nodes` (không chấp nhận tham chiếu treo).
