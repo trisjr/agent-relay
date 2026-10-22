@@ -15,17 +15,17 @@ Activity diagrams with branching decision logic
 `/activity` maps branching business-flow logic; `/state` maps an entity's state lifecycle — choose by artifact, not by feature.
 
 ## Objective
-Provide expert BA guidance to execute `/activity`, generating high-quality Mermaid activity diagrams ready for technical handover. The output document is written in Vietnamese, following `_templates/16-activity-diagram.md`.
+Provide expert BA guidance to execute `/activity`, generating high-quality Mermaid activity diagrams ready for technical handover. The output document is written in Vietnamese, following `../../_templates/16-activity-diagram.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/01-fr-naming-convention.md`
-- `rules/02-br-naming-convention.md`
-- `rules/03-err-naming-convention.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/20-artifact-identifier-conventions.md`
+- `../../rules/01-fr-naming-convention.md`
+- `../../rules/02-br-naming-convention.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/20-artifact-identifier-conventions.md`
 
 ## Reference Template
-- `_templates/16-activity-diagram.md`
+- `../../_templates/16-activity-diagram.md`
 
 ## Default Storage Path
 - `docs/{feature}/srs/activity.md`

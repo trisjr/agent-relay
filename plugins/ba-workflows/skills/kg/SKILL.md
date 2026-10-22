@@ -16,19 +16,19 @@ Knowledge graph of all project documentation and cross-references
 Provide expert BA guidance to execute `/kg`, generating structured artifact dependency graphs and cross-reference maps.
 
 ## Mandatory Standards (Rules)
-- `rules/11-error-matrix-convention.md`
-- `rules/14-test-case-traceability.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/18-knowledge-graph-metadata.md`
+- `../../rules/11-error-matrix-convention.md`
+- `../../rules/14-test-case-traceability.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/18-knowledge-graph-metadata.md`
 
 ## Reference Template
-- `_templates/49-knowledge-graph-index.md`
+- `../../_templates/49-knowledge-graph-index.md`
 
 ## Default Storage Path
 - `docs/knowledge-graph.json`
 - `docs/knowledge-graph-index.md`
 
-The Markdown index is written in Vietnamese, following the structure of `_templates/49-knowledge-graph-index.md`; `knowledge-graph.json` stays machine-readable per the Rule 18 schema, with labels and notes keeping the source documents' language.
+The Markdown index is written in Vietnamese, following the structure of `../../_templates/49-knowledge-graph-index.md`; `knowledge-graph.json` stays machine-readable per the Rule 18 schema, with labels and notes keeping the source documents' language.
 
 ## Expected Input
 - All `.md` documents under `docs/` carrying Rule 18 frontmatter (`id`, `depends_on`, `related_diagrams`, ...) — source of `DOCUMENT` nodes and `depends_on` / `related_diagrams` edges. If a document lacks the required frontmatter, list it and ask the user whether to backfill metadata before generating the graph.

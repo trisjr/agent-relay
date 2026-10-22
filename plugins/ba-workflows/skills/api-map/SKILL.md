@@ -13,16 +13,16 @@ metadata:
 3-layer field mapping: partner API, database schema, and UI
 
 ## Objective
-Provide expert BA guidance to execute `/api-map`, producing end-to-end data reconciliation across UI inputs, DB columns, and API payloads. The output document is written in Vietnamese, following `_templates/38-api-map.md`.
+Provide expert BA guidance to execute `/api-map`, producing end-to-end data reconciliation across UI inputs, DB columns, and API payloads. The output document is written in Vietnamese, following `../../_templates/38-api-map.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/03-err-naming-convention.md`
-- `rules/09-data-dictionary-standard.md`
-- `rules/10-api-contract-standards.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/09-data-dictionary-standard.md`
+- `../../rules/10-api-contract-standards.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/38-api-map.md`
+- `../../_templates/38-api-map.md`
 
 ## Default Storage Path
 - `docs/{feature}/api/data-mapping.md`

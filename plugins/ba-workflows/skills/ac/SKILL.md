@@ -13,15 +13,15 @@ metadata:
 Write Given / When / Then acceptance criteria for each user story
 
 ## Objective
-Provide expert BA guidance to execute `/ac`, generating production-ready acceptance criteria without formatting rework. The output document is written in Vietnamese, following `_templates/28-acceptance-criteria.md`.
+Provide expert BA guidance to execute `/ac`, generating production-ready acceptance criteria without formatting rework. The output document is written in Vietnamese, following `../../_templates/28-acceptance-criteria.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/08-gherkin-acceptance-criteria.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/03-err-naming-convention.md`
+- `../../rules/08-gherkin-acceptance-criteria.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/03-err-naming-convention.md`
 
 ## Reference Template
-- `_templates/28-acceptance-criteria.md` — read it before writing; it defines the per-story `## Story: US-XXX` section format.
+- `../../_templates/28-acceptance-criteria.md` — read it before writing; it defines the per-story `## Story: US-XXX` section format.
 
 ## Default Storage Path
 - `docs/{feature}/userstories/acceptance-criteria.md` — ONE file aggregating all stories of the feature; each story gets its own `## Story: US-XXX` section per the template.
@@ -38,7 +38,7 @@ Provide expert BA guidance to execute `/ac`, generating production-ready accepta
    - Scenario 2: Business Error / Negative Path (Controlled failure) — cite the expected error code in `ERR-[MODULE]-[HTTP_STATUS]-[SEQ]` format per Rule 03 where the system returns one.
    - Scenario 3: Boundary & Security (edge values such as max length +1 or an empty required field, plus security constraints such as injection attempts or unauthorized access) per Rule 08.
 3. Adhere strictly to Given - When - Then syntax per Rule 08.
-4. Append each story's scenarios under a `## Story: US-XXX` section (per `_templates/28-acceptance-criteria.md`) in the single shared file `docs/{feature}/userstories/acceptance-criteria.md`; do not create one file per story.
+4. Append each story's scenarios under a `## Story: US-XXX` section (per `../../_templates/28-acceptance-criteria.md`) in the single shared file `docs/{feature}/userstories/acceptance-criteria.md`; do not create one file per story.
 
 ## Quality Acceptance Checklist
 - [ ] Use professional technical BA terminology.

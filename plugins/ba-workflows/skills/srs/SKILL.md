@@ -16,17 +16,17 @@ Software requirements specification: FR, NFR, business rules, error matrix
 Provide expert BA guidance to execute `/srs`, producing an IEEE 830 compliant SRS ready for engineering development.
 
 ## Mandatory Standards (Rules)
-- `rules/01-fr-naming-convention.md`
-- `rules/02-br-naming-convention.md`
-- `rules/03-err-naming-convention.md`
-- `rules/04-nfr-standards.md`
-- `rules/05-srs-ieee-830.md`
-- `rules/11-error-matrix-convention.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/01-fr-naming-convention.md`
+- `../../rules/02-br-naming-convention.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/04-nfr-standards.md`
+- `../../rules/05-srs-ieee-830.md`
+- `../../rules/11-error-matrix-convention.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/08-srs.md` — the commonly used core: FR / BR / Error Matrix / NFR tables.
-- `rules/05-srs-ieee-830.md` defines the full IEEE 830 document structure (Introduction, Overall Description, Specific Requirements, Appendices) when a complete SRS beyond the core tables is required.
+- `../../_templates/08-srs.md` — the commonly used core: FR / BR / Error Matrix / NFR tables.
+- `../../rules/05-srs-ieee-830.md` defines the full IEEE 830 document structure (Introduction, Overall Description, Specific Requirements, Appendices) when a complete SRS beyond the core tables is required.
 
 ## Default Storage Path
 - `docs/{feature}/srs/spec.md`

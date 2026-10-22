@@ -16,13 +16,13 @@ Cockburn-style detailed use cases: actor, conditions, main, exception
 Provide expert BA guidance to execute `/usecase`, producing standardized Alistair Cockburn use case specifications. Write the output document in Vietnamese, following the reference template and rules.
 
 ## Mandatory Standards (Rules)
-- `rules/03-err-naming-convention.md`
-- `rules/06-cockburn-use-case.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/17-actor-role-definition.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/06-cockburn-use-case.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/17-actor-role-definition.md`
 
 ## Reference Template
-- `_templates/26-usecase-cockburn.md`
+- `../../_templates/26-usecase-cockburn.md`
 
 ## Default Storage Path
 - `docs/{feature}/usecases/{usecase_id}.md`

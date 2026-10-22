@@ -16,12 +16,12 @@ High-level test outline and scenario checklist for early review
 Provide expert BA guidance to execute `/test-checklist`, defining comprehensive verification boundaries before authoring granular test cases. The output document is written in Vietnamese, following the Reference Template.
 
 ## Mandatory Standards (Rules)
-- `rules/14-test-case-traceability.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/20-artifact-identifier-conventions.md`
+- `../../rules/14-test-case-traceability.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/20-artifact-identifier-conventions.md`
 
 ## Reference Template
-- `_templates/42-test-checklist.md`
+- `../../_templates/42-test-checklist.md`
 
 ## Default Storage Path
 - `docs/{feature}/test/checklist.md`

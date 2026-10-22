@@ -16,13 +16,13 @@ Sequence diagrams: participant interactions, order, and error branches
 Provide expert BA guidance to execute `/sequence`, producing detailed interaction workflows with complete happy and error branches. The output document is written in Vietnamese, following the reference template.
 
 ## Mandatory Standards (Rules)
-- `rules/01-fr-naming-convention.md`
-- `rules/03-err-naming-convention.md`
-- `rules/10-api-contract-standards.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/01-fr-naming-convention.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/10-api-contract-standards.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/15-sequence-diagram.md`
+- `../../_templates/15-sequence-diagram.md`
 
 ## Default Storage Path
 - `docs/{feature}/srs/flows.md`

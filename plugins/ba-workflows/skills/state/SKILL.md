@@ -16,15 +16,15 @@ State transition diagrams for lifecycles (orders, accounts, items)
 Provide expert BA guidance to execute `/state`, mapping lifecycle states, triggers, guards, and transition matrices.
 
 ## Mandatory Standards (Rules)
-- `rules/12-state-transition-rules.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/12-state-transition-rules.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/19-state-diagram.md`
+- `../../_templates/19-state-diagram.md`
 
 ## Default Storage Path
 - `docs/{feature}/srs/states.md`
-- The output document is written in Vietnamese, following the structure and column headers of `_templates/19-state-diagram.md`.
+- The output document is written in Vietnamese, following the structure and column headers of `../../_templates/19-state-diagram.md`.
 
 ## Expected Input
 - Feature name and the entity whose lifecycle is being modeled (Order, Contract, Account, Invoice, ...).
@@ -35,7 +35,7 @@ Provide expert BA guidance to execute `/state`, mapping lifecycle states, trigge
 1. Identify entity managing lifecycle (Order, Contract, Account, Invoice).
 2. Construct Mermaid `stateDiagram-v2`.
 3. Distinguish Initial State, Intermediate States, and Terminal States.
-4. Construct the 6-column State Transition Matrix per Rule 12 and `_templates/19-state-diagram.md`: Current State | Trigger | Guard | Target State | Actor | Side effects.
+4. Construct the 6-column State Transition Matrix per Rule 12 and `../../_templates/19-state-diagram.md`: Current State | Trigger | Guard | Target State | Actor | Side effects.
 5. Save to `docs/{feature}/srs/states.md`.
 
 ## Quality Acceptance Checklist

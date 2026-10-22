@@ -13,14 +13,14 @@ metadata:
 Data entity relationship diagrams (Mermaid ERD) and dictionary
 
 ## Objective
-Provide expert BA guidance to execute `/erd`, generating normalized relational data models and comprehensive data dictionaries. Write the output document in Vietnamese, following the structure of `_templates/20-erd-mermaid.md`.
+Provide expert BA guidance to execute `/erd`, generating normalized relational data models and comprehensive data dictionaries. Write the output document in Vietnamese, following the structure of `../../_templates/20-erd-mermaid.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/09-data-dictionary-standard.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/09-data-dictionary-standard.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/20-erd-mermaid.md`
+- `../../_templates/20-erd-mermaid.md`
 
 ## Default Storage Path
 - `docs/{feature}/srs/erd.md`
@@ -34,7 +34,7 @@ Provide expert BA guidance to execute `/erd`, generating normalized relational d
 1. Enumerate core entities and attributes from the SRS and/or use case inputs.
 2. Construct Mermaid `erDiagram` with explicit cardinalities (`||--o{`, `||--||`, etc.).
 3. Document fields, datatypes, and primary/foreign keys (PK/FK).
-4. Construct the detailed Data Dictionary per Rule 09, following the "Từ điển Dữ liệu (Data Dictionary)" section of `_templates/20-erd-mermaid.md` — one specification table per entity covering every field shown in the diagram.
+4. Construct the detailed Data Dictionary per Rule 09, following the "Từ điển Dữ liệu (Data Dictionary)" section of `../../_templates/20-erd-mermaid.md` — one specification table per entity covering every field shown in the diagram.
 5. Save to `docs/{feature}/srs/erd.md`.
 
 ## Quality Acceptance Checklist

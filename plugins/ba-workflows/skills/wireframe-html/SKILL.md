@@ -16,11 +16,11 @@ Interactive grayscale HTML wireframes rendering real DOM elements
 Provide expert BA guidance to execute `/wireframe-html`, creating self-contained, responsive, interactive browser wireframes. All UI copy, labels, and annotations inside the wireframe are written in Vietnamese, following the template.
 
 ## Mandatory Standards (Rules)
-- `rules/13-wireframe-html-guidelines.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/13-wireframe-html-guidelines.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/31-wireframe-html.html`
+- `../../_templates/31-wireframe-html.html`
 
 ## Default Storage Path
 - `docs/{feature}/html-wireframe/{screen_name}.html`

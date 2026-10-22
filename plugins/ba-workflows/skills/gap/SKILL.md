@@ -13,15 +13,15 @@ metadata:
 Identify missing business branches, edge cases, and security gaps
 
 ## Objective
-Provide expert BA guidance to execute `/gap`, auditing requirements across artifacts to eliminate missing branches before engineering handoff. The output document is written in Vietnamese, following `_templates/45-gap-analysis.md`.
+Provide expert BA guidance to execute `/gap`, auditing requirements across artifacts to eliminate missing branches before engineering handoff. The output document is written in Vietnamese, following `../../_templates/45-gap-analysis.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/02-br-naming-convention.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/20-artifact-identifier-conventions.md`
+- `../../rules/02-br-naming-convention.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/20-artifact-identifier-conventions.md`
 
 ## Reference Template
-- `_templates/45-gap-analysis.md`
+- `../../_templates/45-gap-analysis.md`
 
 ## Default Storage Path
 - `docs/{feature}/gap-analysis.md`
@@ -46,5 +46,5 @@ Provide expert BA guidance to execute `/gap`, auditing requirements across artif
 - [ ] Use professional technical BA terminology.
 - [ ] Free of vague or ambiguous qualifiers (Rule 16).
 - [ ] Every finding carries a `GAP-[SEQ]` identifier (3-digit SEQ, restarting from `001` per report) per Rule 20 §8.
-- [ ] Every finding cites the source artifact location and the related identifier (FR/BR/UC/TC) it traces to, with severity and an actionable recommendation per template `_templates/45-gap-analysis.md`.
+- [ ] Every finding cites the source artifact location and the related identifier (FR/BR/UC/TC) it traces to, with severity and an actionable recommendation per template `../../_templates/45-gap-analysis.md`.
 - [ ] Save output at the designated repository path.

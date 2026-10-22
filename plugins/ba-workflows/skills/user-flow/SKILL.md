@@ -16,12 +16,12 @@ User journey flow analysis covering happy, error, and edge cases
 Provide expert BA guidance to execute `/user-flow`, visualizing screen transitions and interaction states across all touchpoints. The output document is written in Vietnamese, following the Reference Template.
 
 ## Mandatory Standards (Rules)
-- `rules/12-state-transition-rules.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/20-artifact-identifier-conventions.md`
+- `../../rules/12-state-transition-rules.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/20-artifact-identifier-conventions.md`
 
 ## Reference Template
-- `_templates/29-user-flow.md`
+- `../../_templates/29-user-flow.md`
 
 ## Default Storage Path
 - `docs/{feature}/ui/user-flow.md`

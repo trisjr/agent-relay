@@ -13,17 +13,17 @@ metadata:
 Integration design: how systems cooperate and contract schemas
 
 ## Objective
-Provide expert BA guidance to execute `/api-design`, producing comprehensive RESTful and webhook integration contracts. The output document is written in Vietnamese, following `_templates/37-api-design.md`.
+Provide expert BA guidance to execute `/api-design`, producing comprehensive RESTful and webhook integration contracts. The output document is written in Vietnamese, following `../../_templates/37-api-design.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/01-fr-naming-convention.md`
-- `rules/02-br-naming-convention.md`
-- `rules/03-err-naming-convention.md`
-- `rules/10-api-contract-standards.md`
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/01-fr-naming-convention.md`
+- `../../rules/02-br-naming-convention.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/10-api-contract-standards.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/37-api-design.md`
+- `../../_templates/37-api-design.md`
 
 ## Default Storage Path
 - `docs/{feature}/api/api-spec.md`
@@ -36,7 +36,7 @@ Provide expert BA guidance to execute `/api-design`, producing comprehensive RES
 ## Execution Workflow
 1. Design RESTful endpoint catalog per Rule 10 (plural-noun resource URLs, standard HTTP verbs, standard response envelope).
 2. Specify Request Headers, Request Body, Response 200 OK, and Error Responses (including but not limited to 400, 401, 403, 404, 409, 422, 500 per Rule 03).
-3. Define Webhook / Callback mechanisms and signature verification rules per the Webhook/Callback section of `rules/10-api-contract-standards.md`: event payload schema (`event`, `event_id`, `occurred_at`, `data`), HMAC-SHA256 signature via `X-Webhook-Signature` / `X-Webhook-Timestamp`, 300-second replay window, retry backoff with Dead Letter Queue, and `event_id`-based idempotency.
+3. Define Webhook / Callback mechanisms and signature verification rules per the Webhook/Callback section of `../../rules/10-api-contract-standards.md`: event payload schema (`event`, `event_id`, `occurred_at`, `data`), HMAC-SHA256 signature via `X-Webhook-Signature` / `X-Webhook-Timestamp`, 300-second replay window, retry backoff with Dead Letter Queue, and `event_id`-based idempotency.
 4. Save to `docs/{feature}/api/api-spec.md`.
 
 ## Quality Acceptance Checklist

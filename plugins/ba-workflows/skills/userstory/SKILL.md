@@ -16,12 +16,12 @@ Generate INVEST-compliant user stories ready for sprint backlog
 Provide expert BA guidance to execute `/userstory`, decomposing requirements into independent, testable user stories. The backlog document is written in Vietnamese, following the reference template.
 
 ## Mandatory Standards (Rules)
-- `rules/07-invest-user-story.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/20-artifact-identifier-conventions.md`
+- `../../rules/07-invest-user-story.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/20-artifact-identifier-conventions.md`
 
 ## Reference Template
-- `_templates/27-userstory.md`
+- `../../_templates/27-userstory.md`
 
 ## Default Storage Path
 - `docs/{feature}/userstories/backlog.md` (Vietnamese content per template)

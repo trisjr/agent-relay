@@ -13,16 +13,16 @@ metadata:
 Product-wide PRD: vision, personas, and feature breakdown
 
 ## Objective
-Provide expert BA guidance to execute `/prd`, crafting comprehensive product requirements documents with quantitative goals and clear scopes. Write the output document in Vietnamese, following the structure and tables of `_templates/01-prd.md`.
+Provide expert BA guidance to execute `/prd`, crafting comprehensive product requirements documents with quantitative goals and clear scopes. Write the output document in Vietnamese, following the structure and tables of `../../_templates/01-prd.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/01-fr-naming-convention.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/17-actor-role-definition.md`
-- `rules/20-artifact-identifier-conventions.md`
+- `../../rules/01-fr-naming-convention.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/17-actor-role-definition.md`
+- `../../rules/20-artifact-identifier-conventions.md`
 
 ## Reference Template
-- `_templates/01-prd.md`
+- `../../_templates/01-prd.md`
 
 ## Default Storage Path
 - `docs/{product_name}/01-prd.md`
@@ -38,15 +38,15 @@ Provide expert BA guidance to execute `/prd`, crafting comprehensive product req
    - Core problem statement and primary beneficiary.
    - Quantitative business targets (KPIs / OKRs).
 2. **Define Personas**:
-   - Apply Rule `17-actor-role-definition.md` only to identify the platform actors (Primary / Secondary / System) that personas map to.
-   - Define personas with `PER-xx` IDs following the persona table in `_templates/01-prd.md` (Section 2); do not embed the RBAC permission matrix from Rule 17 into the PRD.
+   - Apply Rule `../../rules/17-actor-role-definition.md` only to identify the platform actors (Primary / Secondary / System) that personas map to.
+   - Define personas with `PER-xx` IDs following the persona table in `../../_templates/01-prd.md` (Section 2); do not embed the RBAC permission matrix from Rule 17 into the PRD.
 3. **Feature Breakdown**:
    - Define strict In-Scope vs Out-of-Scope boundaries for MVP/phase.
    - Structure feature backlog with priorities: P0 (Must), P1 (Should), P2 (Nice to have); each feature carries a `FEAT-xxx` ID and references the `PER-xx` personas it serves.
 4. **Ambiguity Audit**:
-   - Apply Rule `16-ambiguity-detection-rules.md` to remove subjective phrasing ("phản hồi nhanh chóng", "thân thiện, dễ dùng", "bảo mật cao") and replace each with the measurable formulation from the rule's normalization table.
+   - Apply Rule `../../rules/16-ambiguity-detection-rules.md` to remove subjective phrasing ("phản hồi nhanh chóng", "thân thiện, dễ dùng", "bảo mật cao") and replace each with the measurable formulation from the rule's normalization table.
 5. **Output**:
-   - Populate template `_templates/01-prd.md` and save to `docs/{product_name}/01-prd.md`.
+   - Populate template `../../_templates/01-prd.md` and save to `docs/{product_name}/01-prd.md`.
 
 ## Quality Acceptance Checklist
 - [ ] Use professional technical BA terminology.

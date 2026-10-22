@@ -13,13 +13,13 @@ metadata:
 Capture raw ideas and conduct clarifying interviews before documenting
 
 ## Objective
-Provide expert BA guidance to execute `/brainstorm`, leading a Socratic interview to disambiguate scope before writing formal specifications. The output minutes are written in Vietnamese, following the structure of `_templates/04-brainstorm.md`.
+Provide expert BA guidance to execute `/brainstorm`, leading a Socratic interview to disambiguate scope before writing formal specifications. The output minutes are written in Vietnamese, following the structure of `../../_templates/04-brainstorm.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/04-brainstorm.md`
+- `../../_templates/04-brainstorm.md`
 
 ## Default Storage Path
 - `docs/{feature}/brainstorms/{concept_name}.md`

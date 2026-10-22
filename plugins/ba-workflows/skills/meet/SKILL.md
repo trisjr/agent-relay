@@ -13,13 +13,13 @@ metadata:
 Turn meeting transcripts and notes into formal decisions and action items
 
 ## Objective
-Provide expert BA guidance to execute `/meet`, distilling unstructured discussion into actionable agreements, decisions, and deadlines. Write the meeting minutes in Vietnamese, following `_templates/48-meeting-minutes.md`.
+Provide expert BA guidance to execute `/meet`, distilling unstructured discussion into actionable agreements, decisions, and deadlines. Write the meeting minutes in Vietnamese, following `../../_templates/48-meeting-minutes.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/16-ambiguity-detection-rules.md`
+- `../../rules/16-ambiguity-detection-rules.md`
 
 ## Reference Template
-- `_templates/48-meeting-minutes.md`
+- `../../_templates/48-meeting-minutes.md`
 
 ## Default Storage Path
 - `docs/meetings/{date}-meeting.md` — `{date}` uses the `YYYY-MM-DD` format (e.g. `docs/meetings/2026-10-22-meeting.md`).
@@ -47,7 +47,7 @@ Provide expert BA guidance to execute `/meet`, distilling unstructured discussio
 ## Quality Acceptance Checklist
 - [ ] Use professional technical BA terminology.
 - [ ] Free of vague or ambiguous qualifiers (Rule 16).
-- [ ] Every formal decision has a Decision ID, rationale, and named approver per `_templates/48-meeting-minutes.md` section 3.
+- [ ] Every formal decision has a Decision ID, rationale, and named approver per `../../_templates/48-meeting-minutes.md` section 3.
 - [ ] Every Action Item has an Owner and Target Deadline, or an explicit `TBD` flag with the open follow-up recorded.
 - [ ] Open Questions are logged separately from Decisions — nothing unsettled is presented as agreed.
 - [ ] Save output at the designated repository path.

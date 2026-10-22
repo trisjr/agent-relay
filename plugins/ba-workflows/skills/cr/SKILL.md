@@ -13,28 +13,28 @@ metadata:
 Analyze change impact and synchronize affected specifications
 
 ## Objective
-Provide expert BA guidance to execute `/cr`, performing thorough impact analysis and syncing changes across project artifacts. Write the CR report and all updated documents in Vietnamese, following `_templates/47-change-request.md`.
+Provide expert BA guidance to execute `/cr`, performing thorough impact analysis and syncing changes across project artifacts. Write the CR report and all updated documents in Vietnamese, following `../../_templates/47-change-request.md`.
 
 ## Mandatory Standards (Rules)
-- `rules/01-fr-naming-convention.md`
-- `rules/03-err-naming-convention.md`
-- `rules/15-change-request-impact-matrix.md`
-- `rules/16-ambiguity-detection-rules.md`
-- `rules/19-document-versioning-rules.md`
+- `../../rules/01-fr-naming-convention.md`
+- `../../rules/03-err-naming-convention.md`
+- `../../rules/15-change-request-impact-matrix.md`
+- `../../rules/16-ambiguity-detection-rules.md`
+- `../../rules/19-document-versioning-rules.md`
 
 ## Reference Template
-- `_templates/47-change-request.md`
+- `../../_templates/47-change-request.md`
 
 ## Default Storage Path
 - `docs/{feature}/cr/{cr_id}.md`
 
 ## Expected Input
-- Change request details from the client or Product Owner, at minimum the fields of the "Thông tin đề xuất CR" section in `_templates/47-change-request.md`: CR ID (`CR-YYYY-NNN`), change name, requester, request date, and urgency level. If any field is missing, ask the user before proceeding — never invent CR details.
+- Change request details from the client or Product Owner, at minimum the fields of the "Thông tin đề xuất CR" section in `../../_templates/47-change-request.md`: CR ID (`CR-YYYY-NNN`), change name, requester, request date, and urgency level. If any field is missing, ask the user before proceeding — never invent CR details.
 - Existing specifications to analyze, by convention: `docs/{feature}/srs/spec.md`, `docs/{feature}/srs/flows.md`, `docs/{feature}/userstories/backlog.md`, and `docs/{feature}/test/test-cases.md`.
 - If an expected input document is missing, report which artifact could not be assessed and continue with what exists — never fabricate requirements to fill the gap.
 
 ## Execution Workflow
-1. Ingest change request details from client or Product Owner. Collect at minimum the fields of the "Thông tin đề xuất CR" section in `_templates/47-change-request.md`: CR ID (`CR-YYYY-NNN`), change name, requester, request date, and urgency level.
+1. Ingest change request details from client or Product Owner. Collect at minimum the fields of the "Thông tin đề xuất CR" section in `../../_templates/47-change-request.md`: CR ID (`CR-YYYY-NNN`), change name, requester, request date, and urgency level.
 2. Execute Impact Analysis per Rule 15:
    - Identify affected documents (SRS, Diagrams, Stories, Test cases).
    - Assess impact on DB schemas and API contracts.
@@ -45,6 +45,6 @@ Provide expert BA guidance to execute `/cr`, performing thorough impact analysis
 ## Quality Acceptance Checklist
 - [ ] Use professional technical BA terminology.
 - [ ] Free of vague or ambiguous qualifiers (Rule 16).
-- [ ] Every row of the impact matrix names the concrete affected files/components and an effort estimate, per `_templates/47-change-request.md`.
+- [ ] Every row of the impact matrix names the concrete affected files/components and an effort estimate, per `../../_templates/47-change-request.md`.
 - [ ] New or modified requirements and error codes use valid FR-xxx / ERR-xxx identifiers per Rules 01 and 03.
 - [ ] Save output at the designated repository path.
