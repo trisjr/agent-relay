@@ -58,9 +58,9 @@
       "id": "ba-workflows",
       "name": "ba-workflows",
       "displayName": "BA Workflows",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Essential IT Business Analyst & Product Owner Core Workflows: 21 core AI skills covering requirements elicitation, SRS/PRD specification, diagrams (Sequence, ERD, Activity, State), UI/wireframe prototyping, API integration, QA test cases, and change management.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.26.0/ba-workflows-0.26.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.26.1/ba-workflows-0.26.1.zip"
     }
   ]
 }

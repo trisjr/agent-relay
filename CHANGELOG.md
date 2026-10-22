@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.26.1] - 2026-10-22
+
+### Plugins
+
+- `ba-workflows`: 0.1.0 → 0.1.1
+
+### Fixed
+
+- **ba-workflows**: sửa toàn bộ đường dẫn tham chiếu tài liệu (`rules/*.md` thành `../../rules/*.md`, `_templates/*` thành `../../_templates/*`) trong 21 file skill để AI đọc đúng file tài liệu chuẩn.
+
 ## [0.26.0] - 2026-10-22
 
 ### Plugins
@@ -511,7 +521,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.26.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.26.1...HEAD
+[0.26.1]: https://github.com/trisjr/agent-relay/compare/v0.26.0...v0.26.1
 [0.26.0]: https://github.com/trisjr/agent-relay/compare/v0.25.2...v0.26.0
 [0.25.2]: https://github.com/trisjr/agent-relay/compare/v0.25.1...v0.25.2
 [0.25.1]: https://github.com/trisjr/agent-relay/compare/v0.25.0...v0.25.1
