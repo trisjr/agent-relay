@@ -83,6 +83,9 @@ def test_commit_message():
         'python -m pytest -q && git commit -m "fix: rounding"': "fix: rounding",
         'git tag -m "release v1" v1 && git commit -m real': "real",
         'cd app && GIT_AUTHOR_NAME=a git commit -m "chore: bump"': "chore: bump",
+        'git add -A\ngit commit -m "feat: x"': "feat: x",
+        'cd repo;\ngit commit -m "y"': "y",
+        "git commit -m fix#12": "fix#12",
     }
     for command, expected in cases.items():
         assert nudge.commit_message(command) == expected, (command, nudge.commit_message(command))
@@ -142,6 +145,19 @@ def test_files_and_failed_calls():
     assert "never landed" not in command
     assert "các hướng đã" not in command.split("bỏ:")[1]  # never tell the summary to drop ruled-out paths
 
+    # A parallel call's result row hangs off the first call's row, outside the active chain.
+    t = Transcript()
+    first = t.assistant(1000, [("Bash", {"command": "ls"})])
+    t.assistant(1000, [("Bash", {"command": 'git commit -m "feat: parallel fail"'})])
+    t.result("t0_0", "ok")
+    t.add({"type": "user", "message": {"content": [
+        {"type": "tool_result", "tool_use_id": "t1_0", "content": "hook failed", "is_error": True}]}}, parent=first)
+    t.head = "u2"
+    t.assistant(1000)
+    chain = nudge.active_chain(t.rows)
+    assert "u3" not in [r["uuid"] for r in chain]
+    assert "parallel fail" not in nudge.draft_command(chain, t.rows)
+
 
 def test_milestones():
     assert run(Transcript().write()) is None
@@ -164,6 +180,8 @@ def test_options_and_owner():
     assert nudge_at(120000, "th", CLAUDE_PLUGIN_OPTION_THRESHOLD="100000") is not None
     assert nudge_at(262000, "st", CLAUDE_PLUGIN_OPTION_STEP="0") is not None
     assert nudge_at(263000, "st", CLAUDE_PLUGIN_OPTION_STEP="0") is None  # step 0 falls back to 100K
+    assert nudge_at(262000, "half", CLAUDE_PLUGIN_OPTION_STEP="0.5") is not None
+    assert nudge_at(263000, "half", CLAUDE_PLUGIN_OPTION_STEP="0.5") is None  # 0.5 -> 0 falls back too
     assert nudge_at(262000, "inf", CLAUDE_PLUGIN_OPTION_THRESHOLD="inf") is not None
     assert nudge_at(165000, "win", CLAUDE_CODE_AUTO_COMPACT_WINDOW="200000") is not None
     assert nudge_at(262000, "raise") is not None

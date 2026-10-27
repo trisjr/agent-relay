@@ -106,6 +106,10 @@ describe('helpers', () => {
     expect(toCommand('**/compact giữ X**')).toBe('/compact giữ X')
     expect(toCommand('> /compact giữ X')).toBe('/compact giữ X')
     expect(toCommand('```\n/compact\ngiữ X\n```')).toBe('/compact giữ X')
+    expect(toCommand('Lệnh: `/compact giữ X`')).toBe('/compact giữ X')
+    expect(toCommand('Lệnh: **/compact giữ X**')).toBe('/compact giữ X')
+    expect(toCommand('Lệnh: "/compact giữ X".')).toBe('/compact giữ X')
+    expect(toCommand('```text\ngiữ X\n```')).toBe('/compact giữ X')
     expect(toCommand('   ')).toBe(null)
   })
 

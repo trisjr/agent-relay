@@ -10,13 +10,13 @@
     "threshold": {
       "type": "number",
       "title": "Nudge threshold (tokens)",
-      "description": "Start nudging once the context window holds at least this many tokens.",
+      "description": "First nudge milestone, in context tokens; lowered to 80% of the context window when the window is smaller.",
       "default": 200000
     },
     "step": {
       "type": "number",
       "title": "Re-nudge step (tokens)",
-      "description": "After a nudge, wait until the context grows by this many tokens before nudging again.",
+      "description": "Distance between nudge milestones after the threshold: threshold, threshold + step, threshold + 2 * step, and so on.",
       "default": 100000
     }
   }

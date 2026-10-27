@@ -57,7 +57,7 @@ Lệnh được soạn **không qua model** (không tốn token) từ những ng
 | File chính | Tối đa 5 file được Edit/Write nhiều nhất; file trùng tên thì ghi kèm thư mục cha |
 | Bối cảnh | Subject của 2 `git commit` thành công gần nhất (hiểu được kiểu heredoc `-m "$(cat <<'EOF' …)"`, `-am`, `--message=`), cùng `gitBranch` |
 
-Script đọc tối đa 64MB cuối của transcript, nên ở các mốc 300–400K lệnh soạn vẫn còn đủ thông tin. Hook không `block` và không gửi `additionalContext`, nên không chen message vào transcript, cũng không đổi câu trả lời hay next-step box của Claude.
+Mỗi lần `Stop`, script chỉ đọc 2MB cuối để lấy số token. Khi chắc chắn sẽ nhắc, nó mới đọc tối đa 64MB cuối để soạn lệnh, nhờ vậy ở các mốc 300–400K lệnh vẫn đủ thông tin mà các turn bình thường không bị chậm. Hook không `block` và không gửi `additionalContext`, nên không chen message vào transcript, cũng không đổi câu trả lời hay next-step box của Claude.
 
 Script đọc `threshold`/`step` qua `CLAUDE_PLUGIN_OPTION_THRESHOLD`/`CLAUDE_PLUGIN_OPTION_STEP`, compaction window qua `CLAUDE_CODE_AUTO_COMPACT_WINDOW` nếu có. Output luôn là JSON ASCII, nên trên Windows không vướng code page của console. Tắt bằng `COMPACT_NUDGE_HOOK_OFF=1`.
 

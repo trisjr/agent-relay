@@ -25,13 +25,13 @@ import sys
 import time
 from collections import Counter
 
+PEEK_LIMIT = 2 * 1024 * 1024  # enough for the last usage; the full read only runs to draft a nudge
 READ_LIMIT = 64 * 1024 * 1024
 STATE_TTL = 7 * 24 * 3600
 WINDOW_SHARE = 0.8  # auto-compact runs near window - 33K: nudge before it does
 EDIT_TOOLS = ("Edit", "Write", "MultiEdit", "NotebookEdit")
 DROP = "output test/lint và log dài đã xử lý xong"
 FALLBACK_KEEP = "task đang làm, file đang sửa, quyết định đã chốt, các hướng đã thử và vì sao loại, việc còn dở"
-SEPARATORS = ("&&", "||", ";", "|", "&")
 
 
 def option(name, default):
@@ -40,7 +40,7 @@ def option(name, default):
         value = float(os.environ.get("CLAUDE_PLUGIN_OPTION_" + name, default))
     except (TypeError, ValueError):
         return default
-    if value != value or value <= 0 or value == float("inf"):
+    if value != value or value == float("inf") or int(value) <= 0:
         return default
     return int(value)
 
@@ -57,14 +57,14 @@ def next_milestone(tokens, base, step):
     return base + step * ((tokens - base) // step + 1)
 
 
-def read_rows(path):
+def read_rows(path, limit):
     with open(path, "rb") as f:
         f.seek(0, os.SEEK_END)
         size = f.tell()
-        f.seek(max(0, size - READ_LIMIT))
+        f.seek(max(0, size - limit))
         chunk = f.read()
     lines = chunk.split(b"\n")
-    if size > READ_LIMIT:
+    if size > limit:
         lines = lines[1:]  # first line is likely cut in half
     rows = []
     for line in lines:
@@ -144,10 +144,14 @@ def result_text(part):
     return ""
 
 
-def tool_results(chain):
-    """tool_use_id -> (is_error, text) from the user rows that answer tool calls."""
+def tool_results(rows):
+    """tool_use_id -> (is_error, text) from the user rows that answer tool calls.
+
+    Takes every row, not just the active chain: a parallel call's result row hangs off the
+    first call's row as a dead-end sibling, and tool_use ids are unique anyway.
+    """
     results = {}
-    for row in chain:
+    for row in rows:
         message = row.get("message")
         content = message.get("content") if row.get("type") == "user" and isinstance(message, dict) else None
         if not isinstance(content, list):
@@ -224,11 +228,14 @@ def apply_task(plan, name, data, result):
 
 
 def segments(command):
-    lexer = shlex.shlex(command, posix=True, punctuation_chars=";&|")
+    """Simple commands of a shell line, split on ; & | and newlines (bash reads # mid-word as text)."""
+    lexer = shlex.shlex(command, posix=True, punctuation_chars=";&|\n")
+    lexer.whitespace = " \t\r"
     lexer.whitespace_split = True
+    lexer.commenters = ""
     segment = []
     for token in lexer:
-        if token in SEPARATORS:
+        if token and not token.strip(";&|\n"):
             yield segment
             segment = []
         else:
@@ -292,9 +299,9 @@ def clip(text, limit):
     return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
 
 
-def draft_command(chain):
+def draft_command(chain, rows=None):
     last_boundary = max((i for i, r in enumerate(chain) if is_boundary(r)), default=-1)
-    results = tool_results(chain)
+    results = tool_results(chain if rows is None else rows)
     recap, plan, commits = None, [], []
     files = Counter()
     last_seen = {}
@@ -414,8 +421,7 @@ def main():
     if not isinstance(transcript, str) or not os.path.isfile(transcript):
         return
     prune_states(path)
-    chain = active_chain(read_rows(transcript))
-    tokens = context_tokens(chain)
+    tokens = context_tokens(active_chain(read_rows(transcript, PEEK_LIMIT)))
     if tokens is None:
         return
     base = base_threshold(option("THRESHOLD", 200000))
@@ -429,7 +435,8 @@ def main():
         return
 
     try:
-        command = draft_command(chain)
+        rows = read_rows(transcript, READ_LIMIT)
+        command = draft_command(active_chain(rows), rows)
     except Exception:
         command = "/compact giữ lại: %s; bỏ: %s" % (FALLBACK_KEEP, DROP)
     # ensure_ascii keeps stdout ASCII, so no console code page can fail to encode it.

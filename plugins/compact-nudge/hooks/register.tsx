@@ -31,9 +31,13 @@ async function canDraw($: EngineInterface): Promise<boolean> {
   return (await $.session.surfaces()).length > 0
 }
 
+// Policy của tổ chức có thể chặn $.env.set: khi đó nudge.py vẫn nhắc, module phải đứng ngoài.
+let isEnvDenied = false
+
 // nudge.py chạy ở Stop, trước turn.complete, nên phải báo trước qua env: '1' là module này lo nhắc.
 async function announce($: EngineInterface, isOwner: boolean): Promise<void> {
-  await $.env.set('COMPACT_NUDGE_MODULE', isOwner ? '1' : undefined)
+  const set = await $.env.set('COMPACT_NUDGE_MODULE', isOwner ? '1' : undefined)
+  isEnvDenied = set.deny !== undefined
 }
 
 async function baseThreshold($: EngineInterface, threshold: number, window: number): Promise<number> {
@@ -76,19 +80,21 @@ const ASK = [
   'Không giải thích, không markdown, không làm gì khác.',
 ].join(' ')
 
-const MARKS = /^[\s>*_`"'“”]+|[\s*_`"'“”]+$/g
-const COMMAND = /(?:^|\s)\/compact(?=\s|$)(.*)$/
+const MARKS = /^[\s>*_`"'“”(.]+|[\s*_`"'“”).]+$/g
+// /compact có thể nằm giữa dòng, trong backtick/ngoặc kép/in đậm: "Lệnh: `/compact giữ X`".
+const COMMAND = /(?:^|[\s`"'“*_(>])\/compact(?=[\s`"'”*_)]|$)(.*)$/
 
 /** Rút dòng /compact từ câu trả lời của fork; null khi câu trả lời rỗng. */
 export function toCommand(text: string): string | null {
   const lines = text
     .split('\n')
+    .filter(l => !l.trim().startsWith('```'))
     .map(l => l.replace(MARKS, ''))
-    .filter(l => l !== '' && !l.startsWith('```'))
+    .filter(l => l !== '')
   for (const [i, line] of lines.entries()) {
     const match = COMMAND.exec(line)
     if (match) {
-      const rest = (match[1] ?? '').trim() || (lines[i + 1] ?? '')
+      const rest = (match[1] ?? '').replace(MARKS, '') || (lines[i + 1] ?? '')
       return `${FALLBACK}${rest}`.trimEnd()
     }
   }
@@ -128,12 +134,15 @@ export const register: Register = (on, options) => {
 
   on('turn.complete', async ($, e, next) => {
     const result = await next(e)
-    if (e.isAborted || e.agentId !== undefined || !(await canDraw($))) {
+    if (e.isAborted || e.agentId !== undefined || isEnvDenied || !(await canDraw($))) {
       return result
     }
 
     const { context } = await $.session.usage()
-    const tokens = context.tokens ?? 0
+    const tokens = context.tokens
+    if (tokens === undefined) {
+      return result
+    }
     const base = await baseThreshold($, threshold, context.window)
     if (tokens < base) {
       // Context tụt mà không qua session.compact (rewind…): bỏ lời nhắc cũ, mốc về lại ngưỡng.
@@ -149,9 +158,10 @@ export const register: Register = (on, options) => {
 
     const id = e.turnId
     await update($, nextAt, () => nextMilestone(tokens, base, step))
+    // Mở pane trước khi ghi atom: band vẽ lại theo atom và phải thấy pane đã được đặt hay chưa.
+    await openPane($)
     await update($, nudge, (): Nudge => ({ id, tokens, draft: 'drafting', command: null, isDismissed: false }))
     $.ui.toast(`Context ${formatTokens(tokens)} — nên compact`)
-    await openPane($)
 
     void $.model
       .fork({ prompt: ASK })
@@ -206,8 +216,8 @@ export const register: Register = (on, options) => {
     if (current === null) {
       return { text: 'Chưa có lời nhắc compact: context chưa chạm mốc.' }
     }
-    await update($, nudge, value => (value ? { ...value, isDismissed: false } : value))
     await openPane($)
+    await update($, nudge, value => (value ? { ...value, isDismissed: false } : value))
     return { text: 'Đã mở panel compact.' }
   })
 

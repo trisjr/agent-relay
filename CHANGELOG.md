@@ -19,9 +19,9 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - Context tụt mà không qua compact (rewind) thì reset mốc. Band kiểm tra panel đã được vẽ hay chưa ngay lúc vẽ, nên khi kéo rộng terminal không còn hiện cả hai.
   - **[Điền lệnh]** không ghi đè chữ đang gõ trong ô prompt, và không tự đóng lời nhắc khi điền thất bại. `/compact-nudge` mở lại được lời nhắc đã bỏ qua.
 - **compact-nudge** (`nudge.py`):
-  - Đọc đúng commit kiểu heredoc mà Claude Code dùng (`-m "$(cat <<'EOF' …)"`), cùng các dạng `-am` và `--message=`. Tách lệnh theo `&&`/`;`/`|`, bỏ qua commit thất bại.
+  - Đọc đúng commit kiểu heredoc mà Claude Code dùng (`-m "$(cat <<'EOF' …)"`), cùng các dạng `-am` và `--message=`. Tách lệnh theo `&&`/`;`/`|`/xuống dòng, bỏ qua commit thất bại (kể cả kết quả của tool call chạy song song).
   - Tính context theo iteration thật cuối cùng khi có `usage.iterations`, trước đây bị cộng dồn nên nhắc quá sớm.
-  - Đọc tối đa 64MB thay vì 2MB, nên ở mốc lớn lệnh soạn vẫn còn task list, file và commit. Chỉ đọc nhánh hiện tại của transcript (bỏ nhánh đã rewind). Replay được `TaskCreate`/`TaskUpdate`; task list được giữ qua compact. File trùng tên thì ghi kèm thư mục cha.
+  - Khi nhắc, đọc tối đa 64MB thay vì 2MB, nên ở mốc lớn lệnh soạn vẫn còn task list, file và commit; các `Stop` bình thường vẫn chỉ đọc 2MB. Chỉ đọc nhánh hiện tại của transcript (bỏ nhánh đã rewind). Replay được `TaskCreate`/`TaskUpdate`; task list được giữ qua compact. File trùng tên thì ghi kèm thư mục cha.
   - Output ASCII và đọc stdin dạng UTF-8, nên Windows không còn nuốt lời nhắc. Launcher thử `python3`, rồi `python`, rồi `py -3`.
   - Chỉ lưu mốc sau khi đã in được lời nhắc. Bỏ check `stop_hook_active` (trước đây làm ngược với ý định). Tự dọn state file của session đã ngưng quá 7 ngày.
 - **compact-nudge**: thêm `hooks/test_nudge.py`, bổ sung test UI/race cho module. README được viết lại cho khớp hành vi và không còn xưng hô với người đọc. Rule Cursor chuyển sang dạng manual.
