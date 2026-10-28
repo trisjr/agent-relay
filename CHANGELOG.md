@@ -5,6 +5,27 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+### Changed
+
+- **compact-nudge**: module function hooks giờ là đường nhắc chính trên cả terminal lẫn Code tab của desktop app. Khi có surface vẽ được UI, module đặt `COMPACT_NUDGE_MODULE=1`; `nudge.py` thấy biến này thì đứng ngoài, và chỉ còn là fallback cho Claude Code chưa có function hooks, `claude -p` và SDK. Trước đây desktop bị nhắc hai lần (panel cộng `systemMessage`), còn `-p`/SDK vẫn chạy fork tốn phí dù không ai thấy kết quả.
+- **compact-nudge**: mốc nhắc giờ chia đều theo `step` (200K → 300K → 400K…) thay vì "token lúc nhắc + step". Window nhỏ thì ngưỡng tự hạ xuống 80% window để kịp nhắc trước auto-compact. Option ≤ 0 hoặc không phải số quay về mặc định; tăng `threshold` có hiệu lực ngay.
+- **compact-nudge**: lệnh `/compact` soạn sẵn (cả bản fork lẫn bản soạn theo luật) không còn bảo bỏ "các hướng đã loại" hay "file chỉ đọc qua", mà dặn giữ các hướng đã thử và lý do loại, để sau compact Claude không lặp lại cách đã thất bại.
+
+### Fixed
+
+- **compact-nudge** (module):
+  - `precompute` và compact bị chặn (`skip`) không còn reset mốc, nên không nhắc lại và fork thêm lần nữa ở cùng mức context.
+  - Fork trả kết quả muộn không còn gợi ý lệnh sau khi người dùng đã bỏ qua hay đã compact, cũng không ghi đè lời nhắc mới hơn. Fork lỗi thì báo không soạn được, thay vì gợi ý một `/compact` trống.
+  - Context tụt mà không qua compact (rewind) thì reset mốc. Band kiểm tra panel đã được vẽ hay chưa ngay lúc vẽ, nên khi kéo rộng terminal không còn hiện cả hai.
+  - **[Điền lệnh]** không ghi đè chữ đang gõ trong ô prompt, và không tự đóng lời nhắc khi điền thất bại. `/compact-nudge` mở lại được lời nhắc đã bỏ qua.
+- **compact-nudge** (`nudge.py`):
+  - Đọc đúng commit kiểu heredoc mà Claude Code dùng (`-m "$(cat <<'EOF' …)"`), cùng các dạng `-am` và `--message=`. Tách lệnh theo `&&`/`;`/`|`/xuống dòng, bỏ qua commit thất bại (kể cả kết quả của tool call chạy song song).
+  - Tính context theo iteration thật cuối cùng khi có `usage.iterations`, trước đây bị cộng dồn nên nhắc quá sớm.
+  - Khi nhắc, đọc tối đa 64MB thay vì 2MB, nên ở mốc lớn lệnh soạn vẫn còn task list, file và commit; các `Stop` bình thường vẫn chỉ đọc 2MB. Chỉ đọc nhánh hiện tại của transcript (bỏ nhánh đã rewind). Replay được `TaskCreate`/`TaskUpdate`; task list được giữ qua compact. File trùng tên thì ghi kèm thư mục cha.
+  - Output ASCII và đọc stdin dạng UTF-8, nên Windows không còn nuốt lời nhắc. Launcher thử `python3`, rồi `python`, rồi `py -3`.
+  - Chỉ lưu mốc sau khi đã in được lời nhắc. Bỏ check `stop_hook_active` (trước đây làm ngược với ý định). Tự dọn state file của session đã ngưng quá 7 ngày.
+- **compact-nudge**: thêm `hooks/test_nudge.py`, bổ sung test UI/race cho module. README được viết lại cho khớp hành vi và không còn xưng hô với người đọc. Rule Cursor chuyển sang dạng manual.
+
 ## [0.26.1] - 2026-10-22
 
 ### Plugins

@@ -1,10 +1,10 @@
 {
-  "description": "register.tsx nudges on the terminal (function hooks). nudge.py is the command-hook fallback for surfaces that do not draw the function-hook UI (desktop Code tab, IDE, SDK); it skips the 'cli' entrypoint and only emits a systemMessage at Stop. '|| true' keeps a launcher failure from ever blocking a turn.",
+  "description": "register.tsx nudges wherever a surface draws its pane/band (terminal, desktop Code tab) and sets COMPACT_NUDGE_MODULE=1 at session start. nudge.py is the command-hook fallback for every other session (no function hooks, -p, SDK): it exits at once when COMPACT_NUDGE_MODULE=1 and only emits a systemMessage at Stop. The launcher tries python3, then python, then py -3 (Windows installs without python3); '|| true' keeps a missing interpreter from ever blocking a turn.",
   "hooks": {
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" || true", "timeout": 5 }
+          { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" 2>/dev/null || python \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" 2>/dev/null || py -3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" 2>/dev/null || true", "timeout": 5 }
         ]
       }
     ],
@@ -12,7 +12,7 @@
       {
         "matcher": "compact|clear",
         "hooks": [
-          { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" reset || true", "timeout": 5 }
+          { "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" reset 2>/dev/null || python \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" reset 2>/dev/null || py -3 \"${CLAUDE_PLUGIN_ROOT}/hooks/nudge.py\" reset 2>/dev/null || true", "timeout": 5 }
         ]
       }
     ]
