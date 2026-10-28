@@ -1,18 +1,19 @@
 # ba-workflows
 
-Plugin cung cấp bộ **21 Core AI Skills** và **20 Rules** chuẩn mực dành cho IT Business Analyst & Product Owner, tập trung vào các luồng xương sống (Core Workflows) từ làm rõ ý tưởng, đặc tả kỹ thuật, dựng sơ đồ, thiết kế prototype đến kiểm thử và quản lý thay đổi.
+Plugin cung cấp bộ **22 Core AI Skills** và **20 Rules** chuẩn mực dành cho IT Business Analyst & Product Owner, tập trung vào các luồng xương sống (Core Workflows) từ làm rõ ý tưởng, đặc tả kỹ thuật, dựng sơ đồ, thiết kế prototype đến kiểm thử và quản lý thay đổi.
 
 Nguồn skill và quy chuẩn chuẩn hóa dựa trên [OpenBA-Kit](https://github.com/trisjr/OpenBA-Kit).
 
 ---
 
-## ⚡ Danh sách 21 Core Skills
+## ⚡ Danh sách 22 Core Skills
 
 | Phân nhóm | Skill | Mô tả | Template tham chiếu |
 | :--- | :--- | :--- | :--- |
 | **1. Kế hoạch & Ý tưởng** | `prd` | PRD toàn sản phẩm: tầm nhìn, người dùng, bóc tách danh sách tính năng | `01-prd.md` |
 | | `brainstorm` | Ghi ý tưởng thô rồi phỏng vấn làm rõ nghiệp vụ trước khi viết tài liệu | `04-brainstorm.md` |
 | **2. Đặc tả yêu cầu** | `srs` | Đặc tả kỹ thuật IEEE 830: FR, NFR, Business Rules, Error Matrix | `08-srs.md` |
+| | `code-to-srs` | Đọc source code hệ thống cũ, dựng lại SRS kèm trích dẫn `file:line` | `14-code-to-srs.md` |
 | | `usecase` | Use Case chi tiết chuẩn Cockburn: actor, preconditions, luồng chính, ngoại lệ | `26-usecase-cockburn.md` |
 | | `userstory` | Sinh User Story chuẩn INVEST sẵn sàng đưa vào backlog | `27-userstory.md` |
 | | `ac` | Acceptance Criteria cú pháp Gherkin (`Given / When / Then`) cho từng story | `28-acceptance-criteria.md` |

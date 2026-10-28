@@ -38,7 +38,7 @@
     {
       "name": "ba-workflows",
       "source": "./plugins/ba-workflows",
-      "description": "Essential IT Business Analyst & Product Owner Core Workflows: 21 core AI skills covering requirements elicitation, SRS/PRD specification, diagrams (Sequence, ERD, Activity, State), UI/wireframe prototyping, API integration, QA test cases, and change management."
+      "description": "Essential IT Business Analyst & Product Owner Core Workflows: 22 core AI skills covering requirements elicitation, SRS/PRD specification, diagrams (Sequence, ERD, Activity, State), UI/wireframe prototyping, API integration, QA test cases, and change management."
     }
   ]
 }
