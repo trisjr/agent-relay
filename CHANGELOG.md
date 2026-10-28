@@ -5,6 +5,12 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.26.2] - 2026-10-28
+
+### Plugins
+
+- `compact-nudge`: 0.3.0 → 0.3.1
+
 ### Changed
 
 - **compact-nudge**: module function hooks giờ là đường nhắc chính trên cả terminal lẫn Code tab của desktop app. Khi có surface vẽ được UI, module đặt `COMPACT_NUDGE_MODULE=1`; `nudge.py` thấy biến này thì đứng ngoài, và chỉ còn là fallback cho Claude Code chưa có function hooks, `claude -p` và SDK. Trước đây desktop bị nhắc hai lần (panel cộng `systemMessage`), còn `-p`/SDK vẫn chạy fork tốn phí dù không ai thấy kết quả.
@@ -542,7 +548,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.26.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.26.2...HEAD
+[0.26.2]: https://github.com/trisjr/agent-relay/compare/v0.26.1...v0.26.2
 [0.26.1]: https://github.com/trisjr/agent-relay/compare/v0.26.0...v0.26.1
 [0.26.0]: https://github.com/trisjr/agent-relay/compare/v0.25.2...v0.26.0
 [0.25.2]: https://github.com/trisjr/agent-relay/compare/v0.25.1...v0.25.2
