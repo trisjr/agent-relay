@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-10-28
+
+### Plugins
+
+- `ba-workflows`: 0.1.1 → 0.2.0
+
+### Added
+
+- **ba-workflows**: skill `code-to-srs` đọc source code hệ thống cũ (controllers, models, validation, services) và dựng lại SRS với FR / BR / ERR kèm trích dẫn `file:line`. Hành vi mơ hồ hoặc nghi là bug được tách vào mục "Điểm cần xác nhận" thay vì ghi thẳng thành requirement. Kèm template `14-code-to-srs.md`.
+
 ## [0.26.2] - 2026-10-28
 
 ### Plugins
@@ -548,7 +558,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.26.2...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.27.0...HEAD
+[0.27.0]: https://github.com/trisjr/agent-relay/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/trisjr/agent-relay/compare/v0.26.1...v0.26.2
 [0.26.1]: https://github.com/trisjr/agent-relay/compare/v0.26.0...v0.26.1
 [0.26.0]: https://github.com/trisjr/agent-relay/compare/v0.25.2...v0.26.0
