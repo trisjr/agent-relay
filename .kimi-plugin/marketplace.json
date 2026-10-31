@@ -34,9 +34,9 @@
       "id": "compact-nudge",
       "name": "compact-nudge",
       "displayName": "Compact Nudge",
-      "version": "0.3.1",
-      "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only: a function-hook pane on the terminal and desktop app, a command-hook fallback everywhere else; never compacts on its own.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.26.2/compact-nudge-0.26.2.zip"
+      "version": "0.4.0",
+      "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only: a function-hook pane on the terminal and a card above the chat on the desktop app, a command-hook fallback everywhere else; never compacts on its own.",
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.28.0/compact-nudge-0.28.0.zip"
     },
     {
       "id": "launch-video",

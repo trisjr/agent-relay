@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-10-31
+
+### Plugins
+
+- `compact-nudge`: 0.3.1 → 0.4.0
+
+### Added
+
+- **compact-nudge**: trên session chỉ có desktop app, lời nhắc `/compact` giờ hiện thành **card** ngay phía trên ô chat (tiêu đề, lệnh gợi ý, nút **Điền lệnh** và nút X để bỏ qua) thay vì mở panel ở sidebar; panel còn sót từ trước được tự đóng. Session có terminal (kể cả khi desktop cùng attach) vẫn dùng panel/band như cũ. `/compact-nudge` mở lại được lời nhắc gần nhất trên cả desktop app.
+
 ## [0.27.0] - 2026-10-28
 
 ### Plugins
@@ -558,7 +568,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.27.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.28.0...HEAD
+[0.28.0]: https://github.com/trisjr/agent-relay/compare/v0.27.0...v0.28.0
 [0.27.0]: https://github.com/trisjr/agent-relay/compare/v0.26.2...v0.27.0
 [0.26.2]: https://github.com/trisjr/agent-relay/compare/v0.26.1...v0.26.2
 [0.26.1]: https://github.com/trisjr/agent-relay/compare/v0.26.0...v0.26.1
