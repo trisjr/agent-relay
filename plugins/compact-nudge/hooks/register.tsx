@@ -127,8 +127,9 @@ function drawNudge($: EngineInterface, e: Parameters<EngineInterface['ui']['reso
   // Card desktop có tiêu đề đậm như notice của app; nơi khác giữ màu vàng cũ.
   const isDesktop = e.surface === 'desktop'
 
+  // Nút native của desktop cao hơn một hàng chữ: thiếu gap thì nút đè lên dòng ngay trên. Terminal vẽ gap "sm" dọc là 0 hàng.
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" gap="sm">
       <Text bold={isDesktop} color={isDesktop ? undefined : 'yellow'}>
         Context {formatTokens(current.tokens)} — nên compact để giảm chi phí mỗi lượt.
       </Text>
