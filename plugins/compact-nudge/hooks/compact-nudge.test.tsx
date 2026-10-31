@@ -17,6 +17,8 @@ type Fake = {
   fork?: () => Promise<{ isAnswered: boolean; text: string }>
   draft?: string
   isPanePlaced?: boolean
+  /** Pane đã mở từ trước (terminal, hoặc bản cũ trước reload). */
+  isPaneOpen?: boolean
 }
 
 function fakeSession(on: On, fake: Fake) {
@@ -38,15 +40,22 @@ function fakeSession(on: On, fake: Fake) {
     seen.env.push((e as { value?: string }).value)
     return { value: {} } as never
   })
+  let isPaneOpen = fake.isPaneOpen ?? false
   on('ui.open', (_$, e) => {
     seen.opened.push(e.id)
+    isPaneOpen = true
     return { value: { isPlaced: true } } as never
   })
   on('ui.close', (_$, e) => {
     seen.closed.push(e.id)
+    isPaneOpen = false
     return { value: undefined } as never
   })
-  on('ui.panes', () => ({ value: [{ id: 'compact-nudge', title: 'Compact', isShown: true, isFocused: false, isPlaced: fake.isPanePlaced ?? false }] }) as never)
+  on('ui.panes', () => ({
+    value: isPaneOpen
+      ? [{ id: 'compact-nudge', title: 'Compact', isShown: true, isFocused: false, isPlaced: fake.isPanePlaced ?? false }]
+      : [],
+  }) as never)
   on('prompt.suggest', (_$, e) => {
     seen.suggested.push(e.text)
     return { isShown: true } as never
@@ -90,6 +99,14 @@ const PANE = {
   requestId: 'compact-nudge',
   props: { title: 'Compact', isFocused: false, bodyColumns: 60, placement: 'dock', scroll: { offset: 0, bodyRows: 6 }, view: {} },
 } as const
+
+/** Đứng thay engine: plugin trả next(e) thì engine vẽ band của nó. */
+function engineBand(on: On) {
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text>engine</Text>
+  })
+}
 
 const BAND = {
   plugin: 'compact-nudge',
@@ -269,19 +286,70 @@ describe('coordination', () => {
 })
 
 describe('ui', () => {
-  for (const surface of ['terminal', 'desktop'] as const) {
-    test(`panel trên ${surface}: hiện lệnh, Điền lệnh đưa vào ô prompt`, async ($, on) => {
-      const seen = fakeSession(on, { tokens: 262_000 })
-      await endTurn($)
-      await settle()
-      const ui = await $.ui.mount({ ...PANE, surface })
-      expect((await ui.find({ type: 'Text', text: /giữ lại/ }))?.text).toBe(SUGGESTED)
-      await ui.press({ key: 'fill' })
-      expect(seen.filled).toEqual([SUGGESTED])
-      expect(seen.closed).toEqual(['compact-nudge'])
-      await ui.unmount()
-    })
-  }
+  test('panel trên terminal: hiện lệnh, Điền lệnh đưa vào ô prompt', async ($, on) => {
+    const seen = fakeSession(on, { tokens: 262_000 })
+    await endTurn($)
+    await settle()
+    const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+    expect((await ui.find({ type: 'Text', text: /giữ lại/ }))?.text).toBe(SUGGESTED)
+    await ui.press({ key: 'fill' })
+    expect(seen.filled).toEqual([SUGGESTED])
+    expect(seen.closed).toEqual(['compact-nudge'])
+    await ui.unmount()
+  })
+
+  test('desktop: không mở pane sidebar, đóng pane còn sót, card trên ô chat có Điền lệnh và nút đóng', async ($, on) => {
+    const seen = fakeSession(on, { tokens: 262_000, surfaces: ['desktop'], isPaneOpen: true, isPanePlaced: true })
+    engineBand(on)
+    await endTurn($)
+    await settle()
+    expect(seen.opened).toEqual([])
+    expect(seen.closed).toEqual(['compact-nudge'])
+    let ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+    expect(await ui.find({ type: 'Text', text: /262K/ })).toBeDefined()
+    expect((await ui.find({ type: 'Text', text: /giữ lại/ }))?.text).toBe(SUGGESTED)
+    expect((await ui.find({ type: 'Button', key: 'dismiss' }))?.props.role).toBe('dismiss')
+    await ui.press({ key: 'fill' })
+    expect(seen.filled).toEqual([SUGGESTED])
+    await ui.unmount()
+
+    ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+    expect(await ui.find({ type: 'Text', text: /262K/ })).toBeUndefined()
+    await ui.unmount()
+  })
+
+  test('desktop: bấm đóng thì card biến mất, /compact-nudge hiện lại mà không mở pane', async ($, on) => {
+    const seen = fakeSession(on, { tokens: 262_000, surfaces: ['desktop'] })
+    engineBand(on)
+    await endTurn($)
+    await settle()
+    let ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+    await ui.press({ key: 'dismiss' })
+    await ui.unmount()
+    ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+    expect(await ui.find({ type: 'Text', text: /262K/ })).toBeUndefined()
+    await ui.unmount()
+
+    await $.command.run({ command: 'compact-nudge', args: '' } as never)
+    expect(seen.opened).toEqual([])
+    ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+    expect(await ui.find({ type: 'Text', text: /262K/ })).toBeDefined()
+    await ui.unmount()
+  })
+
+  test('terminal và desktop cùng attach: terminal vẫn có pane, desktop không hiện thêm card', async ($, on) => {
+    const seen = fakeSession(on, { tokens: 262_000, surfaces: ['terminal', 'desktop'], isPanePlaced: true })
+    engineBand(on)
+    await endTurn($)
+    await settle()
+    expect(seen.opened).toEqual(['compact-nudge'])
+    const pane = await $.ui.mount({ ...PANE, surface: 'terminal' })
+    expect((await pane.find({ type: 'Text', text: /giữ lại/ }))?.text).toBe(SUGGESTED)
+    await pane.unmount()
+    const band = await $.ui.mount({ ...BAND, surface: 'desktop' })
+    expect(await band.find({ type: 'Text', text: /262K/ })).toBeUndefined()
+    await band.unmount()
+  })
 
   test('ô prompt đang có chữ thì Điền lệnh không ghi đè', async ($, on) => {
     const seen = fakeSession(on, { tokens: 262_000, draft: 'đang gõ dở' })
@@ -297,11 +365,7 @@ describe('ui', () => {
   test('band chỉ hiện khi pane chưa được vẽ', async ($, on) => {
     const fake: Fake = { tokens: 262_000, isPanePlaced: false }
     fakeSession(on, fake)
-    // Hook này đứng thay engine: plugin trả next(e) thì engine vẽ band của nó.
-    on('ui.render', ($, e) => {
-      const { Text } = $.ui.resolve(e)
-      return <Text>engine</Text>
-    })
+    engineBand(on)
     await endTurn($)
     await settle()
     let ui = await $.ui.mount({ ...BAND, surface: 'terminal' })
@@ -324,7 +388,7 @@ describe('ui', () => {
     await ui.unmount()
 
     const answer = await $.command.run({ command: 'compact-nudge', args: '' } as never)
-    expect((answer as { text: string }).text).toBe('Đã mở panel compact.')
+    expect((answer as { text: string }).text).toBe('Đã mở lại lời nhắc compact.')
     expect(seen.opened).toEqual(['compact-nudge', 'compact-nudge'])
     ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
     expect((await ui.find({ type: 'Text', text: /giữ lại/ }))?.text).toBe(SUGGESTED)
