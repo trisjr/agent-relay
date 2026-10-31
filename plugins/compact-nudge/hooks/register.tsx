@@ -3,7 +3,7 @@
  * @description Nhắc user compact khi context vượt ngưỡng, kèm lệnh /compact do chính session soạn sẵn
  */
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register } from 'claude-code'
+import type { EngineInterface, Register, RenderSurface } from 'claude-code'
 
 import type { Nudge } from '../types'
 
@@ -29,6 +29,16 @@ export function nextMilestone(tokens: number, base: number, step: number): numbe
 /** Có surface nào vẽ được pane/band không; không có (-p, SDK chưa attach) thì để nudge.py nhắc. */
 async function canDraw($: EngineInterface): Promise<boolean> {
   return (await $.session.surfaces()).length > 0
+}
+
+// Desktop vẽ band thành card ngay trên ô chat; pane chỉ mở khi còn surface khác (terminal, VS Code, mobile).
+// Session chỉ có desktop thì đóng pane còn sót (mở từ terminal, hoặc từ bản cũ trước reload) để không hiện hai lần.
+async function showNudge($: EngineInterface, surfaces: readonly RenderSurface[]): Promise<void> {
+  if (surfaces.some(surface => surface !== 'desktop')) {
+    await openPane($)
+  } else {
+    await $.ui.close({ id: PANE })
+  }
 }
 
 // Policy của tổ chức có thể chặn $.env.set: khi đó nudge.py vẫn nhắc, module phải đứng ngoài.
@@ -114,15 +124,19 @@ function drawNudge($: EngineInterface, e: Parameters<EngineInterface['ui']['reso
       : current.draft === 'failed'
         ? 'Không soạn được lệnh gợi ý; Điền lệnh sẽ điền /compact để tự viết.'
         : current.command
+  // Card desktop có tiêu đề đậm như notice của app; nơi khác giữ màu vàng cũ.
+  const isDesktop = e.surface === 'desktop'
 
   return (
     <Box flexDirection="column">
-      <Text color="yellow">Context {formatTokens(current.tokens)} — nên compact để giảm chi phí mỗi lượt.</Text>
+      <Text bold={isDesktop} color={isDesktop ? undefined : 'yellow'}>
+        Context {formatTokens(current.tokens)} — nên compact để giảm chi phí mỗi lượt.
+      </Text>
       <Text dimColor>{draft}</Text>
       <Box>
-        <Button key="fill" label="Điền lệnh" hotkey="c" onPress={() => fillCommand($, current)} />
+        <Button key="fill" label="Điền lệnh" hotkey="c" variant="primary" onPress={() => fillCommand($, current)} />
         <Text> </Text>
-        <Button key="dismiss" label="Bỏ qua" hotkey="x" onPress={() => dismissNudge($)} />
+        <Button key="dismiss" label="Bỏ qua" hotkey="x" role="dismiss" onPress={() => dismissNudge($)} />
       </Box>
     </Box>
   )
@@ -134,7 +148,11 @@ export const register: Register = (on, options) => {
 
   on('turn.complete', async ($, e, next) => {
     const result = await next(e)
-    if (e.isAborted || e.agentId !== undefined || isEnvDenied || !(await canDraw($))) {
+    if (e.isAborted || e.agentId !== undefined || isEnvDenied) {
+      return result
+    }
+    const surfaces = await $.session.surfaces()
+    if (surfaces.length === 0) {
       return result
     }
 
@@ -158,8 +176,8 @@ export const register: Register = (on, options) => {
 
     const id = e.turnId
     await update($, nextAt, () => nextMilestone(tokens, base, step))
-    // Mở pane trước khi ghi atom: band vẽ lại theo atom và phải thấy pane đã được đặt hay chưa.
-    await openPane($)
+    // Mở hoặc đóng pane trước khi ghi atom: band vẽ lại theo atom và phải thấy pane đã được đặt hay chưa.
+    await showNudge($, surfaces)
     await update($, nudge, (): Nudge => ({ id, tokens, draft: 'drafting', command: null, isDismissed: false }))
     $.ui.toast(`Context ${formatTokens(tokens)} — nên compact`)
 
@@ -194,7 +212,7 @@ export const register: Register = (on, options) => {
     await announce($, e.surface !== null)
     await $.command.register({
       name: 'compact-nudge',
-      description: 'Mở panel gợi ý /compact cho context hiện tại',
+      description: 'Mở lại lời nhắc /compact cho context hiện tại',
     })
     return next(e)
   })
@@ -216,9 +234,9 @@ export const register: Register = (on, options) => {
     if (current === null) {
       return { text: 'Chưa có lời nhắc compact: context chưa chạm mốc.' }
     }
-    await openPane($)
+    await showNudge($, await $.session.surfaces())
     await update($, nudge, value => (value ? { ...value, isDismissed: false } : value))
-    return { text: 'Đã mở panel compact.' }
+    return { text: 'Đã mở lại lời nhắc compact.' }
   })
 
   // Đóng panel bằng tay (nút đóng, Esc) coi như bỏ qua lời nhắc; /compact-nudge mở lại được.
@@ -237,7 +255,7 @@ export const register: Register = (on, options) => {
     return drawNudge($, e, current)
   })
 
-  // Fallback: pane chưa được vẽ (terminal hẹp) thì hiện band phía trên prompt. Đọc lúc vẽ để theo kịp resize.
+  // Hiện band khi pane chưa được vẽ: terminal hẹp, hoặc session chỉ có desktop. Đọc lúc vẽ để theo kịp resize.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const current = await read($, nudge)
     if (e.props.hasSurvey || current === null || current.isDismissed) {
