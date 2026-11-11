@@ -1,13 +1,12 @@
 # dev-workflows
 
-Plugin gom toàn bộ workflow chuẩn cho dev làm việc cùng coding agent vào một chỗ: **làm rõ yêu cầu → chia việc song song cho subagent → debug theo bằng chứng → ghi và tái dùng bài học**. Một lần cài, đủ năm skill, mọi platform dùng chung một bộ quy trình.
+Plugin gom toàn bộ workflow chuẩn cho dev làm việc cùng coding agent vào một chỗ: **làm rõ yêu cầu → debug theo bằng chứng → ghi và tái dùng bài học**. Một lần cài, đủ bốn skill, mọi platform dùng chung một bộ quy trình.
 
 ## Các skill
 
 | Nhóm | Skill | Dùng khi | Làm gì |
 | --- | --- | --- | --- |
 | Làm rõ yêu cầu | `clarify-requirements` | Yêu cầu còn nhiều cách hiểu ảnh hưởng scope, quyền, dữ liệu hoặc public contract trước khi implement/plan; "làm rõ yêu cầu", feature hoặc spec chưa đủ rõ | Tra repo trước → phân biệt câu hỏi bắt buộc và lựa chọn có thể mặc định → tối đa 3 câu mỗi vòng, 3 vòng → brief ngắn hoặc draft ghi rõ phần bị chặn. Mặc định làm inline; chỉ dùng subagent có sẵn khi cần tra nhiều câu hỏi độc lập |
-| Song song | `parallel-scopes` | Một task nhiều phần độc lập (FE/BE/docs/test) muốn chạy song song bằng subagent thường | Chốt contract trước → bảng scope với ownership file không chồng → spawn cả wave trong một lượt (một working tree, worktree chỉ khi đụng file chung) → tích hợp và verify ở main session |
 | Debug | `debug-root-cause` | Một test, build, CI, runtime hoặc benchmark đã fail, kể cả flaky hoặc chỉ fail trên CI | Thu bằng chứng → kiểm tra giả thuyết → diagnosis report kèm đề xuất fix; chỉ sửa và verify khi request, lượt trước hoặc spec đã giao sửa, trong đúng phạm vi đó; ledger chỉ khi cần |
 | Bài học | `retro-capture` | Sau việc có bài học khó thấy trong code, test hoặc docs; khi người dùng sửa agent hoặc yêu cầu ghi nhớ | Cân giá trị lâu dài, ghi một solution note có cấu trúc, cập nhật note cũ nếu trùng |
 | Bài học | `retro-recall` | Trước việc không tầm thường trong vùng đã có note, hoặc khi người dùng yêu cầu dọn kho | Lọc theo frontmatter, đọc vài note liên quan, áp dụng và dẫn nguồn; phân loại note khi dọn kho |
@@ -77,7 +76,7 @@ Chạy test của hook: `sh plugins/dev-workflows/hooks/test-remind-capture.sh`.
 2. Namespace của skill đổi từ `<plugin-cũ>:<skill>` sang `dev-workflows:<skill>` (ví dụ `clarify-requirements:clarify-requirements` thành `dev-workflows:clarify-requirements`). Tên skill không đổi.
 3. Hành vi hook, biến môi trường `COMPOUND_RETROS_HOOK_OFF` và kho `docs/solutions/` giữ nguyên.
 
-Các skill điều phối qua Orca (`orca-router`, `research-swarm`, `parallel-review`, `dag-build`) đã bị gỡ khỏi `dev-workflows`; các plugin `jev-dispatch`, `jev-gate`, `spec-readiness-gate` cũng đã bị xoá khỏi marketplace. Ai đã cài thì gỡ bằng `/plugin uninstall <tên>@agent-relay`.
+Các skill điều phối qua Orca (`orca-router`, `research-swarm`, `parallel-review`, `dag-build`) và skill `parallel-scopes` đã bị gỡ khỏi `dev-workflows`; các plugin `jev-dispatch`, `jev-gate`, `spec-readiness-gate` cũng đã bị xoá khỏi marketplace. Ai đã cài thì gỡ bằng `/plugin uninstall <tên>@agent-relay`.
 
 ## Cài đặt
 

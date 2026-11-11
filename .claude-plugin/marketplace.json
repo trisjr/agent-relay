@@ -18,7 +18,7 @@
     {
       "name": "dev-workflows",
       "source": "./plugins/dev-workflows",
-      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and split multi-part tasks into parallel subagent scopes."
+      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, and capture and recall project lessons."
     },
     {
       "name": "ba-workflows",
