@@ -27,7 +27,7 @@
       "name": "dev-workflows",
       "displayName": "Dev Workflows",
       "version": "0.4.2",
-      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and split multi-part tasks into parallel subagent scopes.",
+      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, and capture and recall project lessons.",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.25.2/dev-workflows-0.25.2.zip"
     },
     {

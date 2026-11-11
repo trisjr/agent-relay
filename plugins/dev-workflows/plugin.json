@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "dev-workflows",
   "version": "0.4.2",
-  "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and split multi-part tasks into parallel subagent scopes.",
+  "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, and capture and recall project lessons.",
   "author": {
     "name": "AgentRelay Maintainers"
   }
