@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "anh muốn thêm một plugin mới vào marketplace này để quản lý secret/API key cho các agent, làm giúp anh",
-      "expected_output": "Explores the repo first and does not ask about conventions it can read (kebab-case name, five manifests, scripts/new-plugin.sh, jev-dispatch's sensitive userConfig precedent). Asks at most 3 self-contained questions about user preferences only (e.g. where secrets are stored, which harnesses must be supported, whether secrets may leave the machine), each with 2-3 options and the recommended option first marked (Recommended), in Vietnamese. Treats secret handling as high impact, logs low-risk defaults as assumptions, and does not scaffold or edit files before the answers arrive.",
+      "expected_output": "Explores the repo first and does not ask about conventions it can read (kebab-case name, five manifests, scripts/new-plugin.sh). Asks at most 3 self-contained questions about user preferences only (e.g. where secrets are stored, which harnesses must be supported, whether secrets may leave the machine), each with 2-3 options and the recommended option first marked (Recommended), in Vietnamese. Treats secret handling as high impact, logs low-risk defaults as assumptions, and does not scaffold or edit files before the answers arrive.",
       "files": [],
       "expectations": [
         "Reads repo conventions (AGENTS.md, scripts/new-plugin.sh or existing manifests) before asking",
@@ -36,20 +36,6 @@
         "Does not use an interactive question tool or wait for input",
         "Ends with required questions that have no automatic default if unanswered",
         "Marks the ambiguous deletions as BLOCKED"
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "thêm vào jev-dispatch một cách export dispatch log ra CSV để anh mở bằng Excel",
-      "expected_output": "Reads the dispatch-routing skill and README to learn the log path and record shapes (append-only JSONL with route and outcome records joined by id) instead of asking. Asks at most one or two questions that change the output (e.g. one row per route+outcome pair vs one row per record) with a recommended option, or proceeds with logged assumptions if every choice is reversible. Ends with a short requirements brief whose acceptance is a checklist, not Gherkin, and whose Approach recommends inline work.",
-      "files": [],
-      "expectations": [
-        "Reads the jev-dispatch skill or README to learn the log location and record shape",
-        "Does not ask where the log lives or what format it uses",
-        "Asks at most two questions, or none with logged assumptions",
-        "Produces a requirements brief whose Acceptance is a checklist rather than Given/When/Then",
-        "The brief includes an Approach line recommending inline work",
-        "Spawns no explore subagent: the log shape is one area settled by reading inline"
       ]
     },
     {

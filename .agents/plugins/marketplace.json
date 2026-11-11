@@ -5,21 +5,6 @@
   },
   "plugins": [
     {
-      "name": "jev-dispatch",
-      "source": "./plugins/jev-dispatch",
-      "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill)."
-    },
-    {
-      "name": "jev-gate",
-      "source": "./plugins/jev-gate",
-      "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill)."
-    },
-    {
-      "name": "spec-readiness-gate",
-      "source": "./plugins/spec-readiness-gate",
-      "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill)."
-    },
-    {
       "name": "compact-nudge",
       "source": "./plugins/compact-nudge",
       "description": "Nudge the user to run /compact once the session context passes a token threshold, with a ready-to-edit /compact command drafted from the conversation. Claude Code only: a function-hook pane on the terminal and a card above the chat on the desktop app, a command-hook fallback everywhere else; never compacts on its own."
@@ -32,7 +17,7 @@
     {
       "name": "dev-workflows",
       "source": "./plugins/dev-workflows",
-      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI."
+      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and split multi-part tasks into parallel subagent scopes."
     },
     {
       "name": "ba-workflows",

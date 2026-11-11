@@ -7,30 +7,6 @@
   },
   "plugins": [
     {
-      "id": "jev-dispatch",
-      "name": "jev-dispatch",
-      "displayName": "Jev Dispatch",
-      "version": "0.5.1",
-      "description": "Route agent tasks to the right harness, model, and effort level using a TypeSafe Jev judgment battery and a pure-code dispatch policy (MCP server + skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.19.0/jev-dispatch-0.19.0.zip"
-    },
-    {
-      "id": "jev-gate",
-      "name": "jev-gate",
-      "displayName": "Jev Gate",
-      "version": "0.1.3",
-      "description": "Gate agent tool calls before they run: plain-code lock rules ask before dangerous commands, a REUSE ledger stops unchanged expensive re-runs, and TypeSafe Jev judges the gray zone. Runs in shadow mode first (hooks + review skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.13.1/jev-gate-0.13.1.zip"
-    },
-    {
-      "id": "spec-readiness-gate",
-      "name": "spec-readiness-gate",
-      "displayName": "Spec Readiness Gate",
-      "version": "0.1.1",
-      "description": "Score a worker task spec before dispatch: a TypeSafe Jev battery checks the five contract fields and a pure-code policy returns dispatch, clarify (naming the weak fields), or escalate. Shadow mode first (MCP server + skill).",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.19.0/spec-readiness-gate-0.19.0.zip"
-    },
-    {
       "id": "compact-nudge",
       "name": "compact-nudge",
       "displayName": "Compact Nudge",
@@ -51,7 +27,7 @@
       "name": "dev-workflows",
       "displayName": "Dev Workflows",
       "version": "0.4.2",
-      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and run supervised multi-agent workflows (research swarms, parallel review, DAG builds) through the Orca CLI.",
+      "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, capture and recall project lessons, and split multi-part tasks into parallel subagent scopes.",
       "source": "https://github.com/trisjr/agent-relay/releases/download/v0.25.2/dev-workflows-0.25.2.zip"
     },
     {
