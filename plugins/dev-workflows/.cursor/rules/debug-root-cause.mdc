@@ -6,7 +6,7 @@ alwaysApply: false
 
 # debug-root-cause
 
-Work inline on a concrete test, build, CI, runtime, or performance failure, including regressions and flakes. No subagent or special question tool is required. Handle features and healthy-diff review normally; do not automatically route to another skill.
+Work inline on a concrete test, build, CI, runtime, or performance failure, including regressions and flakes. No subagent or special question tool is required. A second-hand failure report where the question is whether it is real or worth doing is `triage-request`'s ground: say so, without starting it. Handle features and healthy-diff review normally; do not automatically route to another skill.
 
 - The user decides the fix. By default — a failure report, "why does this fail", a pasted trace — end with a diagnosis report and proposed fix, without repairs even for a typo; keep scratch repros outside the tree and tracked files and index unchanged. Only an explicit repair request, a prior approval, or a delegating spec from a coordinator or caller authorizes a repair, and only within the scope it named; report the cause first, then repair and verify without asking again. A repair beyond that scope, or one that changes behavior, a contract, data, or risk, stops at the report with the decision named.
 - Inspect status and relevant diffs before edits. Preserve pre-existing changes, including in the same file; isolate bisect or destructive experiments instead of resetting, stashing, or checking out over them.

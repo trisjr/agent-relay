@@ -184,6 +184,19 @@
         "Does not implement the unresolved access policy",
         "Does not issue a duplicate question while the original is pending"
       ]
+    },
+    {
+      "id": 17,
+      "prompt": "Anh muốn scripts/validate.sh kiểm tra thêm các rule Cursor trong plugins/*/.cursor/rules/. Làm rõ yêu cầu giúp anh, chưa code. Anh trả lời trước luôn: anh chưa quyết được rule thiếu frontmatter thì báo FAIL hay chỉ cảnh báo, đừng hỏi thêm vòng nào nữa, kết thúc lượt làm rõ này với những gì đã có.",
+      "expected_output": "Explores the repo, then ends the pass with a draft brief. Decisions records facts found in the repo with their source — for example that validate.sh has no check on .cursor/rules today, how existing checks report ([PASS]/[FAIL] lines and exit 1 on any failure), or which plugins ship .cursor/rules and with what frontmatter. Those facts sit in Decisions or Assumptions ahead of Open, which lists the FAIL-versus-warning choice as BLOCKED with the affected action. No further question round and no implementation.",
+      "files": [],
+      "expectations": [
+        "Produces a brief labeled as a draft rather than marking requirements ready",
+        "Decisions (or Assumptions) records at least one fact found in the repo, with its source file cited",
+        "Those settled facts appear in the brief before the Open field",
+        "Open lists the FAIL-versus-warning decision as BLOCKED with the affected action",
+        "Asks no further question round and edits no file"
+      ]
     }
   ]
 }
