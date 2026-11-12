@@ -5,6 +5,25 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-11-12
+
+### Plugins
+
+- `dev-workflows`: 0.4.2 → 0.5.0
+
+### Added
+
+- **dev-workflows**: skill `triage-request` tiếp nhận yêu cầu do người khác viết (bug report gián tiếp, feature request, feedback, issue), một hay nhiều mục. Skill kiểm tra yêu cầu đã được làm chưa, tra các quyết định từ chối cũ, xác minh nhanh bug trong ngân sách cố định, rồi đề xuất `already-done`, `rejected`, `needs-info` hoặc `ready` kèm brief và bước kế tiếp. Skill chờ người dùng quyết, không tự triển khai.
+
+### Changed
+
+- **dev-workflows**: mô tả plugin giờ chỉ gồm làm rõ yêu cầu, debug tới root cause và ghi/tra bài học; bỏ phần điều phối multi-agent qua Orca CLI.
+
+### Removed
+
+- **dev-workflows**: gỡ các skill điều phối qua Orca (`orca-router`, `research-swarm`, `parallel-review`, `dag-build`) và skill `parallel-scopes`.
+- Xoá các plugin `jev-dispatch`, `jev-gate` và `spec-readiness-gate` khỏi marketplace. Ai đã cài thì gỡ bằng `/plugin uninstall <tên>@agent-relay`.
+
 ## [0.28.1] - 2026-11-01
 
 ### Plugins
@@ -578,7 +597,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.28.1...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.29.0...HEAD
+[0.29.0]: https://github.com/trisjr/agent-relay/compare/v0.28.1...v0.29.0
 [0.28.1]: https://github.com/trisjr/agent-relay/compare/v0.28.0...v0.28.1
 [0.28.0]: https://github.com/trisjr/agent-relay/compare/v0.27.0...v0.28.0
 [0.27.0]: https://github.com/trisjr/agent-relay/compare/v0.26.2...v0.27.0

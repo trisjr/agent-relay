@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, and capture and recall project lessons.",
   "author": {
     "name": "AgentRelay Maintainers"
