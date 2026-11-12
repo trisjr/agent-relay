@@ -24,7 +24,7 @@ retire_when: Remove after the old billing path is deleted and verified unused
 | `title` | Required, one line naming the lesson, not the session. |
 | `type` | Required; exactly `bug-lesson`, `convention`, `decision`, or `pitfall`. |
 | `area` | Required; a stable kebab-case repo area such as `billing`, `auth`, or `ci`. |
-| `tags` | Required YAML list; at most 8 lower-hyphen tags. Search the existing corpus and reuse its spellings before adding a tag. Prefer area/module, technology, lesson topic, or `user-correction` tags that help lookup. Do not invent synonyms. |
+| `tags` | Required YAML list; at most 8 lower-hyphen tags. Search the existing corpus and reuse its spellings before adding a tag. Prefer area/module, technology, lesson topic, or `user-correction` tags that help lookup. Do not invent synonyms. A `decision` note that rejects a request carries the fixed tag `rejected-request`, so past rejections can be listed by tag. |
 | `created` | Required `YYYY-MM-DD` calendar date of the original note; keep it on updates. |
 | `last_seen` | Required `YYYY-MM-DD` calendar date when the lesson last recurred or was confirmed; set to today on creation and real recurrence. |
 | `occurrences` | Required integer, starting at `1`; increment only when the same situation recurs or the same lesson is newly confirmed, not when a note is merely read. |

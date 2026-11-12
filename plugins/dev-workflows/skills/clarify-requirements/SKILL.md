@@ -13,7 +13,7 @@ A wrong guess about intent costs a rewrite; an interrogation costs the user's pa
 - **Default and proceed** when only reversible, low-impact choices are open: list them as assumptions and continue the authorized task.
 - **Clarify** when competing answers materially change the main deliverable, scope, security, data, permissions, or a public contract, or a wrong guess is costly to reverse.
 
-Judge ambiguity and impact, not request or diff length. A one-line deletion can still need clarification. If the user asked only to clarify, stop at the brief; clarification does not authorize implementation.
+Judge ambiguity and impact, not request or diff length. A one-line deletion can still need clarification. If the user asked only to clarify, stop at the brief; clarification does not authorize implementation. A raw request someone else wrote, where the open question is whether it is real or worth doing, is `triage-request`'s ground rather than a clarification.
 
 ## Explore, then sort the unknowns
 
@@ -42,7 +42,7 @@ Read [references/channels.md](references/channels.md) before asking: choose an a
 
 ## Hand off a requirements brief
 
-A brief is ready when the user, outcome, and scope fit in a sentence or two, every material behavior has an observable check, and no required decision remains open. If clarification ends with blockers, label the brief as a draft and name the blocked actions. Write only fields that carry a decision:
+A brief is ready when the user, outcome, and scope fit in a sentence or two, every material behavior has an observable check, and no required decision remains open. If clarification ends with blockers, label the brief as a draft and name the blocked actions; still fill `Decisions` and `Assumptions` with everything settled so far — including facts found in the repo, with their source — ahead of `Open`, so the next round does not redo that work. Write only fields that carry a decision:
 
 ```markdown
 ## Requirements brief
