@@ -9,7 +9,9 @@
 #      all of them parse, "name" matches across all five and equals the dir
 #      name, "version" is identical across all five.
 #   c. Every skills/*/SKILL.md of a real plugin has frontmatter containing
-#      "name:" and "description:".
+#      "name:" and "description:", and no unquoted frontmatter value holds
+#      " #" (YAML reads the rest of the line as a comment and drops it) or
+#      ": " (a strict YAML parser rejects the file).
 #   d. Every real plugin is listed by name in ALL THREE marketplace manifests.
 #
 # JSON work is done with python3 (no jq dependency).
@@ -280,6 +282,28 @@ for plugin_dir in "$REPO_ROOT"/plugins/*/; do
       report PASS "skill frontmatter ok (name:, description:): $skill_rel"
     else
       report FAIL "skill frontmatter missing or lacks name:/description: $skill_rel"
+    fi
+
+    # Unquoted (plain) values only: quoted values and block scalars (| or >)
+    # may hold " #" and ": " safely. This is a lint for the two hazards seen
+    # in practice, not a YAML parser.
+    hazards="$(awk '
+      NR == 1 { next }
+      $0 == "---" { exit }
+      /^[A-Za-z_-]+:[ \t]+[^ \t]/ {
+        key = $0; sub(/:.*/, "", key)
+        val = $0; sub(/^[^:]*:[ \t]+/, "", val)
+        if (val ~ /^["\047|>]/) next
+        if (val ~ /[ \t]#/) printf "%s%s has \" #\"", sep, key
+        if (val ~ /[ \t]#/) sep = "; "
+        if (val ~ /:[ \t]/ || val ~ /:$/) printf "%s%s has \": \"", sep, key
+        if (val ~ /:[ \t]/ || val ~ /:$/) sep = "; "
+      }
+    ' "$skill_md")"
+    if [ -z "$hazards" ]; then
+      report PASS "skill frontmatter values are YAML-safe: $skill_rel"
+    else
+      report FAIL "skill frontmatter unquoted value breaks YAML ($hazards) — quote the value or reword it: $skill_rel"
     fi
   done
 done
