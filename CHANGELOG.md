@@ -5,6 +5,12 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-11-13
+
+### Plugins
+
+- `calibre`: 0.1.0 (ra mắt)
+
 ### Added
 
 - **calibre**: plugin mới chuẩn hóa vòng đời task qua chín state (`intake`, `triage`, `specify`, `plan`, `implement`, `verify`, `review`, `handoff`, `closed`). Mỗi task là một GitHub issue có label `state:*` cho biết bước hiện tại, kèm ba cổng duyệt của người, bốn track (`feature`, `bug`, `chore`, `spike`) và bằng chứng kiểm chứng theo từng tiêu chí. Mỗi state có một skill riêng (`calibre:intake`, `calibre:triage`, `calibre:specify`, `calibre:plan`, `calibre:implement`, `calibre:verify`, `calibre:review`, `calibre:handoff`, `calibre:close`), gọi thẳng được hoặc chạy nối tiếp qua `calibre:run`; `calibre:setup` dò thư viện, ghi cấu hình và tạo label. Việc trong các state `specify`, `plan`, `implement`, `review` được giao cho OpenSpec, superpowers hoặc bản dự phòng đi kèm. Chưa chạy thử từ đầu đến cuối với hai thư viện này.
@@ -601,7 +607,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.29.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.30.0...HEAD
+[0.30.0]: https://github.com/trisjr/agent-relay/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/trisjr/agent-relay/compare/v0.28.1...v0.29.0
 [0.28.1]: https://github.com/trisjr/agent-relay/compare/v0.28.0...v0.28.1
 [0.28.0]: https://github.com/trisjr/agent-relay/compare/v0.27.0...v0.28.0
