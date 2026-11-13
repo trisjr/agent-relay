@@ -40,7 +40,7 @@ Not every task visits every state: [references/tracks.md](references/tracks.md) 
 These live in one place so the nine skills cannot drift apart:
 
 - [references/rules.md](references/rules.md) — the checks before and after a state, the rules that hold in every state, providers, gates, waits, and which actions need a yes.
-- [references/record.md](references/record.md) — where each state's output is kept and how to tell whether evidence is still current.
+- [references/record.md](references/record.md) — where each state's output is kept, what the lifecycle posts on the issue, and how to tell whether evidence is still current.
 - [references/providers/](references/providers/openspec.md) — one adapter per library: [OpenSpec](references/providers/openspec.md), [superpowers](references/providers/superpowers.md), [builtin](references/providers/builtin.md).
 - `scripts/lifecycle.sh` — the only writer of lifecycle labels.
 

@@ -19,7 +19,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 ## On entry
 
 - Tracks `feature` and `bug`: confirm G2 is recorded in `task.md` and that the spec has not changed since (see *Is the evidence still current?* in [record.md](../run/references/record.md)). An unapproved or stale plan goes back to `plan`.
-- Track `chore`: create the task branch and the record now. `task.md` carries the triage verdict; write the triage criteria into `spec.md` so `verify` has something to prove.
+- Track `chore`: create the task branch and the record now. `task.md` links the triage verdict; copy its criteria into the criteria index, each with its check, so `verify` has something to prove.
 
 ## Do
 
@@ -43,6 +43,7 @@ Reviews a provider runs on its own tasks while building are part of building. Th
 - Every planned task is done, or listed as a departure with a reason.
 - The project builds and its test suite runs (use the repo's own commands).
 - The working tree is clean: everything is committed on the task branch.
+- The state's summary is on the issue, unless `issue_comments` is `record`.
 
 Then `lifecycle.sh state <n> verify`; the next skill is `calibre:verify`.
 

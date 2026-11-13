@@ -12,7 +12,9 @@
 #                                               Check a close (offline)
 #   lifecycle.sh init [--dry-run]               Create or update every label
 #   lifecycle.sh show <issue>                   Print state, wait, track, resolution
-#   lifecycle.sh state <issue> <state>          Move to a state (validated)
+#   lifecycle.sh state <issue> <state> [--comment <text>]
+#                                               Move to a state (validated); with
+#                                               --comment, post a move note
 #   lifecycle.sh track <issue> <track>          Set the track
 #   lifecycle.sh wait <issue> <kind>            Mark the task as waiting
 #   lifecycle.sh resume <issue>                 Clear the waiting mark (deferred
@@ -298,9 +300,16 @@ cmd_show() {
 }
 
 cmd_state() {
-  [ $# -eq 2 ] || die "usage: lifecycle.sh state <issue> <state>" 2
+  [ $# -ge 2 ] || die "usage: lifecycle.sh state <issue> <state> [--comment <text>]" 2
   need_gh
-  local n="$1" to="$2" from reason
+  local n="$1" to="$2" comment="" from reason
+  shift 2
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --comment) [ $# -ge 2 ] || die "--comment needs text" 2; comment="$2"; shift 2 ;;
+      *) die "unknown option '$1'" 2 ;;
+    esac
+  done
   read_issue "$n"
   [ "$ISSUE_OPEN" = "yes" ] || die "issue #$n is closed; use 'reopen' first"
   from="${CUR_STATE:-none}"
@@ -310,6 +319,13 @@ cmd_state() {
   # A waiting mark belongs to the state it interrupted, so it never survives a move.
   edit_labels "$n" "state:$to" "$(join_csv "$(prefixed state "$CUR_STATE")" "$(prefixed wait "$CUR_WAIT")")"
   printf 'issue #%s: %s -> %s\n' "$n" "$from" "$to"
+  if [ -n "$comment" ]; then
+    # The labels have moved by now. A note that cannot be posted must not look
+    # like a failed move: repeating the move would be refused as "already in".
+    if ! gh issue comment "$n" --body "$(printf '**Lifecycle · %s → %s**\n\n%s' "$from" "$to" "$comment")" >/dev/null; then
+      printf 'lifecycle.sh: warning: issue #%s moved, but the move note was not posted; post it by hand and do not repeat the move\n' "$n" >&2
+    fi
+  fi
 }
 
 cmd_track() {

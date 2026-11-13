@@ -40,6 +40,7 @@ Six roles each get a provider. Offer the preset that matches what was detected, 
 Two constraints apply when the user adjusts it:
 
 - **`specify`, `plan` and `implement` work best from one library**, or from the OpenSpec-to-superpowers pairing in the first row. Each library's implementation step reads its own plan format. Other mixes inside those three roles are untried: allow them, and say so.
+- **A `plan` provider that differs from the `implement` provider costs a second plan file.** superpowers executes only a plan in its own format, so the pairing in the first row derives an execution plan from OpenSpec's task list, and `handoff` deletes it before the pull request opens. Say this when proposing the pairing; one library for both roles avoids it.
 - **`review` is free.** It only needs a diff, so any provider can review any other's work.
 
 A role can only be mapped to a provider whose adapter lists that role; the adapters name what each does not provide.
@@ -55,10 +56,10 @@ Show these with their defaults and change only what the user asks to change. [re
 | Merge the spec back | on the task branch, before the pull request |
 | The plan of record | the `plan` provider's task list |
 | Failed fix rounds before stopping | 3 |
-| Issue comments | only where the issue is the record |
+| Issue comments | a short summary as each state finishes, plus gate decisions and moves back |
 | Task branch prefix | `task/` |
 
-Then ask the one consent the lifecycle needs up front: may it change labels and post its record comments on issues that are put on the lifecycle? Record the answer as `consent.issue_writes`. Without it, the lifecycle skills will ask at every label change, which is workable but slow; say so and respect a no.
+Then ask the one consent the lifecycle needs up front: may it change labels and post its comments on issues that are put on the lifecycle? Record the answer as `consent.issue_writes`. Without it, the lifecycle skills will ask at every label change, which is workable but slow; say so and respect a no.
 
 ## 5. Write the config
 

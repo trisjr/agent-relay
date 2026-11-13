@@ -24,7 +24,7 @@ Confirm `evidence.md` names the current code (see *Is the evidence still current
 
 Read the adapter for the configured `review` provider — [superpowers.md](../run/references/providers/superpowers.md) or [builtin.md](../run/references/providers/builtin.md) — and request a review of the whole change — the diff from the base branch to the task branch's head — at the current commit.
 
-Give the reviewer the diff, `spec.md`, `plan.md` and `evidence.md`. Do not give it the implementer's conversation or reasoning: a reviewer who has been told why each choice was made tends to agree with it. If the provider can review in a fresh context or with a different model, use that.
+Give the reviewer the diff, the spec and plan files listed under `Sources` in `task.md`, the criteria index and `evidence.md`. Do not give it the implementer's conversation or reasoning: a reviewer who has been told why each choice was made tends to agree with it. If the provider can review in a fresh context or with a different model, use that.
 
 Ask for findings with a location and a severity, and for a verdict.
 
@@ -51,12 +51,13 @@ Map the provider's own severity scale onto two levels: `blocking` (must be fixed
 - The review covers the current commit.
 - No finding is `blocking` and `open`.
 - Every non-blocking finding is either fixed or listed for `handoff` as a follow-up.
+- The state's summary is on the issue, unless `issue_comments` is `record`.
 
 Then `lifecycle.sh state <n> handoff`; the next skill is `calibre:handoff`.
 
 ## When changes are requested
 
-`lifecycle.sh state <n> implement`, fix through `calibre:implement`, and come back through `calibre:verify`. The evidence is bound to the old code, so the changed code has to be proven again; then review the new commit.
+`lifecycle.sh state <n> implement --comment "Review: changes requested. <the blocking findings, one line each>"` (omit `--comment` when `issue_comments` is `record`), fix through `calibre:implement`, and come back through `calibre:verify`. The evidence is bound to the old code, so the changed code has to be proven again; then review the new commit.
 
 ## Do not
 

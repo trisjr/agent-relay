@@ -32,7 +32,11 @@ Invoke `openspec-propose` with the request and the triage verdict. It writes, un
 - `specs/<capability>/spec.md` — delta specs: requirements, each with scenarios in WHEN/THEN form.
 - `design.md` (optional) and `tasks.md` — these belong to the `plan` role; see below.
 
-Read back into `spec.md`: the problem from `proposal.md`, and one criterion per scenario, with the requirement and scenario name as its source. OpenSpec does not number scenarios, which is why the lifecycle assigns the `AC-n` IDs. `proposal.md` has no out-of-scope section; get that from the user.
+These files are the spec. Index them in `task.md` and copy nothing out of them:
+
+- `Sources`, `Spec` row: `proposal.md` and the `specs/` folder of the change.
+- `Criteria`: one row per scenario, with the requirement and scenario name as its source, written relative to the change folder so the pointer survives archiving. OpenSpec does not number scenarios, which is why the lifecycle assigns the `AC-n` IDs.
+- Out of scope: `proposal.md` has no such section. When the change has a `design.md`, its non-goals are the statement; confirm with the user that they are complete. When it has none, get the boundary from the user and record it under `## Out of scope` in `task.md`.
 
 Run `openspec validate` on the change before accepting it.
 
@@ -42,9 +46,9 @@ Run `openspec validate` on the change before accepting it.
 
 ### `plan`
 
-The plan is `design.md` (context, goals and non-goals, decisions, risks) and `tasks.md` (numbered checkbox tasks, each expected to say how it is verified). They normally exist already from the `specify` call; review them rather than regenerating. `tasks.md` is the plan of record.
+The plan is `design.md` (context, goals and non-goals, decisions, risks) and `tasks.md` (numbered checkbox tasks, each expected to say how it is verified). They normally exist already from the `specify` call; review them rather than regenerating. `tasks.md` is the plan of record; list it, with `design.md`, in the `Plan of record` row of `Sources`.
 
-Tasks are not linked to requirements in OpenSpec's format, so the coverage table in `plan.md` is yours to build: for each criterion, the task numbers that deliver it and the check that proves it. A criterion with no task means `tasks.md` is incomplete.
+Tasks are not linked to requirements in OpenSpec's format, so the `Tasks` and `Check` columns of the criteria index are yours to fill: for each criterion, the task numbers that deliver it and the check that proves it. A criterion with no task means `tasks.md` is incomplete. Risks belong in `design.md`.
 
 **To revise** after feedback at G2, or when implementation shows the spec or plan is wrong: `openspec-update-change`. It edits the change's files and does not touch code.
 
@@ -64,6 +68,6 @@ When another provider implements instead, that provider still ticks tasks off in
 
 ## Merging the spec back (`handoff`)
 
-`openspec-archive-change` moves the change folder to `openspec/changes/archive/<date>-<name>/` and merges its delta specs into `openspec/specs/`. It asks before syncing. Run it on the task branch when `handoff.archive` is `before-pr`, and commit the result.
+`openspec-archive-change` moves the change folder to `openspec/changes/archive/<date>-<name>/` and merges its delta specs into `openspec/specs/`. It asks before syncing. Run it on the task branch when `handoff.archive` is `before-pr`, point the `Sources` rows of `task.md` at the archived folder, and commit both together.
 
 Archive only a task closing as `done`. A change that is rejected, canceled or superseded is never archived: its folder stays on the unmerged branch.

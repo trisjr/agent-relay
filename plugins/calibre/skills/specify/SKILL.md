@@ -18,7 +18,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 ## On entry
 
-Tracks `feature` and `bug`: create the task branch from the default branch and start the record ([record.md](../run/references/record.md)): `task.md` with the issue, track, size and the triage verdict copied from the issue. Track `spike` gets neither; its record is the issue.
+Tracks `feature` and `bug`: create the task branch from the default branch and start the record ([record.md](../run/references/record.md)): `task.md` with the issue, track, size and a link to the triage verdict. Track `spike` gets neither; its record is the issue.
 
 ## Do
 
@@ -30,18 +30,19 @@ Tracks `feature` and `bug`: create the task branch from the default branch and s
 
 Read the adapter for the configured provider — [openspec.md](../run/references/providers/openspec.md), [superpowers.md](../run/references/providers/superpowers.md) or [builtin.md](../run/references/providers/builtin.md) — and invoke it for this role only.
 
-**Bug.** Diagnosis stops at a confirmed root cause; no fix is written in this state, however small. If the fix will change behavior that is specified or visible to users, also run the `specify` role for that changed behavior. Otherwise the criteria come from the bug itself: the reproduction no longer fails, plus whatever must keep working around it.
+**Bug.** Diagnosis stops at a confirmed root cause; no fix is written in this state, however small. If the fix will change behavior that is specified or visible to users, also run the `specify` role for that changed behavior. Otherwise the criteria come from the bug itself — the reproduction no longer fails, plus whatever must keep working around it — and their full wording goes under `## Criteria` in `diagnosis.md`, which then serves as the spec.
 
 **Spike.** Post the findings and the answer as an issue comment headed `**Lifecycle · specify**`. Ask the user whether it settles the question. If it does, close as `answered` through `calibre:close`. If it revealed work to do, show the issues you would open for it and create them on a yes; each starts its own lifecycle at `intake`.
 
 ## Produce
 
-`spec.md` in the record, normalized from whatever the provider wrote:
+The provider's files are the spec. The record indexes them and holds what the provider left unwritten (*One home* in [record.md](../run/references/record.md)); it restates nothing from them.
 
-- **Problem**, **In scope**, **Out of scope**. If the provider's output has no out-of-scope statement, ask the user or propose one and have it confirmed; an unstated boundary is where scope creep enters.
-- **Criteria**, each with a lifecycle ID (`AC-1`, …) and a pointer to its source in the provider's files.
-- **Sources**: paths to the provider's own spec files.
-- Track `bug`: **Reproduction** and **Root cause**.
+- **`Sources` in `task.md`**: the `Spec` row, with the paths of the provider's spec files.
+- **`Criteria` in `task.md`**: one row per criterion, with a lifecycle ID (`AC-1`, …), one line naming it, and a pointer to its source in the provider's files.
+- **Out of scope**: in the provider's files when their format has a place for it, otherwise under `## Out of scope` in `task.md`. If nobody has stated it, ask the user or propose one and have it confirmed; an unstated boundary is where scope creep enters.
+- **`Decisions` in `task.md`**: each answer a person gave that shaped the spec.
+- Track `bug`: **`diagnosis.md`**, with the reproduction and the root cause.
 
 Open questions that only the requester can answer are not guessed: post them, run `lifecycle.sh wait <n> needs-info`, and stop.
 
@@ -51,6 +52,7 @@ Open questions that only the requester can answer are not guessed: post them, ru
 - Out of scope is written down.
 - No open question remains.
 - Track `bug`: the reproduction steps are exact, and the root cause comes with evidence that it is the cause and not merely nearby.
+- Tracks `feature` and `bug`: the state's summary is on the issue, unless `issue_comments` is `record`.
 
 Then `lifecycle.sh state <n> plan`; the next skill is `calibre:plan`.
 

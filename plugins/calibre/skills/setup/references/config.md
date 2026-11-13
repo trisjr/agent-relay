@@ -17,7 +17,7 @@ One file at the repo root, committed, read by every lifecycle skill before it do
   "plan": { "record": "plan-provider" },
   "verify": { "max_loops": 3 },
   "handoff": { "accepted_when": "merged", "archive": "before-pr" },
-  "issue_comments": "record",
+  "issue_comments": "summary",
   "branch_prefix": "task/",
   "consent": { "issue_writes": true }
 }
@@ -50,6 +50,8 @@ What to do with a request that has no issue. `ask` (default) shows the issue tha
 
 Which plan is the one approved at G2 and tracked for progress, when the `plan` and `implement` providers each keep their own. `plan-provider` (default) makes the `plan` provider's task list the record and the `implement` provider's execution plan a derived file. `implement-provider` reverses that.
 
+A derived plan restates the plan of record, so it is scaffolding: when it is a file of its own, `handoff` deletes it from the task branch before the pull request opens. Mapping `plan` and `implement` to the same provider avoids the second file altogether.
+
 ### `verify.max_loops`
 
 How many times a task may go from `verify` back to `implement` before the lifecycle stops with `wait:blocked` and asks a person. Default 3. Repeated failed fixes usually mean the plan or the spec is wrong, which more fixing does not address.
@@ -64,7 +66,15 @@ When the spec provider's change is merged back into the living specs. `before-pr
 
 ### `issue_comments`
 
-`record` (default): the lifecycle comments only where the issue is the record's home — the triage verdict, a spike's answer, the pull request link, the closing note. `all`: also one line per state change.
+How much the lifecycle writes on the issue for people who follow the task there. *Issue comments* in `references/record.md` of the `calibre:run` skill defines each kind of comment.
+
+| Value | Posts |
+|---|---|
+| `summary` (default) | the record comments, a short summary when each state from `specify` on finishes, and a move note for each gate decision and each move back |
+| `record` | only the record comments, where the issue is the record's home: the triage verdict, a spike's answer, the pull request link, the closing note |
+| `all` | everything in `summary`, plus a move note on every other move |
+
+A config written before `summary` existed says `record` and stays quiet until it is changed.
 
 ### `branch_prefix`
 
@@ -72,7 +82,7 @@ Prefix for task branches, which are named `<prefix><issue>-<slug>`. Default `tas
 
 ### `consent.issue_writes`
 
-`true` when the user agreed at setup that the lifecycle may change labels and post its record comments on issues it runs. `false` makes the lifecycle skills ask before each. Creating issues, opening pull requests, closing for an undecided reason and deleting branches are asked every time regardless.
+`true` when the user agreed at setup that the lifecycle may change labels and post its comments on issues it runs. `false` makes the lifecycle skills ask before each. Creating issues, opening pull requests, closing for an undecided reason and deleting branches are asked every time regardless.
 
 ## Changing it later
 

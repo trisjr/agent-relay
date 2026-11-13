@@ -20,29 +20,27 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 1. Read the adapter for the configured `plan` provider — [openspec.md](../run/references/providers/openspec.md), [superpowers.md](../run/references/providers/superpowers.md) or [builtin.md](../run/references/providers/builtin.md) — and produce the plan. If the provider already wrote plan files while specifying (OpenSpec's proposal step writes design and tasks in the same call), review and correct those instead of regenerating them.
 2. **Execution plan, when needed.** Some `implement` providers only work from a plan in their own format (superpowers is one; its adapter says how). If the `implement` provider differs from the `plan` provider and needs that, produce the execution plan now, from the plan of record, so that one approval covers both. `plan.record` in the config says which of the two is the plan of record (default: the `plan` provider's); the other is derived from it and is regenerated whenever the record changes.
-3. Build the coverage table: for every criterion in `spec.md`, the tasks that deliver it and the check that will prove it. A criterion with no task is unplanned work; a criterion with no check cannot be verified later.
+3. Build the coverage: for every row of the criteria index in `task.md`, fill `Tasks` with the tasks that deliver it and `Check` with the check that will prove it. A criterion with no task is unplanned work; a criterion with no check cannot be verified later.
 
 ## Produce
 
-`plan.md` in the record ([record.md](../run/references/record.md)):
+The provider's files are the plan. The record indexes them (*One home* in [record.md](../run/references/record.md)); it restates nothing from them. In `task.md`:
 
-- **Plan of record** and **Execution plan**: paths.
-- **Based on spec at**: the commit the spec was at.
-- **Coverage**: criterion → tasks → how it will be checked.
-- **Areas touched**: the parts of the codebase the plan expects to change.
-- **Risks**: optional; include when there is something a reviewer should weigh.
+- **`Sources`**: the `Plan of record` row, and the `Execution plan (derived)` row when one was produced.
+- **`Criteria`**: `Tasks` and `Check` filled for every row.
+- **`## Risks`**: only for a risk a reviewer should weigh that the plan of record has no place for.
 
 Commit the plan files and the record on the task branch.
 
 ## Gate G2
 
-Present, in this order: the criteria, the approach in a few lines, the coverage table, and anything you are unsure about. Then `lifecycle.sh wait <n> approval` and stop.
+Present, in this order: the criteria, the approach in a few lines, the coverage, and anything you are unsure about. Post the state's summary on the issue unless `issue_comments` is `record`, so the plan can be read there while it waits. Then `lifecycle.sh wait <n> approval` and stop.
 
 If the execution-plan provider pauses on its own to ask for plan approval, that pause is this gate, not a second one: bring its question and yours to the user together.
 
 | Decision | Do |
 |---|---|
-| approved | record the gate in `task.md` with the commit approved, then `lifecycle.sh state <n> implement` |
+| approved | record the gate in `task.md` with the commit approved, then `lifecycle.sh state <n> implement --comment "G2: approved by <who> at <commit>"`. Omit `--comment` when `issue_comments` is `record` |
 | change the plan | `lifecycle.sh resume <n>`, revise through the provider's own revise step (see the adapter), stay in `plan`, present again |
 | a requirement is wrong | `lifecycle.sh state <n> specify`, then `calibre:specify` |
 | too big | show the child issues, create them on a yes, close as `superseded` through `calibre:close` |
@@ -50,7 +48,8 @@ If the execution-plan provider pauses on its own to ask for plan approval, that 
 ## Exit when
 
 - Every criterion has at least one task and a named check.
-- The plan files and `plan.md` are committed.
+- The plan files and `task.md` are committed.
+- The state's summary is on the issue, unless `issue_comments` is `record`.
 - G2 is recorded with the commit the user approved.
 
 ## Do not

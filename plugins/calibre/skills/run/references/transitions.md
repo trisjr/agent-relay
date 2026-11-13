@@ -28,7 +28,7 @@ All take the issue number. Call the script by its path (`scripts/lifecycle.sh` i
 | Command | Effect |
 |---|---|
 | `lifecycle.sh show <n>` | Print `repo`, `open`, `state`, `wait`, `track`, `resolution` |
-| `lifecycle.sh state <n> <state>` | Validate the move, swap the state label, clear any wait label |
+| `lifecycle.sh state <n> <state> [--comment <text>]` | Validate the move, swap the state label, clear any wait label; with `--comment`, post the text on the issue as a move note |
 | `lifecycle.sh track <n> <track>` | Set `feature`, `bug`, `chore` or `spike` |
 | `lifecycle.sh wait <n> <kind>` | Add `needs-info`, `approval`, `blocked` or `deferred` |
 | `lifecycle.sh resume <n>` | Remove the wait label; a `deferred` task also returns to `triage` |
@@ -39,6 +39,8 @@ All take the issue number. Call the script by its path (`scripts/lifecycle.sh` i
 | `lifecycle.sh labels` | Print every label with its color and description |
 
 `close` accepts `--comment <text>` and, for `duplicate`, requires `--duplicate-of <n>`.
+
+`state --comment` posts the text under a `**Lifecycle · <from> → <to>**` line after the labels have moved. If the comment cannot be posted, the move still stands and the script exits 0 with a warning: post the note by hand instead of repeating the move, which would be refused.
 
 A refused command exits non-zero and says why. Exit code 3 means the issue carries two labels of the same kind, which a person has to untangle.
 

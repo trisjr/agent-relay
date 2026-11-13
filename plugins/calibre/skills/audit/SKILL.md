@@ -41,7 +41,7 @@ Everything here is a read. In particular, read the task branch without checking 
 |---|---|---|
 | Current labels | `${CLAUDE_SKILL_DIR}/../run/scripts/lifecycle.sh show <n>` | where the task stands now |
 | Label history | the timeline command below | every label move in order, including ones made by hand |
-| Record comments | `gh issue view <n> --comments`, lines starting `**Lifecycle ·` | verdict, spike answer, closing note |
+| Lifecycle comments | `gh issue view <n> --comments`, lines starting `**Lifecycle ·` | the record comments (verdict, spike answer, pull request link, closing note), each state's summary, and the move notes for gate decisions and moves back |
 | Record files | `git show <branch>:.calibre/tasks/<n>/task.md` and its siblings | gates, history rows, what each state wrote |
 | Commits | `git log --format='%h %ad %s' --date=iso <base>..<branch>` | when record and code were committed, relative to the moves |
 
@@ -61,7 +61,8 @@ Walk the states in scope in order and ask, for each:
 - **Order.** Was the state's work done while the label said that state? Was a state skipped, done twice, or started before the previous one's exit held? Was any label changed other than through the script?
 - **Exit.** Did the skill check its own exit criteria, or move on because a provider reported success?
 - **Gates.** Did it stop at G1, G2 and G3, set `wait:approval`, and continue only on the user's decision? Is the decision recorded with who, when and the commit seen?
-- **Record.** Was the state's file written and committed before the move, with a history row? Did anything a provider said only in the conversation fail to reach the record?
+- **Record.** Was the state's file written and committed before the move, with a history row? Did anything a provider said only in the conversation fail to reach the record? Does the record restate what a provider's file already holds?
+- **Issue comments.** With `issue_comments` at `summary` or `all`: did each state from `specify` on post its summary, and each gate decision and move back its move note? Does a summary say something its record file does not?
 - **Evidence.** In `verify`, was each check run then, and is `Observed` what the run printed? Did code change after `verify` or `review` without the task going back through `verify`?
 - **Provider boundaries.** Did a provider run past the state it was invoked for, write somewhere the adapter does not mention, or get swapped for another without the user being told?
 - **Outward actions.** Was an issue created, a branch pushed, a pull request opened, an issue closed or a branch deleted without a yes for that action?

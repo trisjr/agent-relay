@@ -39,6 +39,8 @@ Post the verdict as an issue comment; it is the record for this state.
 ```markdown
 **Lifecycle · triage**
 
+Customers cannot get their invoices out as a file today; this proposes building a CSV export.
+
 - Track: feature
 - Size: medium
 - Verdict: accept
@@ -50,13 +52,15 @@ Acceptance:
 - AC-1: … — checked by …
 ```
 
+Open with one sentence a product manager can read without the code: what is being asked and what you propose. The evidence below it is where file paths and symbols belong.
+
 ## Gate G1
 
 Present the verdict and its evidence, run `lifecycle.sh wait <n> approval`, and stop. The decision is the user's; act on what they decide, not on what you proposed.
 
 | Decision | Do |
 |---|---|
-| accept | `lifecycle.sh track <n> <track>`, then `lifecycle.sh state <n> specify` — or `state <n> implement` on track `chore` |
+| accept | `lifecycle.sh track <n> <track>`, then `lifecycle.sh state <n> specify --comment "G1: accepted by <who>, track <track>"` — or `state <n> implement` on track `chore`. Omit `--comment` when `issue_comments` is `record` |
 | reject, duplicate, already-done | close through `calibre:close` with the reason |
 | defer | `lifecycle.sh wait <n> deferred`; note in the comment what would make it worth revisiting |
 | split | show the child issues you would create, create them on a yes, then close as `superseded` through `calibre:close` |

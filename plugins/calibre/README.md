@@ -52,7 +52,8 @@ Task đang dừng thì có thêm label `wait:needs-info`, `wait:approval`, `wait
 - **Chỉ script của plugin đổi label.** `skills/run/scripts/lifecycle.sh` kiểm tra bước chuyển có hợp lệ không rồi mới đổi, trong một lần sửa issue. Label lệch với bản ghi thì dừng lại hỏi.
 - **Lời báo "xong" của thư viện không được tính.** Mỗi state có điều kiện ra kiểm được; plugin tự kiểm rồi mới chuyển state.
 - **`verify` luôn do plugin làm.** Từng tiêu chí phải có lệnh đã chạy, kết quả thật và commit. Bằng chứng gắn với code: code đổi thì phải kiểm lại.
-- **Plugin tự lưu đầu ra của thư viện** vào `.calibre/tasks/<issue>/` trên nhánh của task, vì nhiều thư viện chỉ để review và ghi chú trong hội thoại hoặc file tạm.
+- **Mỗi nội dung chỉ có một nơi giữ.** Spec và plan nằm ở file của thư viện. `.calibre/tasks/<issue>/` trên nhánh của task chỉ trỏ tới các file đó và giữ phần không nơi nào khác có: cổng duyệt, lịch sử, bảng tiêu chí, bằng chứng, và những gì thư viện chỉ nói trong hội thoại hoặc file tạm (chẩn đoán bug, chỗ lệch plan, kết quả review).
+- **Issue kể lại diễn biến cho người không mở nhánh.** Mỗi state từ `specify` trở đi để lại một comment tóm tắt ngắn trên issue; quyết định ở cổng duyệt và mỗi lần lùi state có một dòng ghi lý do. Đặt `issue_comments` thành `record` trong cấu hình nếu muốn issue chỉ có các comment bắt buộc.
 - **Tiêu chí chấp nhận có mã riêng** (`AC-1`, `AC-2`…) do plugin cấp, dùng xuyên suốt plan, bằng chứng và bàn giao.
 - **Thao tác ra bên ngoài phải được đồng ý.** Tạo issue, mở PR, đóng issue vì lý do chưa được quyết và xóa nhánh đều hỏi mỗi lần. Plugin không tự merge PR.
 
@@ -66,7 +67,7 @@ Sáu vai trò (`specify`, `plan`, `implement`, `review`, `diagnose`, `explore`) 
 | superpowers | 7.0.2 | `implement`, `review`, `diagnose`, `specify`, `plan` |
 | `builtin` | đi kèm plugin | cả sáu, ở mức tối thiểu |
 
-Bộ kết hợp mặc định khi có cả hai: OpenSpec cho `specify`, `plan`, `explore`; superpowers cho `implement`, `review`, `diagnose`.
+Bộ kết hợp mặc định khi có cả hai: OpenSpec cho `specify`, `plan`, `explore`; superpowers cho `implement`, `review`, `diagnose`. Cặp này làm phát sinh một plan thứ hai, vì superpowers chỉ thực thi plan theo format riêng. Plan đó là file tạm dẫn xuất từ plan của OpenSpec, và `calibre:handoff` xóa nó trước khi mở PR.
 
 Thêm thư viện khác là thêm một file adapter trong `skills/run/references/providers/` và một giá trị trong cấu hình; các skill theo state không phải sửa.
 
@@ -77,6 +78,7 @@ Thêm thư viện khác là thêm một file adapter trong `skills/run/reference
 - **superpowers cần đoạn chỉ dẫn trong `CLAUDE.md`/`AGENTS.md`** để dừng đúng ở ranh giới state; `calibre:setup` đề xuất đoạn này. Không có nó thì các skill của superpowers có thể chạy quá phạm vi một state.
 - **Chưa có bộ eval** cho các skill.
 - **`calibre:audit` chưa được kiểm chứng.** Danh sách chỗ lệch nó tìm được suy ra từ quy tắc của lifecycle, chưa phải từ lỗi gặp trong một lần chạy thật. Nó chỉ soát được phần hội thoại còn trong phiên: state chạy ở phiên khác hoặc đã bị nén thì báo là chưa soát.
+- **Comment tóm tắt và bố cục record mới chưa được chạy thử** trên một task thật.
 - Script label mới được chạy ngoại tuyến: bảng chuyển state qua `lifecycle.sh can` và `lifecycle.sh can-close`, và từng lệnh với một `gh` giả lập chỉ ghi lại lời gọi. Chưa chạy với GitHub thật.
 
 ## Theo từng platform
