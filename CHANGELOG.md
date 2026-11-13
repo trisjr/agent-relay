@@ -5,6 +5,10 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+### Added
+
+- **calibre**: plugin mới chuẩn hóa vòng đời task qua chín state (`intake`, `triage`, `specify`, `plan`, `implement`, `verify`, `review`, `handoff`, `closed`). Mỗi task là một GitHub issue có label `state:*` cho biết bước hiện tại, kèm ba cổng duyệt của người, bốn track (`feature`, `bug`, `chore`, `spike`) và bằng chứng kiểm chứng theo từng tiêu chí. Mỗi state có một skill riêng (`calibre:intake`, `calibre:triage`, `calibre:specify`, `calibre:plan`, `calibre:implement`, `calibre:verify`, `calibre:review`, `calibre:handoff`, `calibre:close`), gọi thẳng được hoặc chạy nối tiếp qua `calibre:run`; `calibre:setup` dò thư viện, ghi cấu hình và tạo label. Việc trong các state `specify`, `plan`, `implement`, `review` được giao cho OpenSpec, superpowers hoặc bản dự phòng đi kèm. Chưa chạy thử từ đầu đến cuối với hai thư viện này.
+
 ## [0.29.0] - 2026-11-12
 
 ### Plugins
