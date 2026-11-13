@@ -5,6 +5,12 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.32.0] - 2026-11-13
+
+### Plugins
+
+- `calibre`: 0.2.0 → 0.3.0
+
 ### Added
 
 - **calibre**: mỗi state từ `specify` trở đi để lại một comment tóm tắt ngắn trên issue, và mỗi quyết định ở cổng duyệt hay lần lùi state có một dòng ghi chú, để người không mở nhánh vẫn theo dõi được task. `issue_comments` có giá trị mới `summary` làm mặc định; `record` giữ issue chỉ có các comment bắt buộc.
@@ -635,7 +641,9 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.30.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.32.0...HEAD
+[0.32.0]: https://github.com/trisjr/agent-relay/compare/v0.31.0...v0.32.0
+[0.31.0]: https://github.com/trisjr/agent-relay/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/trisjr/agent-relay/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/trisjr/agent-relay/compare/v0.28.1...v0.29.0
 [0.28.1]: https://github.com/trisjr/agent-relay/compare/v0.28.0...v0.28.1
