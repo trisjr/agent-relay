@@ -1,6 +1,6 @@
 ---
 name: run
-description: Drive a task through the whole Calibre task lifecycle — intake, triage, specify, plan, implement, verify, review, handoff, closed — by reading the `state:*` label on its GitHub issue and running the skill for that state, one state after another, until a human gate or a wait. Use whenever the user wants to continue or advance a tracked task without naming the state ("chạy calibre cho issue 42", "chạy lifecycle cho issue 42", "làm tiếp issue này", "next step for #42"), resume one after an approval or an answer, or ask where it stands ("issue này đang ở bước nào"). For a single named state, the state's own skill (`calibre:triage`, `calibre:verify`, …) can be used directly. Skip one-off edits with no issue, and repos where the user declined to set the lifecycle up.
+description: Drive a task through the whole Calibre task lifecycle — intake, triage, specify, plan, implement, verify, review, handoff, closed — by reading the `state:*` label on its GitHub issue and running the skill for that state, one state after another, until a human gate or a wait. Use whenever the user wants to continue or advance a tracked task without naming the state ("chạy calibre cho issue 42", "chạy lifecycle cho issue 42", "làm tiếp issue này", "next step for issue 42"), resume one after an approval or an answer, or ask where it stands ("issue này đang ở bước nào"). For a single named state, the state's own skill (`calibre:triage`, `calibre:verify`, …) can be used directly. Skip one-off edits with no issue, and repos where the user declined to set the lifecycle up.
 argument-hint: "[issue number | new request]"
 ---
 
@@ -53,3 +53,4 @@ If `show` reports a wait, the task is paused. Confirm with the user that the thi
 - **Cancel**, or **reopen** a closed task: [`calibre:close`](../close/SKILL.md).
 - **Scope changed mid-flight**: `scripts/lifecycle.sh state <n> triage`, then `calibre:triage`. A different request deserves a fresh verdict.
 - **Status only** ("where is #42?"): run `show`, read the record, and report state, wait, track, what the last state produced and what is needed next. Change nothing.
+- **A lifecycle skill misbehaved** (skipped a step, ran past a gate, got in the way): [`calibre:audit`](../audit/SKILL.md), in the same session while the conversation still shows what happened.

@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Calibre lifecycle state `handoff` — for an issue labeled `state:handoff`, put the verified and reviewed change in front of the person who accepts it by merging the spec back, writing the handoff summary with each criterion mapped to its evidence, opening the pull request after the user confirms, and waiting at gate G3. Use for "bàn giao issue 42", "mở PR cho #42", "handoff #42", and to check whether the pull request was accepted. It never merges the pull request itself. Skip issues with no `state:*` label and ordinary requests to open a pull request that do not involve the lifecycle.
+description: Calibre lifecycle state `handoff` — for an issue labeled `state:handoff`, put the verified and reviewed change in front of the person who accepts it by merging the spec back, writing the handoff summary with each criterion mapped to its evidence, opening the pull request after the user confirms, and waiting at gate G3. Use for "bàn giao issue 42", "mở PR cho issue 42", "handoff issue 42", and to check whether the pull request was accepted. It never merges the pull request itself. Skip issues with no `state:*` label and ordinary requests to open a pull request that do not involve the lifecycle.
 argument-hint: "[issue number]"
 ---
 

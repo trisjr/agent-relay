@@ -1,6 +1,6 @@
 ---
 name: specify
-description: Calibre lifecycle state `specify` — for an issue labeled `state:specify`, turn the accepted request into acceptance criteria someone else could check, by delegating to the configured provider (OpenSpec, superpowers or the built-in fallback); on track `bug` it finds the reproduction and root cause instead, and on track `spike` it investigates and answers. Use for "viết spec cho issue 42", "làm rõ yêu cầu issue này", "specify #42", "tìm nguyên nhân bug ở issue 42" when the issue is on the lifecycle. It writes no code and chooses no implementation. Skip issues with no `state:*` label and ordinary requests to write a spec or debug something that do not involve the lifecycle.
+description: Calibre lifecycle state `specify` — for an issue labeled `state:specify`, turn the accepted request into acceptance criteria someone else could check, by delegating to the configured provider (OpenSpec, superpowers or the built-in fallback); on track `bug` it finds the reproduction and root cause instead, and on track `spike` it investigates and answers. Use for "viết spec cho issue 42", "làm rõ yêu cầu issue này", "specify issue 42", "tìm nguyên nhân bug ở issue 42" when the issue is on the lifecycle. It writes no code and chooses no implementation. Skip issues with no `state:*` label and ordinary requests to write a spec or debug something that do not involve the lifecycle.
 argument-hint: "[issue number]"
 ---
 

@@ -2,7 +2,7 @@
 
 Each lifecycle state has its own skill. These rules are what keeps nine separate skills behaving as one lifecycle, so every state skill starts here.
 
-Each skill is named after its state (`intake` through `handoff`), plus `close`, `run` and `setup`. These files write a skill as `calibre:<name>`, the form Claude Code uses; on a harness without plugin namespaces it is the bare `<name>` from this plugin. A same-named skill from another library is a different thing: `calibre:plan` is this lifecycle's `plan` state, not a planning library's skill.
+Each skill is named after its state (`intake` through `handoff`), plus `close`, `run`, `setup` and `audit`. These files write a skill as `calibre:<name>`, the form Claude Code uses; on a harness without plugin namespaces it is the bare `<name>` from this plugin. A same-named skill from another library is a different thing: `calibre:plan` is this lifecycle's `plan` state, not a planning library's skill.
 
 The label script is `scripts/lifecycle.sh` in the `calibre:run` skill; each skill's "Before you start" gives its full path, and the commands in the skills write it as `lifecycle.sh`. Call it by path and stay in the task's repo: `gh` acts on the repository of the working directory. [transitions.md](transitions.md) lists its commands.
 

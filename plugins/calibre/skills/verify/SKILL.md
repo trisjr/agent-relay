@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Calibre lifecycle state `verify` — for an issue labeled `state:verify`, prove every acceptance criterion against the current code by running its check now and recording the command, what it actually showed, and the commit; plus one full regression run. Use for "verify issue 42", "kiểm chứng issue này", "chứng minh #42 đã xong", and whenever code changed after an earlier verification. Always done by this skill, never delegated to a provider; it changes no code and no tests. Skip issues with no `state:*` label and ordinary requests to run tests that do not involve the lifecycle.
+description: Calibre lifecycle state `verify` — for an issue labeled `state:verify`, prove every acceptance criterion against the current code by running its check now and recording the command, what it actually showed, and the commit; plus one full regression run. Use for "verify issue 42", "kiểm chứng issue này", "chứng minh issue 42 đã xong", and whenever code changed after an earlier verification. Always done by this skill, never delegated to a provider; it changes no code and no tests. Skip issues with no `state:*` label and ordinary requests to run tests that do not involve the lifecycle.
 argument-hint: "[issue number]"
 ---
 

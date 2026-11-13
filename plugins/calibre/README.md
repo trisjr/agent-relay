@@ -19,8 +19,9 @@ Plugin không viết lại quy trình làm việc trong từng bước. Phần �
 | `calibre:review` | Issue ở `state:review` | Giao thư viện review độc lập bản cuối → ghi phát hiện và kết luận |
 | `calibre:handoff` | Issue ở `state:handoff` | Gộp spec, viết bản bàn giao, mở PR sau khi được đồng ý → dừng ở G3 |
 | `calibre:close` | Đóng, hủy hoặc mở lại một task | Đổi label state sang `resolution:*`, đóng issue kèm lý do; mở lại thì về `triage` |
+| `calibre:audit` | Một skill lifecycle chạy sai hoặc gây bất ngờ, hoặc muốn soát lại một lần chạy | Đọc lại hội thoại → đối chiếu với lịch sử label, record và commit → báo từng chỗ lệch kèm bằng chứng và nguyên nhân → đề xuất sửa và, nếu được đồng ý, tạo issue về repo của plugin. Không đổi label, record hay file skill |
 
-Tên skill trùng với tên state. Trong Claude Code gọi bằng `/calibre:<tên>`, ví dụ `/calibre:triage`; README này viết tên skill theo dạng đó.
+Tên skill trùng với tên state, trừ `run`, `setup` và `audit` là ba skill đứng ngoài chín state. Trong Claude Code gọi bằng `/calibre:<tên>`, ví dụ `/calibre:triage`; README này viết tên skill theo dạng đó.
 
 Mỗi skill theo state chỉ chạy khi issue đang đúng ở state đó; sai state thì nó báo task đang ở đâu và dừng. Gọi thẳng một skill state thì nó làm xong state đó rồi dừng; gọi `calibre:run` thì các state chạy nối tiếp. Quy tắc chung cho cả chín skill nằm ở `skills/run/references/rules.md`.
 
@@ -75,11 +76,12 @@ Thêm thư viện khác là thêm một file adapter trong `skills/run/reference
 - **Chỉ hỗ trợ GitHub Issues**, qua GitHub CLI (`gh`) đã đăng nhập.
 - **superpowers cần đoạn chỉ dẫn trong `CLAUDE.md`/`AGENTS.md`** để dừng đúng ở ranh giới state; `calibre:setup` đề xuất đoạn này. Không có nó thì các skill của superpowers có thể chạy quá phạm vi một state.
 - **Chưa có bộ eval** cho các skill.
+- **`calibre:audit` chưa được kiểm chứng.** Danh sách chỗ lệch nó tìm được suy ra từ quy tắc của lifecycle, chưa phải từ lỗi gặp trong một lần chạy thật. Nó chỉ soát được phần hội thoại còn trong phiên: state chạy ở phiên khác hoặc đã bị nén thì báo là chưa soát.
 - Script label mới được chạy ngoại tuyến: bảng chuyển state qua `lifecycle.sh can` và `lifecycle.sh can-close`, và từng lệnh với một `gh` giả lập chỉ ghi lại lời gọi. Chưa chạy với GitHub thật.
 
 ## Theo từng platform
 
-- **Claude Code** và các agent đọc `SKILL.md`: dùng mười một skill trong `skills/`.
+- **Claude Code** và các agent đọc `SKILL.md`: dùng mười hai skill trong `skills/`.
 - **Cursor** không đọc `SKILL.md` của plugin; rule `.cursor/rules/calibre.mdc` tóm tắt các quy tắc bắt buộc và trỏ tới file `SKILL.md` của từng state. Rule này cần thư mục `skills/` của plugin có trên máy vì nó gọi script label.
 - **Codex, Gemini CLI, Kimi Code, Qoder**: có manifest theo quy ước của repo, nhưng plugin chưa được chạy thử trên các platform này.
 

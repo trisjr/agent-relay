@@ -1,6 +1,6 @@
 ---
 name: review
-description: Calibre lifecycle state `review` — for an issue labeled `state:review`, have the final, already-verified change reviewed independently by the configured review provider, with the diff, spec, plan and evidence but not the author's reasoning, and record findings with severity, location and a verdict. Use for "review issue 42", "review thay đổi của #42 trước khi bàn giao", or after fixes changed the code since the last review. The reviewer fixes nothing; requested changes go back through `implement` and `verify`. Skipped on track `chore`. Skip issues with no `state:*` label and ordinary code review requests that do not involve the lifecycle.
+description: Calibre lifecycle state `review` — for an issue labeled `state:review`, have the final, already-verified change reviewed independently by the configured review provider, with the diff, spec, plan and evidence but not the author's reasoning, and record findings with severity, location and a verdict. Use for "review issue 42", "review thay đổi của issue 42 trước khi bàn giao", or after fixes changed the code since the last review. The reviewer fixes nothing; requested changes go back through `implement` and `verify`. Skipped on track `chore`. Skip issues with no `state:*` label and ordinary code review requests that do not involve the lifecycle.
 argument-hint: "[issue number]"
 ---
 

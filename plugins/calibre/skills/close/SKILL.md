@@ -1,6 +1,6 @@
 ---
 name: close
-description: Calibre lifecycle state `closed` — end a lifecycle task with a stated resolution (`done`, `answered`, `duplicate`, `rejected`, `already-done`, `superseded`, `canceled`) by swapping its state label for a `resolution:*` label and closing the issue with the matching GitHub reason; also cancels a task from any state and reopens a closed one into `triage`. Use for "đóng issue 42", "hủy task này", "cancel #42", "mở lại issue 42", and when another lifecycle state reaches a closing decision. The decision to close is always the user's. Skip closing or reopening issues that carry no lifecycle label.
+description: Calibre lifecycle state `closed` — end a lifecycle task with a stated resolution (`done`, `answered`, `duplicate`, `rejected`, `already-done`, `superseded`, `canceled`) by swapping its state label for a `resolution:*` label and closing the issue with the matching GitHub reason; also cancels a task from any state and reopens a closed one into `triage`. Use for "đóng issue 42", "hủy task này", "cancel issue 42", "mở lại issue 42", and when another lifecycle state reaches a closing decision. The decision to close is always the user's. Skip closing or reopening issues that carry no lifecycle label.
 argument-hint: "[issue number] [resolution]"
 ---
 
