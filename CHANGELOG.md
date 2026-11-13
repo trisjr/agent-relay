@@ -5,6 +5,16 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+### Added
+
+- **calibre**: skill `calibre:audit` soát lại cách các skill lifecycle đã chạy trong hội thoại. Nó so việc từng state đã làm với văn bản skill, quy tắc chung và bảng chuyển state, đối chiếu với lịch sử label, record và commit, rồi báo từng chỗ lệch kèm bằng chứng và nguyên nhân. Chỗ lệch do chính plugin thì kèm đề xuất sửa và, nếu được đồng ý, tạo issue về repo của plugin. Skill không đổi label, record hay file skill, và chưa được kiểm chứng bằng một lần chạy thật.
+- **validate.sh**: báo lỗi khi một giá trị frontmatter không đặt trong dấu nháy của `SKILL.md` chứa ` #` hoặc `: `.
+
+### Fixed
+
+- **calibre**: description của tám skill (`close`, `handoff`, `implement`, `plan`, `review`, `run`, `specify`, `verify`) bị cắt cụt khi nạp, vì ` #42` trong frontmatter được YAML đọc là bắt đầu comment. Các câu trigger nằm sau chỗ đó và câu "Skip…" bị mất.
+- **dev-workflows**: description của `triage-request` có `: ` giữa câu nên trình đọc YAML chặt báo lỗi cú pháp.
+
 ## [0.30.0] - 2026-11-13
 
 ### Plugins
