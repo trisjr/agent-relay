@@ -53,3 +53,4 @@ If `show` reports a wait, the task is paused. Confirm with the user that the thi
 - **Cancel**, or **reopen** a closed task: [`calibre:close`](../close/SKILL.md).
 - **Scope changed mid-flight**: `scripts/lifecycle.sh state <n> triage`, then `calibre:triage`. A different request deserves a fresh verdict.
 - **Status only** ("where is #42?"): run `show`, read the record, and report state, wait, track, what the last state produced and what is needed next. Change nothing.
+- **A lifecycle skill misbehaved** (skipped a step, ran past a gate, got in the way): [`calibre:audit`](../audit/SKILL.md), in the same session while the conversation still shows what happened.
