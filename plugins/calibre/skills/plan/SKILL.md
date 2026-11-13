@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Calibre lifecycle state `plan` — for an issue labeled `state:plan`, decide how each acceptance criterion will be met and checked by delegating to the configured plan provider, build the criterion-to-task coverage table, then stop at gate G2 so the user approves spec and plan together. Use for "lên plan cho issue 42", "plan #42", "duyệt plan issue này", or when a plan was revised and needs approval again. It edits no code and does not start implementing. Skip issues with no `state:*` label and ordinary planning requests that do not involve the lifecycle.
+description: Calibre lifecycle state `plan` — for an issue labeled `state:plan`, decide how each acceptance criterion will be met and checked by delegating to the configured plan provider, build the criterion-to-task coverage table, then stop at gate G2 so the user approves spec and plan together. Use for "lên plan cho issue 42", "plan issue 42", "duyệt plan issue này", or when a plan was revised and needs approval again. It edits no code and does not start implementing. Skip issues with no `state:*` label and ordinary planning requests that do not involve the lifecycle.
 argument-hint: "[issue number]"
 ---
 

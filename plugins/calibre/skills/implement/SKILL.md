@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Calibre lifecycle state `implement` — for an issue labeled `state:implement`, build what the approved plan describes on the task branch by delegating to the configured implement provider, and record which tasks were done and where the work departed from the plan. Use for "implement issue 42", "code issue này theo plan", "làm tiếp phần code của #42", and after `verify` or `review` sent the task back for fixes. It stops when the plan's tasks are committed: it does not verify, review, push or open a pull request. Skip issues with no `state:*` label and ordinary coding requests that do not involve the lifecycle.
+description: Calibre lifecycle state `implement` — for an issue labeled `state:implement`, build what the approved plan describes on the task branch by delegating to the configured implement provider, and record which tasks were done and where the work departed from the plan. Use for "implement issue 42", "code issue này theo plan", "làm tiếp phần code của issue 42", and after `verify` or `review` sent the task back for fixes. It stops when the plan's tasks are committed and does not verify, review, push or open a pull request. Skip issues with no `state:*` label and ordinary coding requests that do not involve the lifecycle.
 argument-hint: "[issue number]"
 ---
 
