@@ -19,7 +19,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 ## Do
 
 1. Note the current commit. Everything below is evidence about that commit.
-2. For each criterion in `spec.md`, run the check named for it in `plan.md` (on track `chore`, the check written at triage). Run it now: a result remembered from the build, or reported by the provider, is not evidence.
+2. For each row of the criteria index in `task.md`, run the check named in it. Run it now: a result remembered from the build, or reported by the provider, is not evidence.
 3. Record what the run actually printed or showed, trimmed to the lines that decide pass or fail.
 4. Run the repo's full test suite once and record the result, to catch what the change broke elsewhere.
 5. A check that needs a person (a device, a visual judgment, a production-only system): describe exactly what to do, ask the user to do it, and record the result as `manual, reported by <who>`.
@@ -47,12 +47,13 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 - Every criterion has a row with a check that was run in this state and a `pass`.
 - The regression run is recorded.
 - `evidence.md` is committed, and the code has not changed since the commit it names.
+- The state's summary is on the issue, unless `issue_comments` is `record`.
 
 Then `lifecycle.sh state <n> review` and `calibre:review` — or, on track `chore`, `lifecycle.sh state <n> handoff` and `calibre:handoff`.
 
 ## When a criterion fails
 
-List the failing IDs with what was observed, then `lifecycle.sh state <n> implement` and `calibre:implement`. Count the `verify → implement` rows in the `task.md` history: once they reach `verify.max_loops` (default 3), repeated fixing is not converging. Run `lifecycle.sh wait <n> blocked` and bring the pattern to the user instead of trying again.
+List the failing IDs with what was observed, then `lifecycle.sh state <n> implement --comment "<failing IDs and what was observed>. Fix round <k> of <max>."` and `calibre:implement`; omit `--comment` when `issue_comments` is `record`. Count the `verify → implement` rows in the `task.md` history: once they reach `verify.max_loops` (default 3), repeated fixing is not converging. Run `lifecycle.sh wait <n> blocked` and bring the pattern to the user instead of trying again.
 
 A criterion that turns out to be untestable or wrong is a spec problem: return to `implement` and from there to `specify`, rather than quietly rewording it here.
 

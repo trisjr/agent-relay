@@ -5,6 +5,17 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+### Added
+
+- **calibre**: mỗi state từ `specify` trở đi để lại một comment tóm tắt ngắn trên issue, và mỗi quyết định ở cổng duyệt hay lần lùi state có một dòng ghi chú, để người không mở nhánh vẫn theo dõi được task. `issue_comments` có giá trị mới `summary` làm mặc định; `record` giữ issue chỉ có các comment bắt buộc.
+- **calibre**: `lifecycle.sh state` nhận `--comment <text>` và đăng nội dung đó lên issue dưới dòng `**Lifecycle · <from> → <to>**` sau khi đổi label.
+
+### Changed
+
+- **calibre**: record trong `.calibre/tasks/<issue>/` không còn chép lại spec và plan của thư viện. `spec.md` và `plan.md` của lifecycle bị bỏ; `task.md` giữ con trỏ tới file của thư viện, bảng tiêu chí (mã, nguồn, task, cách kiểm), cổng duyệt, quyết định và lịch sử. Chẩn đoán bug có file riêng `diagnosis.md`. Record viết theo bố cục cũ vẫn đọc được cho tới khi task đóng.
+- **calibre**: plan thực thi dẫn xuất cho superpowers là file tạm; `calibre:handoff` xóa nó trước khi mở PR. `calibre:setup` nói rõ điều này khi đề xuất ghép OpenSpec với superpowers.
+- **calibre**: kiểm tra spec có đổi sau khi duyệt dùng commit ghi ở G2, thay cho mục `Based on spec at`. Plan của provider `builtin` đổi tên từ `plan-tasks.md` thành `plan.md`.
+
 ## [0.31.0] - 2026-11-13
 
 ### Plugins

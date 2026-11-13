@@ -22,6 +22,8 @@ superpowers executes a plan in its own format: a file with an ordered list of ta
 
 **If the plan of record is not a superpowers plan** (for example OpenSpec's `tasks.md`), produce the execution plan during the `plan` state with `superpowers:writing-plans`, giving it the spec and the plan of record as its requirements. It saves to `docs/superpowers/plans/<date>-<feature>.md`. Tell it up front which execution method will be used; it then pauses once to have the plan reviewed, and that pause is gate G2. The plan of record stays the approved one; the execution plan is derived and is regenerated if the record changes.
 
+**The derived execution plan is scaffolding.** It restates the plan of record in another format, so it is not delivered: list it in `task.md` under `Sources` as `Execution plan (derived)`, and `handoff` deletes it from the task branch before the pull request opens. Its row stays in `Sources`, marked as removed. If the task comes back to `implement` after that, restore the file from the branch history (`git log --diff-filter=D -- <path>` finds the commit that removed it) or write a new one covering the fix.
+
 **To execute**, invoke `superpowers:subagent-driven-development` with the execution plan — or `superpowers:executing-plans` when the session has no subagents. Both apply `superpowers:test-driven-development` to each task and run without pausing between tasks.
 
 **Where it runs on.** After the last task, both run a whole-branch review and then invoke `superpowers:finishing-a-development-branch`, which offers to merge or push. Stop before that: the lifecycle owns `verify`, `review` and `handoff`. State this when you invoke the skill.
@@ -30,7 +32,7 @@ superpowers executes a plan in its own format: a file with an ordered list of ta
 
 ### `review`
 
-Invoke `superpowers:requesting-code-review` for the whole change: base is the merge-base with the default branch, head is the task branch's head. It dispatches a fresh subagent that receives a description, the requirements and the two commits, and never the session's history, which is exactly the independence the `review` state wants. Give it `spec.md` and `plan.md` as the requirements.
+Invoke `superpowers:requesting-code-review` for the whole change: base is the merge-base with the default branch, head is the task branch's head. It dispatches a fresh subagent that receives a description, the requirements and the two commits, and never the session's history, which is exactly the independence the `review` state wants. Give it, as the requirements, the spec and plan files listed under `Sources` in `task.md` and the criteria index.
 
 The reviewer returns strengths, issues graded Critical, Important and Minor, and an assessment of whether the change is ready to merge. Nothing is written to a file, so copy the issues into `review.md`. Map Critical and Important to `blocking`, Minor to `non-blocking`.
 
@@ -40,17 +42,17 @@ If the session has no subagents, superpowers falls back to self-review. That is 
 
 Invoke `superpowers:systematic-debugging` for a bug. Its first three phases — root-cause investigation, pattern analysis, hypothesis and testing — are the `diagnose` role. Its fourth phase implements the fix; stop before it and say so when invoking, because fixing belongs to `implement`, after the plan is approved.
 
-It writes no file. Record the reproduction, the root cause and the evidence in `spec.md` yourself.
+It writes no file. Record the reproduction, the root cause and the evidence in `diagnosis.md` yourself.
 
 ### `specify`
 
-`superpowers:brainstorming` asks questions and writes a design document to `docs/superpowers/specs/<date>-<topic>-design.md`, covering intent, goals and non-goals, constraints and approaches. It does not produce numbered or individually testable acceptance criteria, so expect to derive the criteria in `spec.md` from the design and confirm them with the user. After the design is approved it invokes `superpowers:writing-plans` on its own; return to the lifecycle first so the `specify` exit is checked.
+`superpowers:brainstorming` asks questions and writes a design document to `docs/superpowers/specs/<date>-<topic>-design.md`, covering intent, goals and non-goals, constraints and approaches. That document is the spec: list it in the `Spec` row of `Sources`. It does not produce numbered or individually testable acceptance criteria, so derive them from the design, confirm them with the user, add them to the design document under an `Acceptance criteria` heading, and index them in `task.md`. After the design is approved it invokes `superpowers:writing-plans` on its own; return to the lifecycle first so the `specify` exit is checked.
 
 When another provider owns `specify`, do not run brainstorming for the same task: two specs in two places is the conflict this lifecycle exists to prevent.
 
 ### `plan`
 
-`superpowers:writing-plans`, as described under `implement`. When superpowers is the `plan` provider, its plan file is the plan of record. The format has no risks section and does not link tasks to criteria; build the coverage table in `plan.md` yourself.
+`superpowers:writing-plans`, as described under `implement`. When superpowers is the `plan` provider, its plan file is the plan of record. The format does not link tasks to criteria, so fill the `Tasks` and `Check` columns of the criteria index yourself. It has no risks section either: a risk a reviewer should weigh goes under `## Risks` in `task.md`.
 
 ### Not provided
 

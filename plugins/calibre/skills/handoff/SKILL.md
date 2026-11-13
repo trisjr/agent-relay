@@ -20,12 +20,13 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 1. **Re-check currency.** `evidence.md` and, off the `chore` track, `review.md` must both name the current code (see *Is the evidence still current?* in [record.md](../run/references/record.md)). If not, return to `verify`.
 2. **Merge the spec back**, when the task has a spec change to merge (`change` in `task.md`; a `chore` has none), following `handoff.archive` in the config:
-   - `before-pr` (default): run the spec provider's archive step on the task branch now and commit it, so the pull request carries the updated specs. The [OpenSpec adapter](../run/references/providers/openspec.md) describes it. This touches only spec folders, so the evidence stays valid.
+   - `before-pr` (default): run the spec provider's archive step on the task branch now, point the `Sources` rows of `task.md` at where the files moved, and commit both together, so the pull request carries the updated specs. The [OpenSpec adapter](../run/references/providers/openspec.md) describes it. This touches only spec and record folders, so the evidence stays valid.
    - `after-merge`: leave it; after the merge it needs its own commit on the default branch, which you will have to raise with the user.
    - `never`, or no spec provider with an archive step: skip.
-3. **Write `handoff.md`** in the record: a summary, the criteria with the evidence for each, departures from the plan, what was not done and the follow-ups, and how to try the change. Commit it.
-4. **Open the pull request.** Show the title and body first (the body is `handoff.md`), and on a yes push the branch and run `gh pr create`. Reference the issue as `Refs #<n>`, not `Closes #<n>`: an auto-close on merge would close the issue behind the lifecycle's back, without its resolution label.
-5. Post the pull request link on the issue under `**Lifecycle · handoff**`, then `lifecycle.sh wait <n> approval`.
+3. **Drop the scaffolding.** When `Sources` in `task.md` lists a derived execution plan that is a file of its own, delete the file, add `(removed at handoff)` to its row and commit. The row keeps the path, which is what lets the file be restored if the task comes back. It restates the plan of record and is not part of what is delivered. A derived plan inside the spec provider's change folder stays with the change. The evidence stays valid here too: the currency check ignores the folder the plan lived in.
+4. **Write `handoff.md`** in the record: a summary, the criteria with the evidence for each, departures from the plan, what was not done and the follow-ups, and how to try the change. Commit it.
+5. **Open the pull request.** Show the title and body first (the body is `handoff.md`), and on a yes push the branch and run `gh pr create`. Reference the issue as `Refs #<n>`, not `Closes #<n>`: an auto-close on merge would close the issue behind the lifecycle's back, without its resolution label.
+6. Post the pull request link on the issue under `**Lifecycle · handoff**` — with the handoff lines from *Issue comments* in [record.md](../run/references/record.md) unless `issue_comments` is `record` — then `lifecycle.sh wait <n> approval`.
 
 ## Gate G3
 
@@ -37,7 +38,7 @@ What counts as accepted is `handoff.accepted_when` in the config:
 | Outcome | Do |
 |---|---|
 | accepted | close as `done` through `calibre:close`; its closing comment records G3 — who accepted, and the pull request — because once the branch is merged there is no task branch left to commit the record to |
-| changes requested | note it under G3 in `task.md`, `lifecycle.sh state <n> implement`; the fix comes back through `calibre:verify` and `calibre:review` |
+| changes requested | note it under G3 in `task.md`, `lifecycle.sh state <n> implement --comment "G3: changes requested by <who>. <what>"` (omit `--comment` when `issue_comments` is `record`); the fix comes back through `calibre:verify` and `calibre:review` |
 | the wrong thing was built | `lifecycle.sh state <n> specify`, then `calibre:specify` |
 | abandoned | close as `canceled` through `calibre:close` |
 

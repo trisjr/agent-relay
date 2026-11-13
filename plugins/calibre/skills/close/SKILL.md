@@ -33,8 +33,8 @@ A resolution that only applies from `triage` means the task goes back there firs
 ## Do
 
 1. Make sure the decision is the user's: G1 for a triage verdict, G3 for `done`, an explicit instruction for `canceled`.
-2. Write the closing comment: one or two lines giving the reason and the links that matter — the pull request and who accepted it for `done` (this is the record of gate G3), the other issue for `duplicate`, the child issues for `superseded`, where the behavior lives for `already-done`.
-3. Run `lifecycle.sh close <n> <resolution> --comment "<text>"` (add `--duplicate-of <m>` for a duplicate). The script swaps the labels and closes the issue with the matching GitHub reason; if the close fails it puts the labels back.
+2. Write the closing comment: one or two lines giving the reason and the links that matter — the pull request and who accepted it for `done` (this is the record of gate G3), the other issue for `duplicate`, the child issues for `superseded`, where the behavior lives for `already-done`. Unless `issue_comments` is `record`, add the closing lines from *Issue comments* in [record.md](../run/references/record.md), so the issue ends with the result and not only the reason.
+3. Run `lifecycle.sh close <n> <resolution> --comment "<text>"` (add `--duplicate-of <m>` for a duplicate). For a note of several lines, write it to a file in a temporary directory outside the repo and pass `--comment "$(cat <file>)"`. The script swaps the labels and closes the issue with the matching GitHub reason; if the close fails it puts the labels back.
 
 ## Cleaning up
 
