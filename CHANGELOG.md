@@ -5,6 +5,13 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.31.0] - 2026-11-13
+
+### Plugins
+
+- `calibre`: 0.1.0 → 0.2.0
+- `dev-workflows`: 0.5.0 → 0.5.1
+
 ### Added
 
 - **calibre**: skill `calibre:audit` soát lại cách các skill lifecycle đã chạy trong hội thoại. Nó so việc từng state đã làm với văn bản skill, quy tắc chung và bảng chuyển state, đối chiếu với lịch sử label, record và commit, rồi báo từng chỗ lệch kèm bằng chứng và nguyên nhân. Chỗ lệch do chính plugin thì kèm đề xuất sửa và, nếu được đồng ý, tạo issue về repo của plugin. Skill không đổi label, record hay file skill, và chưa được kiểm chứng bằng một lần chạy thật.

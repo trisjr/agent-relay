@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Standard developer workflow for coding agents: clarify requirements before building, debug to the root cause, and capture and recall project lessons.",
   "contextFileName": "gemini-context.md"
 }
