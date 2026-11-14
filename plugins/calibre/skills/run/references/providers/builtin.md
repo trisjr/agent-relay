@@ -21,7 +21,7 @@ The fallback for any role whose configured provider is missing, and the provider
 1. Work through the tasks in order on the task branch.
 2. For each task that changes behavior, write the test first and see it fail for the right reason, then make it pass. A test written after the code tends to test what the code does rather than what was asked.
 3. Commit per task. Tick the task off in the plan of record.
-4. When a task cannot be done as planned, decide whether it is a small departure (do it, and note what and why) or a different approach (stop; this goes back to `plan`).
+4. When a task cannot be done as planned, decide whether it is a small departure (do it, note what and why, and leave the plan's text as approved) or a revision (stop; this goes back to `plan`). *What counts as revised* in the [shared rules](../rules.md) draws the line.
 
 ### `review`
 

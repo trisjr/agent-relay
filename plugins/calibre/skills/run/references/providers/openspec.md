@@ -50,7 +50,7 @@ The plan is `design.md` (context, goals and non-goals, decisions, risks) and `ta
 
 Tasks are not linked to requirements in OpenSpec's format, so the `Tasks` and `Check` columns of the criteria index are yours to fill: for each criterion, the task numbers that deliver it and the check that proves it. A criterion with no task means `tasks.md` is incomplete. Risks belong in `design.md`.
 
-**To revise** after feedback at G2, or when implementation shows the spec or plan is wrong: `openspec-update-change`. It edits the change's files and does not touch code.
+**To revise** after feedback at G2, or when implementation shows the spec or plan is wrong: `openspec-update-change`, run in the `plan` state (`specify` for the spec) and never from inside `implement`. It edits the change's files and does not touch code.
 
 ### `explore`
 
@@ -59,6 +59,8 @@ Tasks are not linked to requirements in OpenSpec's format, so the `Tasks` and `C
 ### `implement`
 
 `openspec-apply-change` works through `tasks.md`, changes code and ticks each task. It runs until the tasks are done or it is blocked. It creates no branch and makes no commits, so be on the task branch before invoking it and commit when it returns. It does not record where it departed from the plan; ask, and write the answer into `implement.md`.
+
+**Where it runs on.** When implementation reveals a design issue, it pauses and suggests updating the change's artifacts. Do not take that up inside `implement`: editing `design.md` or `tasks.md` is a revision, which belongs to `plan` and gate G2.
 
 When another provider implements instead, that provider still ticks tasks off in `tasks.md` so the plan of record shows progress.
 

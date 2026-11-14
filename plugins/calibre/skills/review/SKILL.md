@@ -59,6 +59,8 @@ Then `lifecycle.sh state <n> handoff`; the next skill is `calibre:handoff`.
 
 `lifecycle.sh state <n> implement --comment "Review: changes requested. <the blocking findings, one line each>"` (omit `--comment` when `issue_comments` is `record`), fix through `calibre:implement`, and come back through `calibre:verify`. The evidence is bound to the old code, so the changed code has to be proven again; then review the new commit.
 
+A blocking finding against the plan itself — a design decision or the approach, not how it was built — is a plan problem: return to `implement` and from there to `plan`, so the revised part gets G2 again, rather than letting the fix rewrite the plan on its way through.
+
 ## Do not
 
 - Let the reviewer fix what it finds. Fixes go through `implement` so they are verified like any other change.

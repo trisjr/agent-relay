@@ -18,7 +18,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 ## Do
 
-1. **Re-check currency.** `evidence.md` and, off the `chore` track, `review.md` must both name the current code (see *Is the evidence still current?* in [record.md](../run/references/record.md)). If not, return to `verify`.
+1. **Re-check currency.** `evidence.md` and, off the `chore` track, `review.md` must both name the current code (see *Is the evidence still current?* in [record.md](../run/references/record.md)). If not, return to `verify`. The plan of record must also read as it was approved at G2, ticked tasks aside (same section). If it was edited since, do not archive it: go back to `implement` and from there to `plan`, so the edit is approved before it is delivered.
 2. **Merge the spec back**, when the task has a spec change to merge (`change` in `task.md`; a `chore` has none), following `handoff.archive` in the config:
    - `before-pr` (default): run the spec provider's archive step on the task branch now, point the `Sources` rows of `task.md` at where the files moved, and commit both together, so the pull request carries the updated specs. The [OpenSpec adapter](../run/references/providers/openspec.md) describes it. This touches only spec and record folders, so the evidence stays valid.
    - `after-merge`: leave it; after the merge it needs its own commit on the default branch, which you will have to raise with the user.

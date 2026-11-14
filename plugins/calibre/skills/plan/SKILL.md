@@ -45,6 +45,8 @@ If the execution-plan provider pauses on its own to ask for plan approval, that 
 | a requirement is wrong | `lifecycle.sh state <n> specify`, then `calibre:specify` |
 | too big | show the child issues, create them on a yes, close as `superseded` through `calibre:close` |
 
+**A revision after G2.** When the task came back from `implement` because the approved plan no longer holds, revise through the provider's own revise step, regenerate a derived execution plan, and present what changed and why. The approval adds a new G2 row to `task.md` with the commit seen; the earlier row stays as history.
+
 ## Exit when
 
 - Every criterion has at least one task and a named check.
@@ -56,4 +58,4 @@ If the execution-plan provider pauses on its own to ask for plan approval, that 
 
 - Edit code. A plan that needed a code change to be written is a spike in disguise.
 - Start implementing because approval seems certain.
-- Carry an approval across a change. Revised after G2 means G2 again, for the revised part.
+- Carry an approval across a change. Revised after G2 means G2 again, for the revised part; *What counts as revised* in the [shared rules](../run/references/rules.md) says what that covers.

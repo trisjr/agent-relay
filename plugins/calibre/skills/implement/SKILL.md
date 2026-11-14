@@ -18,7 +18,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 ## On entry
 
-- Tracks `feature` and `bug`: confirm G2 is recorded in `task.md` and that the spec has not changed since (see *Is the evidence still current?* in [record.md](../run/references/record.md)). An unapproved or stale plan goes back to `plan`.
+- Tracks `feature` and `bug`: confirm G2 is recorded in `task.md` and that neither the spec nor the plan of record has changed since, ticked tasks aside (see *Is the evidence still current?* in [record.md](../run/references/record.md)). An unapproved or stale plan goes back to `plan`.
 - Track `chore`: create the task branch and the record now. `task.md` links the triage verdict; copy its criteria into the criteria index, each with its check, so `verify` has something to prove.
 
 ## Do
@@ -49,7 +49,7 @@ Then `lifecycle.sh state <n> verify`; the next skill is `calibre:verify`.
 
 ## Leave differently when
 
-- The plan cannot work as approved: `lifecycle.sh state <n> plan`, then `calibre:plan`. Small departures are recorded; a different approach is re-approved.
+- The plan cannot work as approved: `lifecycle.sh state <n> plan`, then `calibre:plan`. A small departure is recorded in `implement.md`, and the plan of record keeps its approved text. A change to an approved decision is a revision and gets G2 again; *What counts as revised* in the [shared rules](../run/references/rules.md) draws the line.
 - A requirement is wrong or missing: `lifecycle.sh state <n> specify`, then `calibre:specify`.
 - Something outside the task is in the way: `lifecycle.sh wait <n> blocked`, and say what would unblock it.
 
@@ -58,3 +58,4 @@ Then `lifecycle.sh state <n> verify`; the next skill is `calibre:verify`.
 - Report criteria as met. Tests passing during the build are encouraging; proof is `verify`'s output.
 - Widen the scope. Extra work becomes a follow-up, not a surprise in the diff.
 - Weaken a test to make it pass.
+- Edit the plan of record beyond ticking its tasks. Making the plan match the code afterwards is a revision nobody approved.

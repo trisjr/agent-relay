@@ -91,7 +91,7 @@ triage: https://github.com/acme/billing/issues/42#issuecomment-123456
 
 - **Sources.** The `Spec` row names the files that define what is to be built, and nothing an implementer edits: the task list is ticked off during `implement`, so it belongs in the `Plan of record` row. The `Execution plan (derived)` row exists only when the `implement` provider needed its own plan format. A bug fixed without a provider spec has `diagnosis.md` in its `Spec` row. A `chore` has no `Sources` rows: its criteria come from the triage comment.
 - **Criteria.** `specify` fills `ID`, `Criterion` and `Source`; `plan` fills `Tasks` and `Check`. `Criterion` is one line that names the criterion; its full wording stays at the source. On track `chore`, `implement` fills the rows from the triage comment, with `—` under `Tasks`.
-- **Gates.** G1 and G2 are recorded here. An accepted G3 is recorded in the closing comment on the issue instead: by then the branch is merged and there is nowhere left to commit it.
+- **Gates.** G1 and G2 are recorded here. A plan revised after G2 adds a new G2 row when it is approved again, and the latest row is the one the checks use. An accepted G3 is recorded in the closing comment on the issue instead: by then the branch is merged and there is nowhere left to commit it.
 - **Decisions.** Answers a person gave between gates that shaped the spec or the plan.
 - **History.** One row for every move, including moves back. The row count for `verify → implement` is how the fix-round limit is enforced.
 - **`## Out of scope`, `## Risks`.** Optional sections, used only under the fallback in *One home*.
@@ -231,8 +231,18 @@ git diff --quiet <G2 commit> HEAD -- <spec paths>
 
 Anything but exit status 0 means the spec changed after it was approved, and the plan needs G2 again.
 
-After `handoff` has archived a spec change, the files sit at a path that did not exist at the G2 commit, so the command above always reports a change. Compare the old location at that commit with the new one at the head instead; the old location is the change folder named by `change` in `task.md`:
+The plan of record is bound to G2 as well. Read what changed in the paths of the `Plan of record` row since that commit:
+
+```bash
+git diff <G2 commit> HEAD -- <plan of record paths>
+```
+
+The only difference allowed is tasks ticked off (`- [ ]` to `- [x]`). Any other changed line is a revision nobody approved: the task goes to `plan` for G2 before it moves on. When G2 was given more than once, both checks use the latest G2 row.
+
+After `handoff` has archived a spec change, the files sit at a path that did not exist at the G2 commit, so the commands above always report a change. Compare the old location at that commit with the new one at the head instead; the old location is the change folder named by `change` in `task.md`:
 
 ```bash
 git diff --quiet <G2 commit>:<old path> HEAD:<new path>
 ```
+
+For the plan of record, run the same comparison without `--quiet` and read it: ticked tasks always show as a difference, and they are the only one allowed.
