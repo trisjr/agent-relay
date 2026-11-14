@@ -20,7 +20,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 1. Read the adapter for the configured `plan` provider — [openspec.md](../run/references/providers/openspec.md), [superpowers.md](../run/references/providers/superpowers.md) or [builtin.md](../run/references/providers/builtin.md) — and produce the plan. If the provider already wrote plan files while specifying (OpenSpec's proposal step writes design and tasks in the same call), review and correct those instead of regenerating them.
 2. **Execution plan, when needed.** Some `implement` providers only work from a plan in their own format (superpowers is one; its adapter says how). If the `implement` provider differs from the `plan` provider and needs that, produce the execution plan now, from the plan of record, so that one approval covers both. `plan.record` in the config says which of the two is the plan of record (default: the `plan` provider's); the other is derived from it and is regenerated whenever the record changes.
-3. Build the coverage: for every row of the criteria index in `task.md`, fill `Tasks` with the tasks that deliver it and `Check` with the check that will prove it. A criterion with no task is unplanned work; a criterion with no check cannot be verified later.
+3. Build the coverage: for every row of the criteria index in `task.md`, fill `Tasks` with the tasks that deliver it and `Check` with the check that will prove it. A criterion with no task is unplanned work; a criterion with no check cannot be verified later. A check that can only run after the change is deployed is written as `post-deploy: <steps>`, so the user sees at G2 which criteria will not be fully proven before the pull request.
 
 ## Produce
 
@@ -45,6 +45,8 @@ If the execution-plan provider pauses on its own to ask for plan approval, that 
 | a requirement is wrong | `lifecycle.sh state <n> specify`, then `calibre:specify` |
 | too big | show the child issues, create them on a yes, close as `superseded` through `calibre:close` |
 
+**A revision after G2.** When the task came back from `implement` because the approved plan no longer holds, revise through the provider's own revise step, regenerate a derived execution plan, and present what changed and why. The approval adds a new G2 row to `task.md` with the commit seen; the earlier row stays as history.
+
 ## Exit when
 
 - Every criterion has at least one task and a named check.
@@ -56,4 +58,4 @@ If the execution-plan provider pauses on its own to ask for plan approval, that 
 
 - Edit code. A plan that needed a code change to be written is a spike in disguise.
 - Start implementing because approval seems certain.
-- Carry an approval across a change. Revised after G2 means G2 again, for the revised part.
+- Carry an approval across a change. Revised after G2 means G2 again, for the revised part; *What counts as revised* in the [shared rules](../run/references/rules.md) says what that covers.

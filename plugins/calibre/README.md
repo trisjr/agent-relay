@@ -36,7 +36,7 @@ Mỗi skill theo state chỉ chạy khi issue đang đúng ở state đó; sai s
 | `implement` | `state:implement` | Thư viện | |
 | `verify` | `state:verify` | Plugin | |
 | `review` | `state:review` | Thư viện | |
-| `handoff` | `state:handoff` | Plugin | G3: kết quả được chấp nhận (mặc định là PR được merge) |
+| `handoff` | `state:handoff` | Plugin | G3: kết quả được chấp nhận (mặc định là PR được merge, và mọi kiểm tra dời sang sau deploy đã có kết quả) |
 | `closed` | `resolution:*`, issue đóng | Plugin | |
 
 Bốn track quyết định task đi qua những state nào:

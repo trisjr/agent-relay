@@ -49,9 +49,11 @@ Three moves need a person, because they are judgment calls an agent should not m
 
 - **G1, after `triage`**: is this worth doing, and on which track?
 - **G2, after `plan`**: are the spec and the plan right? One approval covers both.
-- **G3, at `handoff`**: is the result accepted? By default this means the pull request is merged.
+- **G3, at `handoff`**: is the result accepted? By default this means the pull request is merged, and any check the user moved to after deploy has been reported.
 
 At a gate, present what is being approved, run `lifecycle.sh wait <n> approval`, and stop. Record each decision in the task record with who decided, when, and which commit they saw, and pass it as the move note when the task moves on. Approval of one thing is not approval of the next: a plan revised after G2 goes back through G2.
+
+**What counts as revised.** Any change to the content of the plan of record after G2 is a revision, whoever makes it and however small: a design decision, the approach, the task list, which tasks deliver a criterion. Ticking tasks off is progress, not revision. A small departure during `implement` changes how a task is carried out and leaves every approved decision standing; it is recorded in `implement.md`, and the plan of record keeps its approved text. When an approved decision no longer holds, that is not a small departure: the task moves to `plan`, the plan is revised there, and the revised part gets G2. Rewriting the plan of record so it matches the code is a revision made without an approval.
 
 ## Waiting
 
