@@ -23,6 +23,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 3. Record what the run actually printed or showed, trimmed to the lines that decide pass or fail.
 4. Run the repo's full test suite once and record the result, to catch what the change broke elsewhere.
 5. A check that needs a person (a device, a visual judgment, a production-only system): describe exactly what to do, ask the user to do it, and record the result as `manual, reported by <who>`.
+6. A check that cannot run until the change is deployed, because it needs the production system itself: the user may decide to run it after deploy. Run every part of the check that can run now and record what it showed. Give the row the result `post-deploy`, with the exact steps still owed under `Check run`, and record the decision under `Decisions` in `task.md`. Such a row is never `pass`: the criterion is not proven until `handoff` has the result (*Gate G3* in `calibre:handoff`).
 
 ## Produce
 
@@ -44,7 +45,7 @@ Follow the [shared rules](../run/references/rules.md): read the config, run `lif
 
 ## Exit when
 
-- Every criterion has a row with a check that was run in this state and a `pass`.
+- Every criterion has a row with a check that was run in this state and a `pass`, or the result `post-deploy` by a decision of the user's recorded in `task.md`.
 - The regression run is recorded.
 - `evidence.md` is committed, and the code has not changed since the commit it names.
 - The state's summary is on the issue, unless `issue_comments` is `record`.
@@ -62,3 +63,4 @@ A criterion that turns out to be untestable or wrong is a spec problem: return t
 - Change code or tests in this state. Fixing and judging in the same step is how a failing check becomes a passing one without the behavior changing.
 - Mark a criterion as passed because a neighbouring test passed.
 - Skip the fresh run because nothing "should" have changed.
+- Mark a row `post-deploy` on your own judgment, or for a check that is only slow, awkward or failing. It is the user's decision, and only for a check that deploy alone stands in the way of.

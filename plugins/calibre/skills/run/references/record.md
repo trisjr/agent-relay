@@ -91,7 +91,7 @@ triage: https://github.com/acme/billing/issues/42#issuecomment-123456
 
 - **Sources.** The `Spec` row names the files that define what is to be built, and nothing an implementer edits: the task list is ticked off during `implement`, so it belongs in the `Plan of record` row. The `Execution plan (derived)` row exists only when the `implement` provider needed its own plan format, and a `Fix plan (derived)` row only when a fix round needed one. A bug fixed without a provider spec has `diagnosis.md` in its `Spec` row. A `chore` has no `Sources` rows: its criteria come from the triage comment.
 - **Criteria.** `specify` fills `ID`, `Criterion` and `Source`; `plan` fills `Tasks` and `Check`. `Criterion` is one line that names the criterion; its full wording stays at the source. On track `chore`, `implement` fills the rows from the triage comment, with `—` under `Tasks`.
-- **Gates.** G1 and G2 are recorded here. A plan revised after G2 adds a new G2 row when it is approved again, and the latest row is the one the checks use. An accepted G3 is recorded in the closing comment on the issue instead: by then the branch is merged and there is nowhere left to commit it.
+- **Gates.** G1 and G2 are recorded here. A plan revised after G2 adds a new G2 row when it is approved again, and the latest row is the one the checks use. An accepted G3 is recorded in the closing comment on the issue instead, with the result of any post-deploy check: by then the branch is merged and there is nowhere left to commit it.
 - **Decisions.** Answers a person gave between gates that shaped the spec or the plan.
 - **History.** One row for every move, including moves back. The row count for `verify → implement` is how the fix-round limit is enforced.
 - **`## Out of scope`, `## Risks`.** Optional sections, used only under the fallback in *One home*.
@@ -138,7 +138,7 @@ When the criteria come from the bug itself and no provider wrote a spec, this fi
 <command> → <result>
 ```
 
-`Observed` is what the run printed or showed, trimmed; "works as expected" is not an observation. A check a person had to perform is recorded as `manual, reported by <who>`.
+`Observed` is what the run printed or showed, trimmed; "works as expected" is not an observation. A check a person had to perform is recorded as `manual, reported by <who>`. A check the user moved to after deploy has the result `post-deploy` and its remaining steps under `Check run`; it stays that way in the file, and its outcome is recorded with G3 in the closing comment.
 
 ### `review.md`
 
@@ -196,10 +196,10 @@ A summary tells a product manager what the state concluded. The task branch is n
 | `specify` | each criterion's ID and one line; what is out of scope; decisions people made; on track `bug`, the root cause in a sentence and whether it was reproduced |
 | `plan` | the approach in two or three lines; the areas of the codebase it touches; risks; that it waits for approval at G2 |
 | `implement` | tasks done out of planned; each departure from the plan and why, or "none"; in a fix round, each item that sent the task back and its fix; follow-ups noticed |
-| `verify` | criteria proven out of total, and at which commit; the regression result; checks a person performed |
+| `verify` | criteria proven out of total, and at which commit; the regression result; checks a person performed; checks moved to after deploy |
 | `review` | the verdict; each blocking finding and its status; non-blocking findings left as follow-ups |
-| `handoff` | added under the pull request link: criteria proven out of total, and what was not done |
-| closed | added to the closing note: what was delivered or why it was not, the pull request and who accepted it, follow-ups left open |
+| `handoff` | added under the pull request link: criteria proven out of total, checks still owed after deploy, and what was not done |
+| closed | added to the closing note: what was delivered or why it was not, the pull request and who accepted it, the result of each post-deploy check, follow-ups left open |
 
 - **Derive it** from the record and the files it points to. Three to eight lines; a fact found in neither does not belong in the summary.
 - **Plain words first.** Lead with what changes for a user or the product; file paths and symbols come after, if at all.

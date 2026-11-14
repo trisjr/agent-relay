@@ -49,7 +49,7 @@ Three moves need a person, because they are judgment calls an agent should not m
 
 - **G1, after `triage`**: is this worth doing, and on which track?
 - **G2, after `plan`**: are the spec and the plan right? One approval covers both.
-- **G3, at `handoff`**: is the result accepted? By default this means the pull request is merged.
+- **G3, at `handoff`**: is the result accepted? By default this means the pull request is merged, and any check the user moved to after deploy has been reported.
 
 At a gate, present what is being approved, run `lifecycle.sh wait <n> approval`, and stop. Record each decision in the task record with who decided, when, and which commit they saw, and pass it as the move note when the task moves on. Approval of one thing is not approval of the next: a plan revised after G2 goes back through G2.
 

@@ -58,7 +58,7 @@ How many times a task may go from `verify` back to `implement` before the lifecy
 
 ### `handoff.accepted_when`
 
-What gate G3 waits for. `merged` (default): the pull request is merged. `approved`: an approving review or the user's word is enough, for teams that merge on their own schedule.
+What gate G3 waits for. `merged` (default): the pull request is merged. `approved`: an approving review or the user's word is enough, for teams that merge on their own schedule. With either value, a task that has checks marked `post-deploy` is accepted only once their results are reported.
 
 ### `handoff.archive`
 
