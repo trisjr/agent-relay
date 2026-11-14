@@ -62,6 +62,8 @@ Tasks are not linked to requirements in OpenSpec's format, so the `Tasks` and `C
 
 **Where it runs on.** When implementation reveals a design issue, it pauses and suggests updating the change's artifacts. Do not take that up inside `implement`: editing `design.md` or `tasks.md` is a revision, which belongs to `plan` and gate G2.
 
+**A fix round** (the task came back from `verify`, `review` or G3). `openspec-apply-change` takes its tasks only from `tasks.md` and reports nothing to do once they are all ticked. Adding the fixes there would revise the plan of record, so it cannot run a fix list. Tell the user before starting, then work through the fix list in `implement.md` with the `builtin` implement steps.
+
 When another provider implements instead, that provider still ticks tasks off in `tasks.md` so the plan of record shows progress.
 
 ### Not provided

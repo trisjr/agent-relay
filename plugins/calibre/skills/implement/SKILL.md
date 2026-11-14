@@ -29,18 +29,30 @@ Tell the provider where to stop: when the plan's tasks are done and committed on
 
 Reviews a provider runs on its own tasks while building are part of building. They do not replace the `review` state, which looks at the final commit after `verify`.
 
+### A fix round
+
+When the task came back from `verify`, `review` or gate G3, the planned tasks are already done and the plan is not the input. The input is what sent the task back: the failing criteria in `evidence.md`, the blocking findings in `review.md`, or the changes requested at G3 in `task.md`.
+
+1. List them under `## Fix rounds` in `implement.md`, one row per item, each naming the criterion ID or the finding it answers. They do not go into the plan of record: adding tasks there would revise an approved plan.
+2. Run that list through the configured `implement` provider, the same as planned work; each adapter says how it takes a fix list. On track `chore`, build against the list with the provider's coding discipline, as on the first pass.
+3. If you would run the fixes any other way, including fixing them yourself inline, tell the user and wait for the answer before starting. Skipping the configured provider is the user's choice, not a detail to report afterwards.
+
+A fix that only works by changing an approved decision is not a fix round: leave for `plan` (see *Leave differently when*).
+
 ## Produce
 
 `implement.md` in the record:
 
-- **Commits**: the range this state added.
+- **Commits**: the range this state added; a fix round adds its own range.
 - **Tasks**: each task from the plan, done or not, and tick them off in the plan of record as well.
+- **Fix rounds**: each item that sent the task back, where it came from, and what was done about it.
 - **Departures from the plan**: what changed and why. Ask the provider for these before its scratch files are cleaned up; most keep them only for the length of the run.
 - **Follow-ups noticed**: work that turned up and is outside this task.
 
 ## Exit when
 
 - Every planned task is done, or listed as a departure with a reason.
+- In a fix round, every item that sent the task back has a committed fix, or a stated reason why it has none.
 - The project builds and its test suite runs (use the repo's own commands).
 - The working tree is clean: everything is committed on the task branch.
 - The state's summary is on the issue, unless `issue_comments` is `record`.

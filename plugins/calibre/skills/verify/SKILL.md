@@ -53,7 +53,7 @@ Then `lifecycle.sh state <n> review` and `calibre:review` — or, on track `chor
 
 ## When a criterion fails
 
-List the failing IDs with what was observed, then `lifecycle.sh state <n> implement --comment "<failing IDs and what was observed>. Fix round <k> of <max>."` and `calibre:implement`; omit `--comment` when `issue_comments` is `record`. Count the `verify → implement` rows in the `task.md` history: once they reach `verify.max_loops` (default 3), repeated fixing is not converging. Run `lifecycle.sh wait <n> blocked` and bring the pattern to the user instead of trying again.
+Commit `evidence.md` with the failing rows as they were observed, so the fix round can read them whatever `issue_comments` is set to. Then `lifecycle.sh state <n> implement --comment "<failing IDs and what was observed>. Fix round <k> of <max>."` and `calibre:implement`; omit `--comment` when `issue_comments` is `record`. Count the `verify → implement` rows in the `task.md` history: once they reach `verify.max_loops` (default 3), repeated fixing is not converging. Run `lifecycle.sh wait <n> blocked` and bring the pattern to the user instead of trying again.
 
 A criterion that turns out to be untestable or wrong is a spec problem: return to `implement` and from there to `specify`, rather than quietly rewording it here.
 
