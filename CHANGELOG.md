@@ -5,6 +5,21 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
 
 ## [Unreleased]
 
+## [0.32.1] - 2026-11-14
+
+### Plugins
+
+- `calibre`: 0.3.0 → 0.3.1
+
+### Fixed
+
+- **calibre**: mọi thay đổi nội dung plan of record sau G2 (quyết định thiết kế, cách tiếp cận, danh sách task, task nào đáp ứng tiêu chí nào) giờ phải duyệt lại qua G2; chỉ tick task là không tính. `implement` không được sửa lại plan cho khớp code, và `handoff` từ chối archive khi plan đã bị sửa sau G2.
+- **calibre**: `implement` có bước "fix round" khi task quay lại từ `verify`, `review` hoặc G3. Danh sách việc cần sửa (tiêu chí fail, finding chặn, thay đổi G3 yêu cầu) ghi vào `## Fix rounds` trong `implement.md` và đi qua provider `implement` đã cấu hình; muốn làm cách khác phải hỏi người dùng trước. Adapter `builtin`, `openspec` và `superpowers` mô tả cách nhận danh sách này.
+
+### Changed
+
+- **calibre**: `calibre:verify` cho phép tiêu chí chỉ kiểm được sau khi deploy mang kết quả `post-deploy` kèm các bước còn nợ. `calibre:handoff` ghi rõ tiêu chí đó chưa được chứng minh và giữ G3 ở trạng thái chờ cho đến khi kết quả được báo, kể cả khi PR đã merge. Task quay lại sau khi PR đã merge thì cắt nhánh mới từ nhánh mặc định.
+
 ## [0.32.0] - 2026-11-13
 
 ### Plugins
@@ -641,7 +656,8 @@ Mọi thay đổi đáng chú ý của marketplace `agent-relay` được ghi t�
   - `dag-build` build tính năng theo task DAG, có gate duyệt spec và verify bằng test/build.
 - **license**: phát hành theo MIT License.
 
-[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.32.0...HEAD
+[Unreleased]: https://github.com/trisjr/agent-relay/compare/v0.32.1...HEAD
+[0.32.1]: https://github.com/trisjr/agent-relay/compare/v0.32.0...v0.32.1
 [0.32.0]: https://github.com/trisjr/agent-relay/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/trisjr/agent-relay/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/trisjr/agent-relay/compare/v0.29.0...v0.30.0

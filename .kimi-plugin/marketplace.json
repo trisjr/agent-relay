@@ -42,9 +42,9 @@
       "id": "calibre",
       "name": "calibre",
       "displayName": "Calibre",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Standard task lifecycle for coding agents: every task is a GitHub issue that moves through nine labeled states from intake to handoff, with three human gates and evidence-based verification, while spec, plan, implementation and review are delegated to OpenSpec, superpowers or a built-in fallback.",
-      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.32.0/calibre-0.32.0.zip"
+      "source": "https://github.com/trisjr/agent-relay/releases/download/v0.32.1/calibre-0.32.1.zip"
     }
   ]
 }
